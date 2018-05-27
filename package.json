@@ -10,8 +10,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "electron-package": "ng build --prod && npm run package-linux",
-    "package-linux": "electron-packager . webmchan --overwrite --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --no-prune --ignore=/node_modules --ignore=/e2e --ignore=/src --out=release-builds/"
+    "package-linux": "ng build --prod && electron-packager . webmchan --overwrite --platform=linux --arch=x64 --icon=src/assets/icons/png/1024x1024.png --no-prune --ignore=/node_modules --ignore=/e2e --ignore=/src --out=release-builds/",
+    "package-win": "ng build --prod && electron-packager . webmchan --overwrite --platform=win32 --arch=x64 --icon=src/assets/icons/win/favicon.ico --no-prune --ignore=/node_modules --ignore=/e2e --ignore=/src --out=release-builds/ --version-string.CompanyName=ASTRA1 --version-string.FileDescription=WHISHMASTER --version-string.ProductName=\"WEBM_WISHMASTER\""
   },
   "private": true,
   "dependencies": {
