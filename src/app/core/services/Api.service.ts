@@ -33,7 +33,7 @@ export class ApiService {
             flatMap(arr => arr.posts),
             filter((post: IPost) => post.files.length > 0), // todo to toggle state!
             toArray()
-            )
+            );
     }
 
 }
