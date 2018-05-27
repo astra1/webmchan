@@ -9,14 +9,7 @@
 /node_modules
 
 # electron-packager build
-/webmchan-linux-ia32
-/webmchan-win32-ia32
-/webmchan-darwin-x64
-/webmchan-linux-x64
-/webmchan-mas-x64
-/webmchan-win32-x64
-/webmchan-linux-armv7l
-/webmchan-linux-arm64
+/release-builds
 
 # IDEs and editors
 /.idea
