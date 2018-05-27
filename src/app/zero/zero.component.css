@@ -1,0 +1,30 @@
+.container {
+    min-height: 100%;
+    width: 100%;
+  }
+  
+.thread-card {
+    width: 300px;
+    min-height: 300px;
+    margin: 15px;
+}
+
+.mat-card-image {
+    max-width: 300px;
+    max-height: 150px;
+}
+
+.crop {
+    width: 300px;
+    height: 150px;
+    overflow: hidden;
+}
+
+.crop:hover {
+    overflow: unset;
+}
+
+.crop img {
+    width: 100%;
+    margin-bottom: 16px;
+}
