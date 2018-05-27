@@ -1,6 +1,8 @@
 <div class="container">
   <button mat-raised-button
           (click)="currentVideo$.next(videos[0])">Play All</button>
+  <button mat-button
+          (click)="goBack()">Назад</button>
   <mat-list *ngFor="let post of posts">
     <h3 mat-subheader>{{post.num}}</h3>
     <p class="mat-body-1"

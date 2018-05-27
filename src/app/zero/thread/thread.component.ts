@@ -1,6 +1,7 @@
 import { ApiService } from './../../core/services/Api.service';
 import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
@@ -35,7 +36,11 @@ export class ThreadComponent implements OnInit {
   }
 
 
-  constructor(private router: ActivatedRoute, private api: ApiService) { }
+  constructor(
+    private router: ActivatedRoute,
+    private api: ApiService,
+    private location: Location
+  ) { }
 
   getHtmlVideo() {
     return this.videoRef.nativeElement as HTMLVideoElement;
@@ -44,9 +49,9 @@ export class ThreadComponent implements OnInit {
   ngOnInit() {
     this.router.queryParams
       .pipe(
-        pluck('thread_num'),
-        filter(val => !!val),
-        flatMap((val: string) => this.api.getPosts(val))
+      pluck('thread_num'),
+      filter(val => !!val),
+      flatMap((val: string) => this.api.getPosts(val))
       )
       .subscribe((posts: IPost[]) => {
         this.posts = posts;
@@ -65,15 +70,15 @@ export class ThreadComponent implements OnInit {
 
     this.currentVideo$
       .pipe(
-        debounceTime(300),
-        filter(val => !!val),
-        filter(val => {
-          return (val.type === 10 || val.type === 6);
-        }),
-        mergeMap(val =>
-          fromPromise(this.onPlayVideo(val)).pipe(
-            catchError(err => of(`Error: ${err}`))
-          ))
+      debounceTime(300),
+      filter(val => !!val),
+      filter(val => {
+        return (val.type === 10 || val.type === 6);
+      }),
+      mergeMap(val =>
+        fromPromise(this.onPlayVideo(val)).pipe(
+          catchError(err => of(`Error: ${err}`))
+        ))
       ).subscribe((val: any) => {
         if (val instanceof Error) {
           this.getNextVideo(this.currentVideo.name);
@@ -92,6 +97,11 @@ export class ThreadComponent implements OnInit {
     this.getHtmlVideo().focus();
 
     return this.getHtmlVideo().play();
+  }
+
+  goBack() {
+    this.location.back();
+
   }
 
   getNextVideo(name: string) {
