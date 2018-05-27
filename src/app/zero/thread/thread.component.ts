@@ -3,11 +3,8 @@ import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
+import { Subject, Observable, from as fromPromise, of } from 'rxjs';
 import { pluck, filter, flatMap, debounceTime, mergeMap, catchError, distinctUntilChanged } from 'rxjs/operators';
-import { fromPromise } from 'rxjs/observable/fromPromise';
-import { of } from 'rxjs/observable/of';
 
 import { IThread, IPost, IFile } from '../../core/models/models';
 

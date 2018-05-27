@@ -1,7 +1,7 @@
 import { environment } from './../../environments/environment';
 import { ApiService } from './../core/services/Api.service';
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { IThread } from '../core/models/models';
 
 @Component({
