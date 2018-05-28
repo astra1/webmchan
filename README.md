@@ -1,3 +1,3 @@
-# Webmchan
+<p align="center"><img width="40%" src="src/assets/icons/png/webmchan-logo.png" /></p>
 
-![webmchang_logo](https://raw.githubusercontent.com/astra1/webmchan/testing/src/assets/icons/webmchan.svg?sanitize=true)
+--------------------------------------------------------------------------------
