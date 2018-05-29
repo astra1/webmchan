@@ -1,30 +1,33 @@
 <div class="container">
-  <mat-grid-list [cols]="cols"
-                 gutterSize='15px'
-                 rowHeight="1:1">
-    <mat-grid-tile *ngFor="let thread of threads$ | async">
-      <mat-card class="thread-card">
-        <mat-card-header>
-          <mat-card-title>{{thread.thread_num}}</mat-card-title>
-          <mat-card-subtitle>Файлов: ({{thread.files_count}})</mat-card-subtitle>
-        </mat-card-header>
+  <ng-container *ngFor="let thread of threads$ | async">
+    <mat-card class="thread-card">
+      <mat-card-header>
+        <mat-card-title>{{thread.thread_num}}</mat-card-title>
+        <mat-card-subtitle>Файлов: ({{thread.files_count}})</mat-card-subtitle>
+      </mat-card-header>
 
-        <div class="crop">
-          <img [src]="getThreadThumbnail(thread)"
-               alt="thread img">
+      <div>
+        <img [satPopoverAnchorFor]="fullSize"
+             (click)="fullSize.toggle()"
+             [src]="getThreadThumbnail(thread)"
+             alt="thread img">
+        <sat-popover #fullSize
+                     horizontalAlign="after"
+                     verticalAlign="center">
+          <img class="fullSize"
+               [src]=getThreadImage(thread)>
+        </sat-popover>
+      </div>
 
-        </div>
-
-        <mat-card-content style="padding-top: 15px;">
-          <p [innerHTML]="thread.posts[0].comment.trim().slice(0, 150)">
-          </p>
-        </mat-card-content>
-        <mat-card-actions>
-          <button mat-button
-                  routerLink="thread"
-                  [queryParams]="{ thread_num: thread.thread_num }">Перейти</button>
-        </mat-card-actions>
-      </mat-card>
-    </mat-grid-tile>
-  </mat-grid-list>
+      <mat-card-content style="padding-top: 15px;">
+        <p [innerHTML]="thread.subject">
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button
+                routerLink="thread"
+                [queryParams]="{ thread_num: thread.num}">Перейти</button>
+      </mat-card-actions>
+    </mat-card>
+  </ng-container>
 </div>

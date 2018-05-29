@@ -7,6 +7,7 @@ import { Subject, Observable, from as fromPromise, of } from 'rxjs';
 import { pluck, filter, flatMap, debounceTime, mergeMap, catchError, distinctUntilChanged } from 'rxjs/operators';
 
 import { IThread, IPost, IFile } from '../../core/models/models';
+import { faPlay, faVideo } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-thread',
@@ -19,6 +20,10 @@ export class ThreadComponent implements OnInit {
   videoRef: ElementRef;
   thread_num = '';
 
+  // fa Icons
+  faPlay = faPlay;
+  faVideo = faVideo;
+
   posts: IPost[] = [];
 
   videos: IFile[] = [];
@@ -27,11 +32,12 @@ export class ThreadComponent implements OnInit {
   currentVideo$: Subject<IFile> = new Subject();
   currentVideo: IFile = null;
 
+  isPlayHover = false;
+
   @HostListener('window:keydown', ['$event'])
   onKeyDown(event) {
     this.onVideoKeyPress(event);
   }
-
 
   constructor(
     private router: ActivatedRoute,
@@ -46,17 +52,15 @@ export class ThreadComponent implements OnInit {
   ngOnInit() {
     this.router.queryParams
       .pipe(
-      pluck('thread_num'),
-      filter(val => !!val),
-      flatMap((val: string) => this.api.getPosts(val))
+        pluck('thread_num'),
+        filter(val => !!val),
+        flatMap((val: string) => {
+          this.thread_num = val;
+          return this.api.getPosts(val);
+        })
       )
       .subscribe((posts: IPost[]) => {
-        this.posts = posts;
-
-        this.videos = posts.reduce((prev, curr) => {
-          return [...prev, ...curr.files];
-        }, []).filter(f => f.duration);
-
+        this.updateData(posts);
       });
 
     this.getHtmlVideo().addEventListener('ended', () => {
@@ -67,21 +71,29 @@ export class ThreadComponent implements OnInit {
 
     this.currentVideo$
       .pipe(
-      debounceTime(300),
-      filter(val => !!val),
-      filter(val => {
-        return (val.type === 10 || val.type === 6);
-      }),
-      mergeMap(val =>
-        fromPromise(this.onPlayVideo(val)).pipe(
-          catchError(err => of(`Error: ${err}`))
-        ))
+        debounceTime(300),
+        filter(val => !!val),
+        filter(val => {
+          return (val.type === 10 || val.type === 6);
+        }),
+        mergeMap(val =>
+          fromPromise(this.onPlayVideo(val)).pipe(
+            catchError(err => of(`Error: ${err}`))
+          ))
       ).subscribe((val: any) => {
         if (val instanceof Error) {
           this.getNextVideo(this.currentVideo.name);
         }
         console.log(val);
       });
+  }
+
+  private updateData(posts: IPost[]) {
+    this.posts = posts;
+
+    this.videos = posts.reduce((prev, curr) => {
+      return [...prev, ...curr.files];
+    }, []).filter(f => f.duration);
   }
 
 
@@ -152,6 +164,11 @@ export class ThreadComponent implements OnInit {
           break;
       }
     }
+  }
+
+  renew() {
+    console.log('renew!');
+    this.api.getPosts(this.thread_num).subscribe(val => this.updateData(val));
   }
 
   onVideoClick() {

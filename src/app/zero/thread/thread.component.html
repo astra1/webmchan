@@ -1,26 +1,43 @@
-<div class="container">
-  <button mat-raised-button
-          (click)="currentVideo$.next(videos[0])">Play All</button>
-  <button mat-button
-          (click)="goBack()">Назад</button>
-  <mat-list *ngFor="let post of posts">
-    <h3 mat-subheader>{{post.num}}</h3>
-    <p class="mat-body-1"
-       [innerHTML]="post.comment.trim().slice(0, 150)"></p>
-    <mat-list-item *ngFor="let file of post.files">
-      <img mat-list-icon
-           [src]="'https://2ch.hk' + file.thumbnail">
-      <h4 mat-line>{{ file.name }}</h4>
-      <p mat-line> {{ file.duration }} {{ file.size }} KB </p>
+<div class="container-fluid">
+  <mat-toolbar>
+    <mat-toolbar-row>
+      <button mat-raised-button
+              (click)="currentVideo$.next(videos[0])">Play All</button>
+      <span class="spacer"></span>
+      <span class="videoIcon">
+        <fa-icon [icon]="faVideo"></fa-icon> {{ videos.length || 0 }}
+      </span>
       <button mat-button
-              (click)="currentVideo$.next(file)">Play</button>
-    </mat-list-item>
-    <mat-divider></mat-divider>
-  </mat-list>
+              (click)="renew()">Обновить</button>
+      <button mat-button
+              (click)="goBack()">Назад</button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <div class="container-fluid webm-list-container">
+    <mat-grid-list cols="3"
+                   gutterSize="5px"
+                   rowHeight="2:1">
+      <mat-grid-tile *ngFor="let file of videos">
+        <div class="webm-container">
+          <img class="webm-preview"
+               [src]="'https://2ch.hk' + file.thumbnail">
+          <button class="play-button"
+                  mat-icon-button
+                  (click)="currentVideo$.next(file)">
+            <fa-icon [icon]="faPlay"></fa-icon>
+          </button>
+        </div>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+
 </div>
 
+<!-- todo to component -->
 <video [hidden]="!showVideo"
        #videoContainer
+       class="vide-container"
        (mousewheel)="onMousewheel($event)"
        (keypress)="onVideoKeyPress($event)"
        (click)="onVideoClick()"

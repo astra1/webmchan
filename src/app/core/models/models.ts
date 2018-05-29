@@ -48,10 +48,26 @@ export interface INewsAbu {
 }
 
 export interface IThread {
+    banned: number;
+    closed: number;
+    comment: string;
+    date: string;
+    email: string;
+    endless: number;
+    files: IFile[];
     files_count: number;
+    lasthit: number;
+    name: string;
+    num: string;
+    op: number;
+    parent: string;
     posts: IPost[];
     posts_count: number;
-    thread_num: string;
+    sticky: number;
+    subject: string;
+    tags: any[];
+    timestamp: number;
+    trip: any[];
 }
 
 export interface IPost {

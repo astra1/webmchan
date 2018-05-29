@@ -5,15 +5,20 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
+import { SatPopoverModule } from '@ncstate/sat-popover';
 
 
 @NgModule({
     imports: [
         BrowserAnimationsModule,
         CommonModule,
+        FontAwesomeModule,
         FormsModule,
         MaterialModule,
         ReactiveFormsModule,
+        SatPopoverModule,
         HttpClientModule,
         RouterModule
     ],
@@ -22,9 +27,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     exports: [
         BrowserAnimationsModule,
         CommonModule,
+        FontAwesomeModule,
         FormsModule,
         MaterialModule,
         ReactiveFormsModule,
+        SatPopoverModule,
         HttpClientModule,
         RouterModule,
     ]
