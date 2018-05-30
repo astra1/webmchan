@@ -2,7 +2,7 @@
   <mat-toolbar>
     <mat-toolbar-row>
       <button mat-raised-button
-              (click)="currentVideo$.next(videos[0])">Play All</button>
+              (click)="onPlayAllClick()">Play All</button>
       <span class="spacer"></span>
       <span class="videoIcon">
         <fa-icon [icon]="faVideo"></fa-icon> {{ videos.length || 0 }}
@@ -24,7 +24,7 @@
                [src]="'https://2ch.hk' + file.thumbnail">
           <button class="play-button"
                   mat-icon-button
-                  (click)="currentVideo$.next(file)">
+                  (click)="onPlayClick(file)">
             <fa-icon [icon]="faPlay"></fa-icon>
           </button>
         </div>
@@ -33,13 +33,3 @@
   </div>
 
 </div>
-
-<!-- todo to component -->
-<video [hidden]="!showVideo"
-       #videoContainer
-       class="vide-container"
-       (mousewheel)="onMousewheel($event)"
-       (keypress)="onVideoKeyPress($event)"
-       (click)="onVideoClick()"
-       id="video">
-</video>

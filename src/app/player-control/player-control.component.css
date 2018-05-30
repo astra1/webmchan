@@ -1,0 +1,62 @@
+.player-control {
+    position: fixed;
+    height: 86px;
+    display: flex;
+    bottom: 0;
+    left: 0;
+    padding-left: 0px;
+}
+
+.mat-icon-button, .mat-fab {
+    margin: 4px;
+}
+
+.thumbnail-wrapper {
+    position: relative;
+    float: left;
+    border: 0;
+    padding: 0;
+    margin: 0 10px 0 0;
+    height: 90px;
+    width: 90px;
+    top: -2px;
+    background-color: #3f51b5;
+}
+
+.thumbnail-wrapper > img {
+    width: 100%;
+    height: 100%;
+}
+
+.player-left {
+    flex: 1;
+    height: 86px;
+    margin-top: 4px;
+    min-width: 0px;
+}
+
+.player-middle {
+    margin: 4px 24px 0 24px;
+    display: flex;
+    align-items: center;
+    height: 86px;
+}
+
+.player-right {
+    flex: 1;
+    height: 86px;
+    margin-top: 4px;
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+    min-width: 0px;
+}
+
+.progress-wrapper {
+    position: absolute;
+    top: -24px;
+    left: 82px;
+    right: -8px;
+    z-index: 1;
+}

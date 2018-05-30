@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { MatButtonModule, MatGridListModule, MatCardModule, MatListModule, MatToolbarModule } from '@angular/material';
+import { MatButtonModule, MatGridListModule, MatCardModule, MatListModule, MatToolbarModule, MatSliderModule } from '@angular/material';
 
 import { OverlayModule } from '@angular/cdk/overlay';
 import { PortalModule } from '@angular/cdk/portal';
@@ -10,6 +10,7 @@ import { PortalModule } from '@angular/cdk/portal';
         MatCardModule,
         MatGridListModule,
         MatListModule,
+        MatSliderModule,
         MatToolbarModule,
         OverlayModule,
         PortalModule
@@ -19,6 +20,7 @@ import { PortalModule } from '@angular/cdk/portal';
         MatCardModule,
         MatGridListModule,
         MatListModule,
+        MatSliderModule,
         MatToolbarModule,
         OverlayModule,
         PortalModule

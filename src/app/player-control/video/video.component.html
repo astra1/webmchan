@@ -1,0 +1,7 @@
+<div class="video-container"
+     [hidden]="!showVideo">
+    <video #videoContainer
+           (ended)="onEnded()"
+           (timeupdate)="onTimeUpdated()">
+    </video>
+</div>

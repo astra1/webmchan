@@ -1,3 +1,4 @@
+import { PlayerService } from './services/player.service';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -8,7 +9,8 @@ import { ApiService } from './services/Api.service';
         CommonModule
     ],
     providers: [
-        ApiService
+        ApiService,
+        PlayerService
     ],
     declarations: []
 })

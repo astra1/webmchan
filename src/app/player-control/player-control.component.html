@@ -1,0 +1,55 @@
+<mat-toolbar class="player-control"
+             color="primary">
+
+  <app-video (played)="updateTime($event)">
+  </app-video>
+
+  <div class="progress-wrapper">
+    <app-track-progress [currentProgress]="currentTime"
+                        (progressChange)="onTimeSelect($event)"
+                        [progressLength]="trackLength"></app-track-progress>
+  </div>
+
+  <div class="thumbnail-wrapper">
+    <img [src]="getTrackThumb()">
+  </div>
+  <div class="player-left">
+    {{ currentTrack?.displayname }}
+  </div>
+  <div class="player-middle">
+    <button mat-icon-button
+            [disabled]="!currentTrack">
+      <fa-icon [icon]="faRedo"></fa-icon>
+    </button>
+    <button mat-icon-button
+            [disabled]="!currentTrack"
+            (click)="playPrev()">
+      <fa-icon [icon]="faStepBack"></fa-icon>
+    </button>
+    <button mat-fab
+            [disabled]="!currentTrack"
+            (click)="play()">
+      <fa-icon [icon]="isPlaying ? faPause : faPlay "></fa-icon>
+    </button>
+    <button mat-icon-button
+            [disabled]="!currentTrack"
+            (click)="playNext()">
+      <fa-icon [icon]="faStepForw"></fa-icon>
+    </button>
+    <button mat-icon-button
+            [disabled]="!currentTrack"
+            (click)="toggleShuffle()">
+      <fa-icon [ngStyle]="{'color': isShuffled ? '#ff4081' : ''}"
+               [icon]="faRandom"></fa-icon>
+    </button>
+    <button mat-icon-button
+            [disabled]="!currentTrack"
+            (click)="toggleFullscreen()">
+      <fa-icon [icon]="faFullscreen"></fa-icon>
+    </button>
+  </div>
+  <div class="player-right">
+    <app-volume-slider></app-volume-slider>
+  </div>
+
+</mat-toolbar>

@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from './shared/shared.module';
+import { PlayerControlModule } from './player-control/player-control.module';
 import { ZeroModule } from './zero/zero.module';
 
 @NgModule({
@@ -20,6 +21,7 @@ import { ZeroModule } from './zero/zero.module';
     BrowserModule,
     CoreModule,
     SharedModule,
+    PlayerControlModule,
     ZeroModule,
     AppRoutingModule
   ],
