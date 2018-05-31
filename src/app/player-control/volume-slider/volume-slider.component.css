@@ -1,7 +1,3 @@
-.volume-wrapper {
-    margin: 16px;
-}
-
 .volume-wrapper:hover .volume-slider,
 .volume-wrapper:hover .volume-min,
 .volume-min:hover,
@@ -13,8 +9,4 @@
 .volume-slider {
     opacity: 0;
     transition: opacity 0.25s ease-in;
-}
-
-.volume-slider {
-    width: 140px;
 }

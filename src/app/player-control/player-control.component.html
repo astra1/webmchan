@@ -1,24 +1,36 @@
 <mat-toolbar class="player-control"
-             color="primary">
+             color="primary"
+             fxLayout="row"
+             fxLayoutAlign="start center"
+             fxLayoutGap="10px">
 
-  <app-video (played)="updateTime($event)">
-  </app-video>
+  <app-video (played)="updateTime($event)"></app-video>
 
   <div class="progress-wrapper">
     <app-track-progress [hidden]="!currentTrack"
                         [currentProgress]="currentTime"
                         (progressChange)="onTimeSelect($event)"
-                        [progressLength]="trackLength"></app-track-progress>
+                        [progressLength]="trackLength">
+    </app-track-progress>
   </div>
 
-  <div class="thumbnail-wrapper">
-    <img [src]="getTrackThumb()">
+  <div fxFlex="30"
+       class="player-left">
+    <div class="thumbnail-wrapper"
+         [matTooltip]="currentTrack?.fullname">
+      <img [src]="getTrackThumb()">
+    </div>
+    <div class="track-label">
+      {{currentTrack?.displayname || ''}}
+    </div>
   </div>
-  <div class="player-left">
-    {{ currentTrack?.displayname }}
-  </div>
-  <div class="player-middle">
-    <button mat-icon-button
+  <div class="player-middle"
+       fxFlex="50"
+       fxLayout="row"
+       fxLayoutAlign="space-between center"
+       fxLayoutGap="5px">
+    <button *ngIf="false"
+            mat-icon-button
             [disabled]="!currentTrack">
       <fa-icon [icon]="faRedo"></fa-icon>
     </button>
@@ -49,15 +61,20 @@
       <fa-icon [icon]="faFullscreen"></fa-icon>
     </button>
   </div>
-  <div class="player-right">
-    <app-volume-slider></app-volume-slider>
-    <div class="player-top-right-items">
+  <div class="player-right"
+       fxFlex="20"
+       fxLayout="column"
+       fxLayoutAlign="end end">
+    <div fxFlex="25">
       <div class="time-label"
            [hidden]="!currentTrack">
         <span class="time-container-current">{{currentTime | minuteSeconds }}</span>
         /
         <span class="time-container-current">{{trackLength | minuteSeconds}}</span>
       </div>
+    </div>
+    <div fxFlex="75">
+      <app-volume-slider></app-volume-slider>
     </div>
   </div>
 
