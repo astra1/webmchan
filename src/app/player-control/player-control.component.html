@@ -5,7 +5,8 @@
   </app-video>
 
   <div class="progress-wrapper">
-    <app-track-progress [currentProgress]="currentTime"
+    <app-track-progress [hidden]="!currentTrack"
+                        [currentProgress]="currentTime"
                         (progressChange)="onTimeSelect($event)"
                         [progressLength]="trackLength"></app-track-progress>
   </div>
