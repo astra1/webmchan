@@ -1,14 +1,11 @@
 .player-control {
     position: fixed;
-    height: 86px;
-    display: flex;
     bottom: 0;
     left: 0;
-    padding-left: 0px;
-}
 
-.mat-icon-button, .mat-fab {
-    margin: 4px;
+    height: 86px;
+
+    padding: 0;
 }
 
 .thumbnail-wrapper {
@@ -29,28 +26,24 @@
 }
 
 .player-left {
-    flex: 1;
-    height: 86px;
+    /* height: 86px; */
     margin-top: 4px;
     min-width: 0px;
 }
 
 .player-middle {
-    margin: 4px 24px 0 24px;
-    display: flex;
-    align-items: center;
+    margin-top: 4px;
     height: 86px;
 }
 
 .player-right {
-    flex: 1;
     height: 86px;
-    margin-top: 4px;
-    align-items: center;
-    display: flex;
-    justify-content: flex-end;
-    position: relative;
+    margin: 4px 15px 0 0;
     min-width: 0px;
+}
+
+.track-label {
+    font-size: 16px;
 }
 
 .progress-wrapper {
@@ -59,17 +52,6 @@
     left: 82px;
     right: -8px;
     z-index: 1;
-}
-
-.player-top-right-items {
-    position: absolute;
-    top: 0;
-    right: 0;
-
-    max-width: 100%;
-    overflow: hidden;
-    height: 36px;
-    
 }
 
 .time-label {

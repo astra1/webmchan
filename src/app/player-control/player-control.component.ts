@@ -2,7 +2,16 @@ import { environment } from './../../environments/environment';
 import { PlayerService } from './../core/services/player.service';
 import { IFile } from './../core/models/models';
 import { Component, HostListener, OnInit } from '@angular/core';
-import { faRedo, faStepBackward, faStepForward, faRandom, faPlay, faPause, faArrowsAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+  faRedo,
+  faStepBackward,
+  faStepForward,
+  faRandom,
+  faPlay,
+  faPause,
+  faArrowsAlt,
+  faEllipsisV
+} from '@fortawesome/free-solid-svg-icons';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -12,6 +21,7 @@ import { filter } from 'rxjs/operators';
 })
 export class PlayerControlComponent implements OnInit {
 
+  faDots = faEllipsisV;
   faPlay = faPlay;
   faPause = faPause;
   faRandom = faRandom;
@@ -118,5 +128,9 @@ export class PlayerControlComponent implements OnInit {
     //       break;
     //   }
     // }
+  }
+
+  saveVideo() {
+
   }
 }
