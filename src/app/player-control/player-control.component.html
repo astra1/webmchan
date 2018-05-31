@@ -51,6 +51,14 @@
   </div>
   <div class="player-right">
     <app-volume-slider></app-volume-slider>
+    <div class="player-top-right-items">
+      <div class="time-label"
+           [hidden]="!currentTrack">
+        <span class="time-container-current">{{currentTime | minuteSeconds }}</span>
+        /
+        <span class="time-container-current">{{trackLength | minuteSeconds}}</span>
+      </div>
+    </div>
   </div>
 
 </mat-toolbar>

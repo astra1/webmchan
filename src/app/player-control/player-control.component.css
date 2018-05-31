@@ -60,3 +60,18 @@
     right: -8px;
     z-index: 1;
 }
+
+.player-top-right-items {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    max-width: 100%;
+    overflow: hidden;
+    height: 36px;
+    
+}
+
+.time-label {
+    font-size: 12px;
+}

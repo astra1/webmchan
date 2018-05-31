@@ -1,3 +1,5 @@
+import { FloorPipe } from './../core/pipes/floor.pipe';
+import { MinuteSecondsPipe } from './../core/pipes/minute-seconds.pipe';
 import { MaterialModule } from './material.module';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -25,6 +27,8 @@ import { SatPopoverModule } from '@ncstate/sat-popover';
         RouterModule
     ],
     declarations: [
+        FloorPipe,
+        MinuteSecondsPipe
     ],
     exports: [
         BrowserAnimationsModule,
@@ -32,6 +36,10 @@ import { SatPopoverModule } from '@ncstate/sat-popover';
         FontAwesomeModule,
         FormsModule,
         FlexLayoutModule,
+        // pipes
+        FloorPipe,
+        MinuteSecondsPipe,
+
         MaterialModule,
         ReactiveFormsModule,
         SatPopoverModule,
