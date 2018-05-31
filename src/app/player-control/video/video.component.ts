@@ -64,6 +64,10 @@ export class VideoComponent implements OnInit {
       .subscribe(val => this.getHtmlVideo().currentTime = val);
 
     this.ps.isFullscreen.pipe(filter(val => val === true)).subscribe(val => {
+      if (!this.showVideo) {
+        this.showVideo = true;
+      }
+
       if (this.getHtmlVideo().requestFullscreen) {
         this.getHtmlVideo().requestFullscreen();
       } else if (this.getHtmlVideo().webkitRequestFullscreen) {
