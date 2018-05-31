@@ -47,18 +47,27 @@ export class PlayerService {
   }
 
   playNext() {
-    let pos: number = this.currentPlayList$.value.indexOf(this.currentVideo$.value);
+    const playList = this.currentPlayList$.value;
+    let video: IFile = null;
+
+    let pos: number = playList.findIndex((val) => val.md5 === this.currentVideo$.value.md5);
 
     if (pos === -1) {
       return;
     }
 
-    const video = pos === this.currentPlayList$.value.length - 1
-      ? this.currentPlayList$.value[0]
-      : this.currentPlayList$.value[++pos];
+    if (this.isShuffleOn$.value) {
+      video = playList[this.getRandPos(playList.length)];
+    } else {
+      video = pos === playList.length - 1
+        ? playList[0]
+        : playList[++pos];
+    }
 
-    this.currentVideo$.next(video);
-    this.isPlaying$.next(true);
+    if (video) {
+      this.currentVideo$.next(video);
+      this.isPlaying$.next(true);
+    }
   }
 
   playPrev() {
@@ -68,13 +77,12 @@ export class PlayerService {
       return;
     }
 
-    let pos: number = playList.indexOf(this.currentVideo$.value);
+    let pos: number = playList.findIndex((val) => val.md5 === this.currentVideo$.value.md5);
 
     let video: IFile;
 
     if (this.isShuffleOn$.value) {
-      const randPos = Math.floor(Math.random() * playList.length);
-      video = playList[randPos];
+      video = playList[this.getRandPos(playList.length)];
     } else {
       video = pos === 0
         ? this.currentPlayList$.value[this.currentPlayList$.value.length - 1]
@@ -117,8 +125,8 @@ export class PlayerService {
     this.volume$.next(level);
   }
 
-  getRandPos(num: number) {
-    Math.floor(Math.random() * num);
+  getRandPos(num: number): number {
+    return Math.floor(Math.random() * num);
   }
 
   toggleShuffle() {
