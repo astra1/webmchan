@@ -14,7 +14,7 @@ export class ZeroComponent implements OnInit {
   isThreadImgPreviewOpen = false;
   cols = 3;
 
-  threads$: Observable<any>;
+  threads$: Observable<IThread[]>;
 
   constructor(private api: ApiService) { }
 

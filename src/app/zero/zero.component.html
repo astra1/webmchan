@@ -1,8 +1,13 @@
 <div class="container">
+
+  <span *ngIf="!(threads$ | async)">
+    <mat-spinner></mat-spinner>
+  </span>
+
   <ng-container *ngFor="let thread of threads$ | async">
     <mat-card class="thread-card">
       <mat-card-header>
-        <mat-card-title>{{thread.thread_num}}</mat-card-title>
+        <mat-card-title>{{ thread.num }}</mat-card-title>
         <mat-card-subtitle>Файлов: ({{thread.files_count}})</mat-card-subtitle>
       </mat-card-header>
 

@@ -15,21 +15,27 @@
   </mat-toolbar>
 
   <div class="container-fluid webm-list-container">
-    <mat-grid-list cols="3"
-                   gutterSize="5px"
-                   rowHeight="2:1">
-      <mat-grid-tile *ngFor="let file of videos">
-        <div class="webm-container">
-          <img class="webm-preview"
-               [src]="'https://2ch.hk' + file.thumbnail">
-          <button class="play-button"
-                  mat-icon-button
-                  (click)="onPlayClick(file)">
-            <fa-icon [icon]="faPlay"></fa-icon>
-          </button>
-        </div>
-      </mat-grid-tile>
-    </mat-grid-list>
+    <ng-container *ngIf="!videos || videos.length === 0; else threadGrid">
+      <mat-spinner></mat-spinner>
+    </ng-container>
+    <ng-template #threadGrid>
+      <mat-grid-list cols="3"
+                     gutterSize="5px"
+                     rowHeight="2:1">
+        <mat-grid-tile *ngFor="let file of videos">
+          <div class="webm-container">
+            <img class="webm-preview"
+                 [src]="'https://2ch.hk' + file.thumbnail">
+            <button class="play-button"
+                    mat-icon-button
+                    (click)="onPlayClick(file)">
+              <fa-icon [icon]="faPlay"></fa-icon>
+            </button>
+          </div>
+        </mat-grid-tile>
+      </mat-grid-list>
+
+    </ng-template>
   </div>
 
 </div>
