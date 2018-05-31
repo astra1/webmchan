@@ -25,8 +25,6 @@ export class ThreadComponent implements OnInit {
   posts: IPost[] = [];
   videos: IFile[] = [];
 
-  isPlayHover = false;
-
   constructor(
     private router: ActivatedRoute,
     private api: ApiService,

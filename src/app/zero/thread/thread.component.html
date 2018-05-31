@@ -16,7 +16,9 @@
 
   <div class="container-fluid webm-list-container">
     <ng-container *ngIf="!videos || videos.length === 0; else threadGrid">
-      <mat-spinner></mat-spinner>
+      <pre>
+        no webm/mp4
+      </pre>
     </ng-container>
     <ng-template #threadGrid>
       <mat-grid-list cols="3"
