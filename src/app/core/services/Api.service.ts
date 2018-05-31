@@ -18,7 +18,13 @@ export class ApiService {
 
         return this.http.get<IRootObject>(`${this.url}b/catalog.json`)
             .pipe(
-                pluck('threads')
+                pluck('threads'),
+                map((threads: IThread[]) => {
+                    threads.sort((a, b) => {
+                        return a.files_count > b.files_count ? -1 : 1;
+                    });
+                    return threads;
+                })
             );
     }
 
