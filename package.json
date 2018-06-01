@@ -30,7 +30,7 @@
     "@angular/router": "~6.0.3",
     "@fortawesome/angular-fontawesome": "0.1.0-10",
     "@fortawesome/fontawesome-svg-core": "^1.2.0-11",
-    "@fortawesome/free-solid-svg-icons": "^5.1.0-8",
+    "@fortawesome/free-solid-svg-icons": "^5.1.0-11",
     "@ncstate/sat-popover": "^2.1.1",
     "core-js": "^2.5.7",
     "hammerjs": "^2.0.8",
