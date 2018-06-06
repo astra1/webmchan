@@ -6,7 +6,9 @@ import { Observable, from } from 'rxjs';
 import { map, take, tap, concatMap, filter, flatMap, toArray, pluck, concatAll } from 'rxjs/operators';
 import { IRootObject, IThread, IPost, IFile } from '../models/models';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class ApiService {
 
     private url = environment.dvachApiUrl;

@@ -9,8 +9,6 @@ import { ApiService } from './services/Api.service';
         CommonModule
     ],
     providers: [
-        ApiService,
-        PlayerService
     ],
     declarations: []
 })

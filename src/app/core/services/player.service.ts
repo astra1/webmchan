@@ -2,7 +2,9 @@ import { IFile } from './../models/models';
 import { Injectable } from '@angular/core';
 import { Subject, BehaviorSubject } from 'rxjs';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class PlayerService {
 
   private volume$ = new BehaviorSubject<number>(100);

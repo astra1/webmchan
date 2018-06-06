@@ -131,6 +131,5 @@ export class PlayerControlComponent implements OnInit {
   }
 
   saveVideo() {
-
   }
 }
