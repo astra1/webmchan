@@ -35,6 +35,11 @@
       <fa-icon [icon]="faRedo"></fa-icon>
     </button>
     <button mat-icon-button
+            (click)="saveVideo()"
+            [disabled]="!currentTrack ">
+      <fa-icon [icon]="faDots"></fa-icon>
+    </button>
+    <button mat-icon-button
             [disabled]="!currentTrack"
             (click)="playPrev()">
       <fa-icon [icon]="faStepBack"></fa-icon>
@@ -68,9 +73,9 @@
     <div fxFlex="25">
       <div class="time-label"
            [hidden]="!currentTrack">
-        <span class="time-container-current">{{currentTime | minuteSeconds }}</span>
+        <span class="time-container-current">{{ currentTime | minuteSeconds }}</span>
         /
-        <span class="time-container-current">{{trackLength | minuteSeconds}}</span>
+        <span class="time-container-current">{{ trackLength | minuteSeconds }}</span>
       </div>
     </div>
     <div fxFlex="75">
