@@ -1,0 +1,31 @@
+.node: &node
+  image: node:8
+  before_script:
+  - npm install
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    paths:
+      - node_modules/
+
+stages:
+  - deploy
+
+deploy_develop:
+  stage: deploy
+  environment:
+    name: develop
+  <<: *node
+  script:
+    - npm run build -- -e $CI_ENVIRONMENT_SLUG
+  only:
+    - testing
+
+deploy_production:
+  stage: deploy
+  environment:
+    name: production
+  <<: *node
+  script:
+    - npm run build -- -e $CI_ENVIRONMENT_SLUG
+  only:
+    - master
