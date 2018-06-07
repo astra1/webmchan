@@ -1,0 +1,24 @@
+.video-container {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 86px;
+
+    text-align: center;
+
+    max-width: 48vw;
+}
+
+.video-container > video {
+    width: 100%;
+    height: auto;
+    position: absolute;
+    bottom: 0;
+}
+
+.video-close-btn {
+    position: absolute;
+    right: 5px;
+    top: 0px;
+}

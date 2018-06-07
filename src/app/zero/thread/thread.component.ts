@@ -1,169 +1,94 @@
 import { ApiService } from './../../core/services/Api.service';
-import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { Subject, Observable, from as fromPromise, of } from 'rxjs';
-import { pluck, filter, flatMap, debounceTime, mergeMap, catchError, distinctUntilChanged } from 'rxjs/operators';
+import { Subject, Observable, from as fromPromise, of, timer } from 'rxjs';
+import { pluck, filter, flatMap, debounceTime, mergeMap, catchError, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 import { IThread, IPost, IFile } from '../../core/models/models';
+import { faPlay, faVideo } from '@fortawesome/free-solid-svg-icons';
+import { PlayerService } from '../../core/services/player.service';
 
 @Component({
   selector: 'app-thread',
   templateUrl: './thread.component.html',
   styleUrls: ['./thread.component.css']
 })
-export class ThreadComponent implements OnInit {
-  @ViewChild('videoContainer')
-
-  videoRef: ElementRef;
+export class ThreadComponent implements OnInit, OnDestroy {
   thread_num = '';
 
+  // fa Icons
+  faPlay = faPlay;
+  faVideo = faVideo;
+
+  destroy$: Subject<boolean> = new Subject<boolean>();
+
   posts: IPost[] = [];
-
   videos: IFile[] = [];
-
-  showVideo = true;
-  currentVideo$: Subject<IFile> = new Subject();
-  currentVideo: IFile = null;
-
-  @HostListener('window:keydown', ['$event'])
-  onKeyDown(event) {
-    this.onVideoKeyPress(event);
-  }
-
 
   constructor(
     private router: ActivatedRoute,
     private api: ApiService,
-    private location: Location
+    private location: Location,
+    private ps: PlayerService
   ) { }
-
-  getHtmlVideo() {
-    return this.videoRef.nativeElement as HTMLVideoElement;
-  }
 
   ngOnInit() {
     this.router.queryParams
       .pipe(
-      pluck('thread_num'),
-      filter(val => !!val),
-      flatMap((val: string) => this.api.getPosts(val))
+        takeUntil(this.destroy$),
+        pluck('thread_num'),
+        filter(val => !!val),
+        flatMap((val: string) => {
+          this.thread_num = val;
+          return this.api.getPosts(val);
+        })
       )
       .subscribe((posts: IPost[]) => {
-        this.posts = posts;
-
-        this.videos = posts.reduce((prev, curr) => {
-          return [...prev, ...curr.files];
-        }, []).filter(f => f.duration);
-
+        this.updateData(posts);
       });
 
-    this.getHtmlVideo().addEventListener('ended', () => {
-      this.getNextVideo(this.currentVideo.name);
+    // autoupdate
+    timer(10000, 10000).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(val => {
+      if (this.thread_num !== '') {
+        console.log('auto_update');
+        this.renew();
+      }
     });
-
-    this.showVideo = false;
-
-    this.currentVideo$
-      .pipe(
-      debounceTime(300),
-      filter(val => !!val),
-      filter(val => {
-        return (val.type === 10 || val.type === 6);
-      }),
-      mergeMap(val =>
-        fromPromise(this.onPlayVideo(val)).pipe(
-          catchError(err => of(`Error: ${err}`))
-        ))
-      ).subscribe((val: any) => {
-        if (val instanceof Error) {
-          this.getNextVideo(this.currentVideo.name);
-        }
-        console.log(val);
-      });
   }
 
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+  }
 
-  onPlayVideo(file: IFile) {
-    this.showVideo = true;
-    this.currentVideo = file;
+  private updateData(posts: IPost[]) {
+    this.posts = posts;
 
-    this.getHtmlVideo().src = 'https://2ch.hk' + file.path;
-    this.getHtmlVideo().load();
-    this.getHtmlVideo().focus();
+    this.videos = posts.reduce((prev, curr) => {
+      return [...prev, ...curr.files];
+    }, []).filter(f => f.duration);
 
-    return this.getHtmlVideo().play();
+    this.ps.setPlaysist(this.videos);
   }
 
   goBack() {
     this.location.back();
-
   }
 
-  getNextVideo(name: string) {
-    const index = this.videos.findIndex(v => v.name === name);
-    console.log('next ind: ', index);
-    console.log('videos length: ', this.videos.length);
-    if (index === -1 || index === this.videos.length - 1) {
-      this.currentVideo$.next(this.videos[0]);
-    } else if (index >= 0) {
-      console.log('video: ', this.videos[index + 1]);
-      this.currentVideo$.next(this.videos[index + 1]);
-    }
+  renew() {
+    this.api.getPosts(this.thread_num).subscribe(val => this.updateData(val));
   }
 
-  getPrevVideo(name: string) {
-    const index = this.videos.findIndex(v => v.name === name);
-    if (index === 0) {
-      this.currentVideo$.next(this.videos[this.videos.length - 1]);
-    } else {
-      this.currentVideo$.next(this.videos[index - 1]);
-    }
+  onPlayClick(file: IFile) {
+    this.ps.playFile(file);
   }
 
-  onVideoKeyPress(event: any) {
-    if (this.currentVideo) {
-      switch (event.key) {
-        case ']':
-          this.getNextVideo(this.currentVideo.name);
-          console.log('hey');
-          break;
-        case '[':
-          this.getPrevVideo(this.currentVideo.name);
-          break;
-        case 'Escape':
-          this.getHtmlVideo().pause();
-          this.getHtmlVideo().src = '';
-          this.getHtmlVideo().load();
-          this.showVideo = false;
-          this.currentVideo = null;
-          break;
-        case 'f':
-          this.getHtmlVideo().webkitRequestFullscreen();
-          break;
-        case 'Alt':
-          this.getHtmlVideo().controls = !this.getHtmlVideo().controls;
-          console.log(this.getHtmlVideo().controls);
-          break;
-        default:
-          console.log(event.key);
-          console.log('huhey');
-          break;
-      }
-    }
-  }
-
-  onVideoClick() {
-    const htmlVideo = this.videoRef.nativeElement as HTMLVideoElement;
-
-    if (!htmlVideo.paused) {
-      htmlVideo.pause();
-    }
-
-  }
-
-  onMousewheel(event: any) {
-    // todo change size
+  onPlayAllClick() {
+    this.ps.setPlaysist(this.videos);
+    this.ps.playAll();
   }
 }

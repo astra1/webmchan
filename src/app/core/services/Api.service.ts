@@ -14,11 +14,17 @@ export class ApiService {
     constructor(private http: HttpClient) { }
 
     getThreads(pageNum: number): Observable<IThread[]> {
-        const page = pageNum <= 0 ? 'index' : pageNum;
+        // const page = pageNum <= 0 ? 'index' : pageNum;
 
-        return this.http.get<IRootObject>(`${this.url}b/${page}.json`)
+        return this.http.get<IRootObject>(`${this.url}b/catalog.json`)
             .pipe(
-            pluck('threads')
+                pluck('threads'),
+                map((threads: IThread[]) => {
+                    threads.sort((a, b) => {
+                        return a.files_count > b.files_count ? -1 : 1;
+                    });
+                    return threads;
+                })
             );
     }
 
@@ -27,12 +33,12 @@ export class ApiService {
 
         return this.http.get<IRootObject>(`${this.url}b/res/${thread_num}.json`)
             .pipe(
-            pluck('threads'),
-            take(1),
-            flatMap((arr: IThread[]) => from(arr)),
-            flatMap(arr => arr.posts),
-            filter((post: IPost) => post.files.length > 0), // todo to toggle state!
-            toArray()
+                pluck('threads'),
+                take(1),
+                flatMap((arr: IThread[]) => from(arr)),
+                flatMap(arr => arr.posts),
+                filter((post: IPost) => post.files.length > 0), // todo to toggle state!
+                toArray()
             );
     }
 

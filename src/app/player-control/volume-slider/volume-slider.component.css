@@ -1,0 +1,12 @@
+.volume-wrapper:hover .volume-slider,
+.volume-wrapper:hover .volume-min,
+.volume-min:hover,
+.volume-slider:hover {
+    opacity: 1;
+}
+
+.volume-min,
+.volume-slider {
+    opacity: 0;
+    transition: opacity 0.25s ease-in;
+}

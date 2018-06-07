@@ -1,19 +1,20 @@
 import { environment } from './../../environments/environment';
 import { ApiService } from './../core/services/Api.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IThread } from '../core/models/models';
 
 @Component({
   selector: 'app-zero',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './zero.component.html',
   styleUrls: ['./zero.component.css']
 })
 export class ZeroComponent implements OnInit {
-
+  isThreadImgPreviewOpen = false;
   cols = 3;
 
-  threads$: Observable<any>;
+  threads$: Observable<IThread[]>;
 
   constructor(private api: ApiService) { }
 
@@ -26,18 +27,18 @@ export class ZeroComponent implements OnInit {
   }
 
   getThreadThumbnail(thread: IThread) {
-    let result = '';
-    if (thread) {
-      const opPost = thread.posts[0];
-      if (opPost) {
-        const threadLogo = opPost.files[0];
-        if (threadLogo) {
-          result = `${environment.dvachApiUrl}${threadLogo.thumbnail}`;
-        }
-      }
+    const file = thread.files[0];
+    return file ? `${environment.dvachApiUrl}${file.thumbnail}` : '';
+  }
+
+  getThreadImage(thread: IThread) {
+    const file = thread.files[0];
+
+    if (file && file.type === 10 || file.type === 6) {
+      return `${environment.dvachApiUrl}${file.thumbnail}`;
     }
 
-    return result;
+    return file ? `${environment.dvachApiUrl}${file.path}` : '';
   }
 
 }
