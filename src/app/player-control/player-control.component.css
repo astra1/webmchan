@@ -32,7 +32,8 @@
 }
 
 .player-middle {
-    margin-top: 4px;
+    display: flex;
+    align-items: center;
     height: 86px;
 }
 
@@ -49,8 +50,8 @@
 .progress-wrapper {
     position: absolute;
     top: -24px;
-    left: 82px;
-    right: -8px;
+    left: 92px;
+    right: -18px;
     z-index: 1;
 }
 
