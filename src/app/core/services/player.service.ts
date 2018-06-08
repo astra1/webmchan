@@ -48,6 +48,10 @@ export class PlayerService {
 
   playNext() {
     const playList = this.currentPlayList$.value;
+    if (playList.length <= 0) {
+      return;
+    }
+
     let video: IFile = null;
 
     let pos: number = playList.findIndex((val) => val.md5 === this.currentVideo$.value.md5);
