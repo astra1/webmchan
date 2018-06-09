@@ -40,8 +40,4 @@ export class ElectronService {
 
   }
 
-  copyToClipboard(text: string) {
-    this.clipboard.writeText(text, 'selection');
-  }
-
 }

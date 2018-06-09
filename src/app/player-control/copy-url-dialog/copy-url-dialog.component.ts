@@ -19,15 +19,7 @@ export class CopyUrlDialogComponent implements AfterViewInit {
     this.urlInput.nativeElement.select();
   }
 
-  onCopyClick() {
-    this.urlInput.nativeElement.select();
-
-    if (this.es.isElectron()) {
-      this.es.copyToClipboard(this.urlInput.nativeElement.value);
-    } else {
-      document.execCommand('copy');
-    }
-
+  onCloseClick() {
     this.dialogRef.close();
   }
 

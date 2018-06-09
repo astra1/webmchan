@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>Ссылка на vidosique</h1>
+<h1 mat-dialog-title>{{data.title}}</h1>
 <div mat-dialog-content>
   <mat-form-field class="full-width">
     <input #urlInput
@@ -12,5 +12,5 @@
 <div mat-dialog-actions
      align="end">
   <button mat-button
-          (click)="onCopyClick()">Скопировать</button>
+          (click)="onCloseClick()">Назад</button>
 </div>

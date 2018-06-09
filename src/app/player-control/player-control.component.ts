@@ -113,7 +113,10 @@ export class PlayerControlComponent implements OnInit {
   copyUrlClick() {
     const dialogRef = this.dlg.open(CopyUrlDialogComponent, {
       width: '350px',
-      data: { url: 'https://2ch.hk' + this.currentTrack.path }
+      data: {
+        title: this.currentTrack.name,
+        url: 'https://2ch.hk' + this.currentTrack.path
+      }
     });
 
     dialogRef.afterClosed().subscribe(res => {
