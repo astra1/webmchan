@@ -137,52 +137,27 @@ export class PlayerControlComponent implements OnInit {
   }
 
   saveVideo() {
-    // todo в отдельный сэрвис
     if (this.es.isElectron()) {
       const filePath = this.es.remote.dialog.showSaveDialog({
-        defaultPath: this.es.remote.app.getPath('desktop'),
-        title: this.currentTrack.name
+        defaultPath: this.es.remote.app.getPath('desktop') + '/' + this.currentTrack.fullname,
+        filters: [
+          {
+            name: this.currentTrack.name,
+            extensions: ['webm', 'mp4']
+          }
+        ],
+        title: 'Saving VIDOSIQUE'
       });
 
       if (!filePath) {
         return;
       }
 
-      this.ds.download(this.currentTrack.path)
-        .pipe(tap(val => console.log(val)))
+      this.ds.download('https://2ch.hk' + this.currentTrack.path)
+        .pipe(tap(val => console.log('downloaded file', val)))
         .subscribe((val) => {
-          this.es.fs.writeFile(filePath, val, (err) => {
-            if (!err) {
-              console.log('fileSaved');
-            } else {
-              console.log('error!');
-            }
-          });
+          this.es.fs.writeFileSync(filePath, Buffer.from(val));
         });
-
-      // this.es.fs.writeFile()
-
     }
-    // console.log(this.es.path.resolve(
-    //   this.es.remote.app.getPath('desktop'),
-    //   this.es.path.basename(this.currentTrack.path)
-    // ));
-
-    // if (this.es.isElectron()) {
-    //   const toLocalPath = this.es.path.resolve(
-    //     this.es.remote.app.getPath('desktop'),
-    //     this.es.path.basename(this.currentTrack.path)
-    //   );
-
-    //   const userChosenPath = this.es.remote.dialog.showSaveDialog({ defaultPath: toLocalPath });
-
-    //   if (userChosenPath) {
-    //     this.ds.download(this.currentTrack.path)
-    //       .pipe(tap(val => console.log(val)))
-    //       .subscribe((val) => {
-    //         this.es.fs.writeFileSync(userChosenPath, val);
-    //       });
-    //   }
-    // }
   }
 }

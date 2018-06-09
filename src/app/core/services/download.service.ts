@@ -9,9 +9,9 @@ export class DownloadService {
 
   constructor(private http: HttpClient) { }
 
-  download(url: string): Observable<Blob> {
+  download(url: string): Observable<ArrayBuffer> {
     return this.http.get(url, {
-      responseType: 'blob'
+      responseType: 'arraybuffer'
     });
   }
 
