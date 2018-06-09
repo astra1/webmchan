@@ -4,17 +4,21 @@ import { PlayerService } from './../core/services/player.service';
 import { IFile } from './../core/models/models';
 import { Component, HostListener, OnInit } from '@angular/core';
 import {
-  faRedo,
-  faStepBackward,
-  faStepForward,
-  faRandom,
-  faPlay,
-  faPause,
   faArrowsAlt,
-  faEllipsisV
+  faEllipsisV,
+  faLink,
+  faPause,
+  faPlay,
+  faRandom,
+  faRedo,
+  faSave,
+  faStepBackward,
+  faStepForward
 } from '@fortawesome/free-solid-svg-icons';
 import { filter, tap } from 'rxjs/operators';
 import { ElectronService } from '../core/services/electron.service';
+import { MatDialog } from '@angular/material';
+import { CopyUrlDialogComponent } from './copy-url-dialog/copy-url-dialog.component';
 
 @Component({
   selector: 'app-player-control',
@@ -26,11 +30,13 @@ export class PlayerControlComponent implements OnInit {
   isNative = false;
 
   faDots = faEllipsisV;
+  faFullscreen = faArrowsAlt;
+  faLink = faLink;
   faPlay = faPlay;
   faPause = faPause;
   faRandom = faRandom;
   faRedo = faRedo;
-  faFullscreen = faArrowsAlt;
+  faSave = faSave;
   faStepBack = faStepBackward;
   faStepForw = faStepForward;
 
@@ -42,7 +48,11 @@ export class PlayerControlComponent implements OnInit {
   isPlaying = false;
   isShuffled = false;
 
-  constructor(private ps: PlayerService, private es: ElectronService, private ds: DownloadService) { }
+  constructor(
+    public dlg: MatDialog,
+    private ps: PlayerService,
+    private es: ElectronService,
+    private ds: DownloadService) { }
 
   @HostListener('window:keydown', ['$event'])
   onKeyDown(event) {
@@ -98,6 +108,17 @@ export class PlayerControlComponent implements OnInit {
 
   toggleFullscreen() {
     this.ps.toggleFullscreen();
+  }
+
+  copyUrlClick() {
+    const dialogRef = this.dlg.open(CopyUrlDialogComponent, {
+      width: '350px',
+      data: { url: 'https://2ch.hk' + this.currentTrack.path }
+    });
+
+    dialogRef.afterClosed().subscribe(res => {
+      console.log('dialog was closed', res);
+    });
   }
 
   onVideoKeyPress(code: string) {

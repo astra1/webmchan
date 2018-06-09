@@ -35,10 +35,29 @@
       <fa-icon [icon]="faRedo"></fa-icon>
     </button>
     <button mat-icon-button
-            (click)="saveVideo()"
+            [matMenuTriggerFor]="menu"
             [disabled]="!currentTrack ">
       <fa-icon [icon]="faDots"></fa-icon>
     </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item
+              (click)="copyUrlClick()">
+        <fa-icon class="menu-icon"
+                 fixedWidth="true"
+                 [icon]="faLink"></fa-icon>
+        <span>Скопировать ссылку</span>
+      </button>
+      <!-- It seems like the button' [hidden] doesn't work for mat-menu-item -->
+      <ng-template *ngIf="isNative">
+        <button mat-menu-item
+                (click)="saveVideo()">
+          <fa-icon class="menu-icon"
+                   fixedWidth="true"
+                   [icon]="faSave"></fa-icon>
+          <span>Сохранить ЦУИЬ</span>
+        </button>
+      </ng-template>
+    </mat-menu>
     <button mat-icon-button
             [disabled]="!currentTrack"
             (click)="playPrev()">
