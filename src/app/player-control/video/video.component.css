@@ -18,6 +18,10 @@
     bottom: 0;
 }
 
+video::-webkit-media-controls {
+    display:none !important;
+}
+
 .video-close-btn {
     position: absolute;
     right: 5px;
