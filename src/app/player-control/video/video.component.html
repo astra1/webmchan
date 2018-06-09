@@ -1,5 +1,6 @@
 <div class="video-container"
      [hidden]="!showVideo">
+    <mat-spinner *ngIf="loading"></mat-spinner>
     <video #videoContainer
            (ended)="onEnded()"
            (timeupdate)="onTimeUpdated()">

@@ -1,19 +1,26 @@
+import { environment } from './../../../environments/environment';
 import { ApiService } from './../../core/services/Api.service';
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
 import { Subject, Observable, from as fromPromise, of, timer } from 'rxjs';
-import { pluck, filter, flatMap, debounceTime, mergeMap, catchError, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import {
+  pluck, filter, flatMap, debounceTime, catchError,
+  distinctUntilChanged,
+  takeUntil,
+  switchMap, map
+} from 'rxjs/operators';
 
 import { IThread, IPost, IFile } from '../../core/models/models';
 import { faPlay, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { PlayerService } from '../../core/services/player.service';
+import { tap } from 'rxjs/internal/operators/tap';
 
 @Component({
   selector: 'app-thread',
   templateUrl: './thread.component.html',
-  styleUrls: ['./thread.component.css']
+  styleUrls: ['./thread.component.css'],
 })
 export class ThreadComponent implements OnInit, OnDestroy {
   thread_num = '';
@@ -24,8 +31,10 @@ export class ThreadComponent implements OnInit, OnDestroy {
 
   destroy$: Subject<boolean> = new Subject<boolean>();
 
-  posts: IPost[] = [];
+  posts: IPost[] = null;
   videos: IFile[] = [];
+
+  loading = false;
 
   constructor(
     private router: ActivatedRoute,
@@ -41,23 +50,26 @@ export class ThreadComponent implements OnInit, OnDestroy {
         pluck('thread_num'),
         filter(val => !!val),
         flatMap((val: string) => {
+          this.loading = true;
           this.thread_num = val;
           return this.api.getPosts(val);
-        })
+        }),
+        catchError(err => of([]))
       )
       .subscribe((posts: IPost[]) => {
         this.updateData(posts);
       });
 
     // autoupdate
-    timer(10000, 10000).pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(val => {
-      if (this.thread_num !== '') {
+    if (environment.production) {
+      timer(10000, 10000).pipe(
+        takeUntil(this.destroy$),
+        switchMap(() => this.api.getPosts(this.thread_num)),
+        map(val => this.updateData(val))
+      ).subscribe(() => {
         console.log('auto_update');
-        this.renew();
-      }
-    });
+      });
+    }
   }
 
   ngOnDestroy() {
@@ -70,9 +82,10 @@ export class ThreadComponent implements OnInit, OnDestroy {
 
     this.videos = posts.reduce((prev, curr) => {
       return [...prev, ...curr.files];
-    }, []).filter(f => f.duration);
+    }, []).filter((f: IFile) => f.duration_secs);
 
     this.ps.setPlaysist(this.videos);
+    this.loading = false;
   }
 
   goBack() {
@@ -80,7 +93,6 @@ export class ThreadComponent implements OnInit, OnDestroy {
   }
 
   renew() {
-    this.api.getPosts(this.thread_num).subscribe(val => this.updateData(val));
   }
 
   onPlayClick(file: IFile) {

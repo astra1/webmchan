@@ -1,9 +1,12 @@
+import { PlayerService } from './../../core/services/player.service';
+import { MaterialModule } from './../../shared/material.module';
 /* tslint:disable:no-unused-variable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
 import { VolumeSliderComponent } from './volume-slider.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 describe('VolumeSliderComponent', () => {
   let component: VolumeSliderComponent;
@@ -11,9 +14,11 @@ describe('VolumeSliderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VolumeSliderComponent ]
+      imports: [FontAwesomeModule, MaterialModule],
+      declarations: [VolumeSliderComponent],
+      providers: [PlayerService]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

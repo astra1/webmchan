@@ -3,7 +3,7 @@
 
     left: 0;
     right: 0;
-    bottom: 86px;
+    bottom: 95px;
 
     text-align: center;
 
@@ -13,6 +13,7 @@
 .video-container > video {
     width: 100%;
     height: auto;
+    max-height: 85vh;
     position: absolute;
     bottom: 0;
 }

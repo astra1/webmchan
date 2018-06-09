@@ -1,8 +1,9 @@
 import { environment } from './../../environments/environment';
 import { ApiService } from './../core/services/Api.service';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, timer } from 'rxjs';
 import { IThread } from '../core/models/models';
+import { flatMap, tap, publish, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-zero',
@@ -19,11 +20,11 @@ export class ZeroComponent implements OnInit {
   constructor(private api: ApiService) { }
 
   ngOnInit() {
-    this.getThreads();
-  }
-
-  getThreads() {
-    this.threads$ = this.api.getThreads(0);
+    this.threads$ = timer(500, 10000)
+      .pipe(
+        switchMap(() => this.api.getThreads(0)),
+        tap((val) => console.log('threads updated. amount: ' + val && val.length))
+      );
   }
 
   getThreadThumbnail(thread: IThread) {

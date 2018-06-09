@@ -4,6 +4,7 @@ import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
 import { TrackProgressComponent } from './track-progress.component';
+import { MaterialModule } from '../../shared/material.module';
 
 describe('TrackProgressComponent', () => {
   let component: TrackProgressComponent;
@@ -11,9 +12,10 @@ describe('TrackProgressComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TrackProgressComponent ]
+      imports: [MaterialModule],
+      declarations: [TrackProgressComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

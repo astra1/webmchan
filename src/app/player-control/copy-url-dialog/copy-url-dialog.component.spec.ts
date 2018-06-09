@@ -1,25 +1,23 @@
-import { PlayerService } from './../../core/services/player.service';
 /* tslint:disable:no-unused-variable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
-import { VideoComponent } from './video.component';
+import { CopyUrlDialogComponent } from './copy-url-dialog.component';
 
-describe('VideoComponent', () => {
-  let component: VideoComponent;
-  let fixture: ComponentFixture<VideoComponent>;
+describe('CopyUrlDialogComponent', () => {
+  let component: CopyUrlDialogComponent;
+  let fixture: ComponentFixture<CopyUrlDialogComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [VideoComponent],
-      providers: [PlayerService]
+      declarations: [ CopyUrlDialogComponent ]
     })
-      .compileComponents();
+    .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(VideoComponent);
+    fixture = TestBed.createComponent(CopyUrlDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

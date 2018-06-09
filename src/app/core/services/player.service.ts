@@ -2,7 +2,9 @@ import { IFile } from './../models/models';
 import { Injectable } from '@angular/core';
 import { Subject, BehaviorSubject } from 'rxjs';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class PlayerService {
 
   private volume$ = new BehaviorSubject<number>(100);
@@ -48,6 +50,10 @@ export class PlayerService {
 
   playNext() {
     const playList = this.currentPlayList$.value;
+    if (playList.length <= 0) {
+      return;
+    }
+
     let video: IFile = null;
 
     let pos: number = playList.findIndex((val) => val.md5 === this.currentVideo$.value.md5);
@@ -130,7 +136,6 @@ export class PlayerService {
   }
 
   toggleShuffle() {
-    console.log(this.isShuffleOn$.value);
     this.isShuffleOn$.next(!this.isShuffleOn$.value);
   }
 

@@ -1,9 +1,24 @@
+import { DownloadService } from './../core/services/download.service';
 import { environment } from './../../environments/environment';
 import { PlayerService } from './../core/services/player.service';
 import { IFile } from './../core/models/models';
 import { Component, HostListener, OnInit } from '@angular/core';
-import { faRedo, faStepBackward, faStepForward, faRandom, faPlay, faPause, faArrowsAlt } from '@fortawesome/free-solid-svg-icons';
-import { filter } from 'rxjs/operators';
+import {
+  faArrowsAlt,
+  faEllipsisV,
+  faLink,
+  faPause,
+  faPlay,
+  faRandom,
+  faRedo,
+  faSave,
+  faStepBackward,
+  faStepForward
+} from '@fortawesome/free-solid-svg-icons';
+import { filter, tap } from 'rxjs/operators';
+import { ElectronService } from '../core/services/electron.service';
+import { MatDialog } from '@angular/material';
+import { CopyUrlDialogComponent } from './copy-url-dialog/copy-url-dialog.component';
 
 @Component({
   selector: 'app-player-control',
@@ -12,11 +27,16 @@ import { filter } from 'rxjs/operators';
 })
 export class PlayerControlComponent implements OnInit {
 
+  isNative = false;
+
+  faDots = faEllipsisV;
+  faFullscreen = faArrowsAlt;
+  faLink = faLink;
   faPlay = faPlay;
   faPause = faPause;
   faRandom = faRandom;
   faRedo = faRedo;
-  faFullscreen = faArrowsAlt;
+  faSave = faSave;
   faStepBack = faStepBackward;
   faStepForw = faStepForward;
 
@@ -28,7 +48,11 @@ export class PlayerControlComponent implements OnInit {
   isPlaying = false;
   isShuffled = false;
 
-  constructor(private ps: PlayerService) { }
+  constructor(
+    public dlg: MatDialog,
+    private ps: PlayerService,
+    private es: ElectronService,
+    private ds: DownloadService) { }
 
   @HostListener('window:keydown', ['$event'])
   onKeyDown(event) {
@@ -36,6 +60,8 @@ export class PlayerControlComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.isNative = this.es.isElectron() || false;
+
     this.ps.currentVideo
       .pipe(
         filter(val => !!val.md5)
@@ -53,7 +79,7 @@ export class PlayerControlComponent implements OnInit {
   getTrackThumb() {
     return this.currentTrack && this.currentTrack.thumbnail !== ''
       ? environment.dvachApiUrl + this.currentTrack.thumbnail
-      : '/assets/icons/webmchan.svg';
+      : './assets/icons/webmchan.svg';
   }
 
   onTimeSelect(seconds: number) {
@@ -82,6 +108,20 @@ export class PlayerControlComponent implements OnInit {
 
   toggleFullscreen() {
     this.ps.toggleFullscreen();
+  }
+
+  copyUrlClick() {
+    const dialogRef = this.dlg.open(CopyUrlDialogComponent, {
+      width: '350px',
+      data: {
+        title: this.currentTrack.name,
+        url: 'https://2ch.hk' + this.currentTrack.path
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(res => {
+      console.log('dialog was closed', res);
+    });
   }
 
   onVideoKeyPress(code: string) {
@@ -118,5 +158,30 @@ export class PlayerControlComponent implements OnInit {
     //       break;
     //   }
     // }
+  }
+
+  saveVideo() {
+    if (this.es.isElectron()) {
+      const filePath = this.es.remote.dialog.showSaveDialog({
+        defaultPath: this.es.remote.app.getPath('desktop') + '/' + this.currentTrack.fullname,
+        filters: [
+          {
+            name: this.currentTrack.name,
+            extensions: ['webm', 'mp4']
+          }
+        ],
+        title: 'Saving VIDOSIQUE'
+      });
+
+      if (!filePath) {
+        return;
+      }
+
+      this.ds.download('https://2ch.hk' + this.currentTrack.path)
+        .pipe(tap(val => console.log('downloaded file', val)))
+        .subscribe((val) => {
+          this.es.fs.writeFileSync(filePath, Buffer.from(val));
+        });
+    }
   }
 }

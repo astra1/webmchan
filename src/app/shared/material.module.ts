@@ -9,7 +9,10 @@ import {
     MatTooltipModule,
     MatSliderModule,
     MatProgressSpinnerModule,
-    MatMenuModule
+    MatMenuModule,
+    MatDialogModule,
+    MatInputModule,
+    MatFormFieldModule
 } from '@angular/material';
 
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -19,7 +22,10 @@ import { PortalModule } from '@angular/cdk/portal';
     imports: [
         MatButtonModule,
         MatCardModule,
+        MatDialogModule,
+        MatFormFieldModule,
         MatGridListModule,
+        MatInputModule,
         MatMenuModule,
         MatListModule,
         MatSliderModule,
@@ -32,7 +38,10 @@ import { PortalModule } from '@angular/cdk/portal';
     exports: [
         MatButtonModule,
         MatCardModule,
+        MatDialogModule,
+        MatFormFieldModule,
         MatGridListModule,
+        MatInputModule,
         MatListModule,
         MatMenuModule,
         MatProgressSpinnerModule,
