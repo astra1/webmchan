@@ -10,6 +10,7 @@ function createWindow() {
     win = new BrowserWindow(
         {
             width: 800, height: 600,
+            minWidth: 800, minHeight: 600, // responsive stub
             icon: path.join(__dirname, '/dist/assets/icons/png/500x500.png')
         }
     );

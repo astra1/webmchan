@@ -48,7 +48,7 @@
         <span>Скопировать ссылку</span>
       </button>
       <!-- It seems like the button' [hidden] doesn't work for mat-menu-item -->
-      <ng-template *ngIf="isNative">
+      <ng-container *ngIf="isNative">
         <button mat-menu-item
                 (click)="saveVideo()">
           <fa-icon class="menu-icon"
@@ -56,7 +56,7 @@
                    [icon]="faSave"></fa-icon>
           <span>Сохранить ЦУИЬ</span>
         </button>
-      </ng-template>
+      </ng-container>
     </mat-menu>
     <button mat-icon-button
             [disabled]="!currentTrack"

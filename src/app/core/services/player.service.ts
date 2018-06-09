@@ -136,7 +136,6 @@ export class PlayerService {
   }
 
   toggleShuffle() {
-    console.log(this.isShuffleOn$.value);
     this.isShuffleOn$.next(!this.isShuffleOn$.value);
   }
 

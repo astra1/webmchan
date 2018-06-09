@@ -57,7 +57,6 @@ export class ThreadComponent implements OnInit, OnDestroy {
         catchError(err => of([]))
       )
       .subscribe((posts: IPost[]) => {
-        console.log('here!');
         this.updateData(posts);
       });
 
@@ -66,7 +65,6 @@ export class ThreadComponent implements OnInit, OnDestroy {
       timer(10000, 10000).pipe(
         takeUntil(this.destroy$),
         switchMap(() => this.api.getPosts(this.thread_num)),
-        tap(val => console.log(val.length)),
         map(val => this.updateData(val))
       ).subscribe(() => {
         console.log('auto_update');
