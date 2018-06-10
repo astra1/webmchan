@@ -1,13 +1,13 @@
 <div class="volume-wrapper"
      fxLayout="row"
      fxLayoutAlign="space-around center"
-     fxLayoutGap="3px">
+     fxLayoutGap="10px">
 
-    <fa-icon fxFlex="10"
+    <fa-icon fxFlex="20"
              class="volume-min"
              [icon]="faVolumeMin"></fa-icon>
 
-    <div fxFlex="80"
+    <div fxFlex="60"
          class="volume-slider">
         <mat-slider min="0"
                     (change)="onVolumeChange($event)"
@@ -17,7 +17,7 @@
                     value="100"></mat-slider>
     </div>
 
-    <fa-icon fxFlex="10"
+    <fa-icon fxFlex="20"
              class="volume-high"
              [icon]="faVolumeMax"></fa-icon>
 

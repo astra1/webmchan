@@ -5,8 +5,20 @@
     opacity: 1;
 }
 
+.volume-wrapper {
+    min-width: 250px;
+}
+
+.volume-min, .volume-high {
+    text-align: center;
+}
+
 .volume-min,
 .volume-slider {
     opacity: 0;
     transition: opacity 0.25s ease-in;
+}
+
+mat-slider {
+    width: 100%;
 }
