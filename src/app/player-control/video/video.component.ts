@@ -3,7 +3,7 @@ import { environment } from '../../../environments/environment';
 
 import { PlayerService } from './../../core/services/player.service';
 
-import { filter, tap, map, switchMap, distinctUntilChanged } from 'rxjs/operators';
+import { filter, tap, map, switchMap, distinctUntilChanged, flatMap } from 'rxjs/operators';
 import { from, of } from 'rxjs';
 import { IFile } from './../../core/models/models';
 
@@ -29,25 +29,19 @@ export class VideoComponent implements OnInit {
     return this.videoRef && (this.videoRef.nativeElement as HTMLVideoElement);
   }
 
-  get isPlaying() {
-    const video = this.getHtmlVideo();
-    return video && video.currentTime > 0 && !video.paused && !video.ended
-      && video.readyState > 2;
+  // get isPlaying() {
+  //   const video = this.getHtmlVideo();
+  //   return video && video.currentTime > 0 && !video.paused && !video.ended
+  //     && video.readyState > 2;
+  // }
 
-  }
   constructor(private ps: PlayerService) { }
 
   ngOnInit() {
-    this.getHtmlVideo().onloadeddata = () => {
-      this.loading = false;
-    };
+    this.getHtmlVideo().onloadeddata = () => this.setLoading(false);
 
+    this.getHtmlVideo().onloadstart = () => this.setLoading(true);
 
-    this.getHtmlVideo().onloadstart = () => {
-      this.loading = true;
-    };
-
-    // current video change sub
     this.ps.currentVideo
       .pipe(
         distinctUntilChanged(),
@@ -55,6 +49,10 @@ export class VideoComponent implements OnInit {
         tap(() => this.loading = true),
         switchMap(val => {
           this.video = val;
+          this.getHtmlVideo().src = 'https://2ch.hk' + this.video.path;
+          this.getHtmlVideo().poster = 'https://2ch.hk' + this.video.thumbnail;
+          this.getHtmlVideo().load();
+          this.getHtmlVideo().focus();
           return from(this.playFile(this.video));
         })
       )
@@ -75,7 +73,7 @@ export class VideoComponent implements OnInit {
     this.ps.isPlaying
       .pipe(
         filter(() => !!this.getHtmlVideo()),
-        switchMap((isPlaying) => {
+        flatMap((isPlaying) => {
           return isPlaying ?
             from(this.playFile(this.video)).pipe(map(() => true))
             : of(false);
@@ -96,21 +94,11 @@ export class VideoComponent implements OnInit {
         this.showVideo = true;
       }
 
-      if (this.getHtmlVideo().requestFullscreen) {
-        this.getHtmlVideo().requestFullscreen();
-      } else if (this.getHtmlVideo().webkitRequestFullscreen) {
-        this.getHtmlVideo().webkitRequestFullscreen();
-      }
+      this.getHtmlVideo().webkitRequestFullScreen();
     });
   }
 
-
-
   playFile(file: IFile) {
-    this.getHtmlVideo().src = 'https://2ch.hk' + file.path;
-    this.getHtmlVideo().poster = 'https://2ch.hk' + file.thumbnail;
-    this.getHtmlVideo().load();
-    this.getHtmlVideo().focus();
     return this.getHtmlVideo().play()
       .catch((err) => console.log('catched: ', err));
   }
@@ -121,6 +109,10 @@ export class VideoComponent implements OnInit {
 
   onTimeUpdated() {
     this.played.next(this.getHtmlVideo().currentTime);
+  }
+
+  setLoading(state: boolean) {
+    this.loading = state;
   }
 
 }
