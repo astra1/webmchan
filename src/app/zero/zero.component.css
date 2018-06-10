@@ -12,6 +12,12 @@
   grid-auto-rows: minmax(250px, auto);
 }
 
+.thread-description {
+  width: 100%;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  hyphens: auto;
+}
   
 .thread-card {
     margin-left: 5px;
