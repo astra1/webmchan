@@ -80,6 +80,14 @@
     cursor: pointer;
 }
 
+.timeline {
+    position: absolute;
+    right: 5px;
+    bottom: 0;
+    color: #fff;
+    text-shadow: 1px 1px 2px black, 0 0 1em black;
+}
+
 .spacer {
     flex: 1 1 auto;
 }
