@@ -58,6 +58,7 @@ export class VideoComponent implements OnInit {
       )
       .subscribe(() => {
         this.loading = false;
+        this.showVideo = true;
       });
 
     // subscribe to volume change

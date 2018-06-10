@@ -4,10 +4,9 @@ import { Component, OnInit, ViewChild, ElementRef, OnDestroy, ChangeDetectionStr
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { Subject, Observable, from as fromPromise, of, timer } from 'rxjs';
+import { Subject, Observable, of, timer } from 'rxjs';
 import {
-  pluck, filter, flatMap, debounceTime, catchError,
-  distinctUntilChanged,
+  pluck, filter, flatMap, catchError,
   takeUntil,
   switchMap, map
 } from 'rxjs/operators';

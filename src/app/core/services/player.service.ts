@@ -104,7 +104,7 @@ export class PlayerService {
   }
 
   playAll() {
-    this.currentVideo$.next(this.currentPlayList$.value[0]);
+    this.playFile(this.currentPlayList$.value[0]);
   }
 
   playFile(videoFile: IFile) {
