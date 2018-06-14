@@ -27,6 +27,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
   // fa Icons
   faPlay = faPlay;
   faVideo = faVideo;
+  lastUpdated: Date = null;
 
   destroy$: Subject<boolean> = new Subject<boolean>();
 
@@ -77,6 +78,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
   }
 
   private updateData(posts: IPost[]) {
+    this.lastUpdated = new Date();
     this.posts = posts;
 
     this.videos = posts.reduce((prev, curr) => {
