@@ -1,27 +1,47 @@
-.container {
-  display: grid;
-  max-width: 100vw;
-  min-width: 200px;
-  grid-gap: 10px;
+.board-toolbar {
+  overflow: hidden;
 }
 
 .container {
+  margin: 10px 0px 0px 10px;
+  min-width: 300px;
+  height: 77vh;
+}
+
+.grid-container {
   display: grid;
-  margin: 20px 20px 100px 20px;
+  width: 100%;
+  height: 100%;
+
+  grid-gap: 5px;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  grid-auto-rows: minmax(250px, auto);
+  grid-auto-rows: minmax(400px, auto);
+
+  overflow-y: auto;
+}
+
+.mat-card {
+  width: calc(100% - 50px);
+  height: calc(100% - 50px);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.mat-card-content {
+  display: flex;
+  flex: 1;
 }
 
 .thread-description {
   width: 100%;
   text-overflow: ellipsis;
-  word-break: break-all;
+  word-break: break-word;
   hyphens: auto;
 }
-  
-.thread-card {
-    margin-left: 5px;
-    margin-right: 5px;
+
+.thread-thumb:hover {
+  cursor: pointer;
 }
 
 @supports (display: grid) {

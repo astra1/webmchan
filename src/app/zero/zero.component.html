@@ -1,3 +1,11 @@
+<mat-toolbar class="board-toolbar"
+             fxLayout="row"
+             fxLayoutAlign="start center"
+             fxLayoutGap="15px">
+  <span></span>
+  <span class="spacer"></span>
+  <span class="mat-body-1">Тредов: {{(threads$ | async)?.length || 0}}</span>
+</mat-toolbar>
 <div *ngIf="!(threads$ | async)"
      style="min-height: 75vh;"
      fxLayout="column"
@@ -7,36 +15,39 @@
   </mat-spinner>
 </div>
 <div class="container">
-  <div *ngFor="let thread of threads$ | async">
-    <mat-card class="thread-card">
-      <mat-card-header>
-        <mat-card-title>{{ thread.num }}</mat-card-title>
-        <mat-card-subtitle>Файлов: ({{thread.files_count}})</mat-card-subtitle>
-      </mat-card-header>
+  <div class="grid-container">
+    <div *ngFor="let thread of threads$ | async">
+      <mat-card class="thread-card">
+        <mat-card-header>
+          <mat-card-title>{{ thread.num }}</mat-card-title>
+          <mat-card-subtitle>Файлов: ({{thread.files_count}})</mat-card-subtitle>
+        </mat-card-header>
 
-      <div>
-        <img [satPopoverAnchorFor]="fullSize"
-             (click)="fullSize.toggle()"
-             [src]="getThreadThumbnail(thread)"
-             alt="thread img">
-        <sat-popover #fullSize
-                     horizontalAlign="after"
-                     verticalAlign="center">
-          <img class="fullSize"
-               [src]=getThreadImage(thread)>
-        </sat-popover>
-      </div>
+        <div>
+          <img class="thread-thumb"
+               [satPopoverAnchorFor]="fullSize"
+               (click)="fullSize.toggle()"
+               [src]="getThreadThumbnail(thread)"
+               alt="thread img">
+          <sat-popover #fullSize
+                       horizontalAlign="after"
+                       verticalAlign="center">
+            <img class="fullSize"
+                 [src]=getThreadImage(thread)>
+          </sat-popover>
+        </div>
 
-      <mat-card-content style="padding-top: 15px;">
-        <p class="thread-description"
-           [innerHTML]="thread.subject">
-        </p>
-      </mat-card-content>
-      <mat-card-actions>
-        <button mat-button
-                routerLink="thread"
-                [queryParams]="{ thread_num: thread.num }">Перейти</button>
-      </mat-card-actions>
-    </mat-card>
+        <mat-card-content style="padding-top: 15px;">
+          <p class="thread-description"
+             [innerHTML]="thread.subject">
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button
+                  routerLink="thread"
+                  [queryParams]="{ thread_num: thread.num }">Перейти</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
   </div>
 </div>
