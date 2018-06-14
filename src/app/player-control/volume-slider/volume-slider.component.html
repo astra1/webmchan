@@ -1,23 +1,30 @@
 <div class="volume-wrapper"
+     (mousewheel)="onVolumeScroll($event)"
      fxLayout="row"
      fxLayoutAlign="space-around center"
      fxLayoutGap="10px">
 
     <fa-icon fxFlex="20"
+             (click)="onMute()"
+             matTooltip="MUTE"
              class="volume-min"
              [icon]="faVolumeMin"></fa-icon>
 
     <div fxFlex="60"
          class="volume-slider">
-        <mat-slider min="0"
+        <mat-slider #volumeSlider
+                    min="0"
                     (change)="onVolumeChange($event)"
                     color="accent"
+                    [matTooltip]="volumeSlider.value"
                     max="100"
                     step="1"
                     value="100"></mat-slider>
     </div>
 
     <fa-icon fxFlex="20"
+             (click)="onMaxVolume()"
+             matTooltip="BASS BOOST"
              class="volume-high"
              [icon]="faVolumeMax"></fa-icon>
 

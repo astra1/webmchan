@@ -125,9 +125,12 @@ export class PlayerService {
   }
 
   setVolume(level: number) {
-    if (level < 0 || level > 100) {
-      level = 10;
+    if (level < 0) {
+      level = 0;
+    } else if (level > 100) {
+      level = 100;
     }
+
     this.volume$.next(level);
   }
 
