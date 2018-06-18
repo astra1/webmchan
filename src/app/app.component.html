@@ -1,2 +1,11 @@
-<router-outlet></router-outlet>
-<app-player-control></app-player-control>
+<mat-sidenav-container>
+    <mat-sidenav #sidenav
+                 [fixedInViewport]="true"
+                 mode="over">
+        <app-sidenav></app-sidenav>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <router-outlet></router-outlet>
+        <app-player-control></app-player-control>
+    </mat-sidenav-content>
+</mat-sidenav-container>

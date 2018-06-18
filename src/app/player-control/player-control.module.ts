@@ -13,7 +13,8 @@ import { CopyUrlDialogComponent } from './copy-url-dialog/copy-url-dialog.compon
     CommonModule,
     SharedModule
   ],
-  declarations: [PlayerControlComponent,
+  declarations: [
+    PlayerControlComponent,
     VolumeSliderComponent,
     VideoComponent,
     TrackProgressComponent,

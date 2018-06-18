@@ -115,3 +115,31 @@ export interface ITop {
     info: string;
     name: string;
 }
+
+export interface IBoardRoot {
+    boards: IBoard[];
+    global_boards: number;
+    global_posts: string;
+    global_speed: string;
+    is_index: number;
+    tags: ITag;
+    type: number;
+}
+export interface IBoard {
+    bump_limit: number;
+    category: string;
+    default_name: string;
+    enable_names: number;
+    enable_sage: number;
+    id: string;
+    info: string;
+    last_num: number;
+    name: string;
+    speed: number;
+    threads: number;
+    unique_posters: number;
+}
+export interface ITag {
+    board: string;
+    tag: string;
+}

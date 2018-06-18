@@ -1,3 +1,4 @@
+import { SidenavStateService } from './../../core/services/sidenav-state.service';
 import { environment } from './../../../environments/environment';
 import { ApiService } from './../../core/services/Api.service';
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
@@ -12,7 +13,7 @@ import {
 } from 'rxjs/operators';
 
 import { IThread, IPost, IFile } from '../../core/models/models';
-import { faPlay, faVideo } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faVideo, faBars } from '@fortawesome/free-solid-svg-icons';
 import { PlayerService } from '../../core/services/player.service';
 import { tap } from 'rxjs/internal/operators/tap';
 
@@ -24,9 +25,11 @@ import { tap } from 'rxjs/internal/operators/tap';
 export class ThreadComponent implements OnInit, OnDestroy {
   thread_num = '';
 
-  // fa Icons
+  // fontawesome icons
+  faBars = faBars;
   faPlay = faPlay;
   faVideo = faVideo;
+
   lastUpdated: Date = null;
 
   destroy$: Subject<boolean> = new Subject<boolean>();
@@ -37,22 +40,24 @@ export class ThreadComponent implements OnInit, OnDestroy {
   loading = false;
 
   constructor(
-    private router: ActivatedRoute,
     private api: ApiService,
     private location: Location,
-    private ps: PlayerService
+    private ps: PlayerService,
+    private route: ActivatedRoute,
+    private sidenavState: SidenavStateService
   ) { }
 
   ngOnInit() {
-    this.router.queryParams
+    this.route.params
       .pipe(
         takeUntil(this.destroy$),
-        pluck('thread_num'),
+        tap(val => console.log(val)),
+        pluck('thread_id'),
         filter(val => !!val),
         flatMap((val: string) => {
           this.loading = true;
           this.thread_num = val;
-          return this.api.getPosts(val);
+          return this.api.getPosts(this.route.snapshot.params['board_id'], val);
         }),
         catchError(err => of([]))
       )
@@ -64,7 +69,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
     if (environment.production) {
       timer(10000, 10000).pipe(
         takeUntil(this.destroy$),
-        switchMap(() => this.api.getPosts(this.thread_num)),
+        switchMap(() => this.api.getPosts(this.route.snapshot.params['board_id'], this.thread_num)),
         map(val => this.updateData(val))
       ).subscribe(() => {
         console.log('auto_update');
@@ -103,5 +108,9 @@ export class ThreadComponent implements OnInit, OnDestroy {
   onPlayAllClick() {
     this.ps.setPlaysist(this.videos);
     this.ps.playAll();
+  }
+
+  toggleSidenav() {
+    this.sidenavState.toggle();
   }
 }

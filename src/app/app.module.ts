@@ -1,3 +1,5 @@
+import { BoardListModule } from './board-list/board-list.module';
+import { SidenavModule } from './sidenav/sidenav.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -12,20 +14,26 @@ import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from './shared/shared.module';
 import { PlayerControlModule } from './player-control/player-control.module';
 import { ZeroModule } from './zero/zero.module';
+import { HashLocationStrategy } from '@angular/common';
+import { LocationStrategy } from '@angular/common';
+import { NotfoundComponent } from './notfound/notfound.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-  ],
+    NotfoundComponent
+],
   imports: [
     BrowserModule,
     CoreModule,
     SharedModule,
     PlayerControlModule,
+    SidenavModule,
+    BoardListModule,
     ZeroModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

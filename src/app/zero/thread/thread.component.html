@@ -2,6 +2,10 @@
   <mat-toolbar fxLayout="row"
                fxLayoutAlign="start center"
                fxLayoutGap="15px">
+    <button mat-icon-button
+            (click)="toggleSidenav()">
+      <fa-icon [icon]="faBars"></fa-icon>
+    </button>
     <button mat-raised-button
             (click)="onPlayAllClick()">Play All</button>
     <ng-container *ngIf="lastUpdated">

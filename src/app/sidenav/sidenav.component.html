@@ -1,0 +1,25 @@
+<mat-toolbar class="sidenav">
+    <button mat-icon-button
+            (click)="closeSidenav()">
+        <fa-icon [icon]="faBars"></fa-icon>
+    </button>
+    <img class="logo"
+         src="./assets/icons/webmchan-logo.svg">
+</mat-toolbar>
+<mat-nav-list>
+    <a mat-list-item
+       (click)="closeSidenav()"
+       routerLink=""
+       routerLinkActive="active-link"
+       [routerLinkActiveOptions]="{exact: true}">
+        <fa-icon mat-list-icon
+                 [icon]="faHome"></fa-icon>
+        <span mat-line>Домой</span>
+    </a>
+    <a mat-list-item
+       routerLinkActive="active-link">
+        <fa-icon mat-list-icon
+                 [icon]="faCog"></fa-icon>
+        <span mat-line>Настройки</span>
+    </a>
+</mat-nav-list>

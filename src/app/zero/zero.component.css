@@ -3,7 +3,6 @@
 }
 
 .container {
-  margin: 10px 0px 0px 10px;
   min-width: 300px;
   height: 77vh;
 }
@@ -38,6 +37,11 @@
   text-overflow: ellipsis;
   word-break: break-word;
   hyphens: auto;
+}
+
+.thread-thumb {
+    width: auto;
+    height: 200px;
 }
 
 .thread-thumb:hover {
