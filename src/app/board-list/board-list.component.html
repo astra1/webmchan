@@ -14,11 +14,16 @@
 
       <mat-card *ngFor="let board of boards">
 
+        <mat-card-header>
+          <mat-card-title>
+            <h2 class="mat-h2 primary-color">
+              <strong>/{{board.id}}/</strong>
+            </h2>
+          </mat-card-title>
+        </mat-card-header>
+
         <mat-card-content>
           <mat-list>
-            <mat-list-item>
-              <h1>/{{board.id}}/</h1>
-            </mat-list-item>
             <mat-list-item>
               <fa-icon mat-list-icon
                        [icon]="faBook"></fa-icon>
@@ -32,9 +37,10 @@
               <p mat-line>{{board.speed}}</p>
             </mat-list-item>
             <mat-list-item>
-              <span class="mat-caption">
+              <p mat-line
+                 class="mat-caption">
                 {{board.info}}
-              </span>
+              </p>
             </mat-list-item>
           </mat-list>
         </mat-card-content>
