@@ -1,0 +1,5 @@
+.settings-container {
+    margin: 10px auto;
+    max-width: 50vw;
+    height: calc(100vh - (64px + 86px));
+}

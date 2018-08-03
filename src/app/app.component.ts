@@ -1,3 +1,4 @@
+import { SettingsService } from './settings/settings.service';
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 
 import { ElectronService } from './core/services/electron.service';
@@ -19,7 +20,9 @@ export class AppComponent implements OnInit {
 
   constructor(
     es: ElectronService,
+    private settingsService: SettingsService,
     private sidenavState: SidenavStateService) {
+
 
     if (es.isElectron()) {
       console.log('Mode electron');
@@ -28,6 +31,8 @@ export class AppComponent implements OnInit {
     } else {
       console.log('Mode web');
     }
+
+    this.settingsService.load();
   }
 
   ngOnInit() {

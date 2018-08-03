@@ -5,6 +5,8 @@ import { ApiService } from './../core/services/Api.service';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { IBoard } from '../core/models/models';
 import { map, filter } from 'rxjs/operators';
+import { SettingsService, ISettings } from '../settings/settings.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-board-list',
@@ -13,7 +15,7 @@ import { map, filter } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BoardListComponent implements OnInit {
-  ageCheck = environment.production;
+  nswf = false;
   boards: IBoard[] = [];
 
   // fontAwesome
@@ -25,19 +27,26 @@ export class BoardListComponent implements OnInit {
   constructor(
     private api: ApiService,
     private cd: ChangeDetectorRef,
+    private settingsService: SettingsService,
     private sidenavState: SidenavStateService
   ) { }
 
   ngOnInit() {
-    this.api.getBoards()
+    forkJoin(this.api.getBoards(), this.settingsService.get())
       .pipe(
-        filter(boards => !!boards),
-        map(boards => {
-          return this.ageCheck ? boards.filter(b => b.category !== 'Взрослым') : boards;
+        map((v: [IBoard[], ISettings]) => {
+
+          const boardList: IBoard[] = v[0];
+          const nswf: boolean = v[1].nswf;
+
+          console.log('i get nswf', nswf);
+
+          this.nswf = nswf;
+
+          return this.nswf ? boardList : boardList.filter(b => b.category.toLocaleLowerCase().trim() !== 'взрослым');
         })
-      )
-      .subscribe(val => {
-        this.boards = val;
+      ).subscribe(boards => {
+        this.boards = boards;
         this.cd.markForCheck();
       });
   }

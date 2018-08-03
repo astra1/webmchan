@@ -1,5 +1,6 @@
 <mat-sidenav-container>
     <mat-sidenav #sidenav
+                 (closedStart)="onSidenavClosed()"
                  [fixedInViewport]="true"
                  mode="over">
         <app-sidenav></app-sidenav>

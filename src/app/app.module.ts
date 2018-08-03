@@ -1,3 +1,4 @@
+import { SettingsModule } from './settings/settings.module';
 import { BoardListModule } from './board-list/board-list.module';
 import { SidenavModule } from './sidenav/sidenav.module';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -21,15 +22,16 @@ import { NotfoundComponent } from './notfound/notfound.component';
 @NgModule({
   declarations: [
     AppComponent,
-    NotfoundComponent
-],
+    NotfoundComponent,
+  ],
   imports: [
     BrowserModule,
     CoreModule,
     SharedModule,
-    PlayerControlModule,
-    SidenavModule,
     BoardListModule,
+    PlayerControlModule,
+    SettingsModule,
+    SidenavModule,
     ZeroModule,
     AppRoutingModule
   ],

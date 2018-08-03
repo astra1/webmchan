@@ -1,3 +1,4 @@
+import { SettingsService, ISettings } from './../settings/settings.service';
 import { DownloadService } from './../core/services/download.service';
 import { environment } from './../../environments/environment';
 import { PlayerService } from './../core/services/player.service';
@@ -15,7 +16,7 @@ import {
   faStepBackward,
   faStepForward
 } from '@fortawesome/free-solid-svg-icons';
-import { filter, tap } from 'rxjs/operators';
+import { filter, tap, flatMap } from 'rxjs/operators';
 import { ElectronService } from '../core/services/electron.service';
 import { MatDialog } from '@angular/material';
 import { CopyUrlDialogComponent } from './copy-url-dialog/copy-url-dialog.component';
@@ -50,9 +51,11 @@ export class PlayerControlComponent implements OnInit {
 
   constructor(
     public dlg: MatDialog,
-    private ps: PlayerService,
-    private es: ElectronService,
-    private ds: DownloadService) { }
+    private downService: DownloadService,
+    private electronService: ElectronService,
+    private playerService: PlayerService,
+    private settingsService: SettingsService
+  ) { }
 
   @HostListener('window:keydown', ['$event'])
   onKeyDown(event) {
@@ -60,9 +63,9 @@ export class PlayerControlComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.isNative = this.es.isElectron() || false;
+    this.isNative = this.electronService.isElectron() || false;
 
-    this.ps.currentVideo
+    this.playerService.currentVideo
       .pipe(
         filter(val => !!val.md5)
       )
@@ -71,9 +74,9 @@ export class PlayerControlComponent implements OnInit {
         this.trackLength = val.duration_secs;
       });
 
-    this.ps.isPlaying.subscribe(val => this.isPlaying = val);
+    this.playerService.isPlaying.subscribe(val => this.isPlaying = val);
 
-    this.ps.isShuffleOn.subscribe(val => this.isShuffled = val);
+    this.playerService.isShuffleOn.subscribe(val => this.isShuffled = val);
   }
 
   getTrackThumb() {
@@ -83,7 +86,7 @@ export class PlayerControlComponent implements OnInit {
   }
 
   onTimeSelect(seconds: number) {
-    this.ps.setTime(seconds);
+    this.playerService.setTime(seconds);
   }
 
   updateTime(seconds: number) {
@@ -91,23 +94,23 @@ export class PlayerControlComponent implements OnInit {
   }
 
   playNext() {
-    this.ps.playNext();
+    this.playerService.playNext();
   }
 
   playPrev() {
-    this.ps.playPrev();
+    this.playerService.playPrev();
   }
 
   play() {
-    this.ps.pause();
+    this.playerService.pause();
   }
 
   toggleShuffle() {
-    this.ps.toggleShuffle();
+    this.playerService.toggleShuffle();
   }
 
   toggleFullscreen() {
-    this.ps.toggleFullscreen();
+    this.playerService.toggleFullscreen();
   }
 
   copyUrlClick() {
@@ -161,26 +164,38 @@ export class PlayerControlComponent implements OnInit {
   }
 
   saveVideo() {
-    if (this.es.isElectron()) {
-      const filePath = this.es.remote.dialog.showSaveDialog({
-        defaultPath: this.es.remote.app.getPath('desktop') + '/' + this.currentTrack.fullname,
-        filters: [
-          {
-            name: this.currentTrack.name,
-            extensions: ['webm', 'mp4']
+    if (this.electronService.isElectron()) {
+
+      this.settingsService.get()
+        .subscribe((settings: ISettings) => {
+          let path: string = settings.savePath;
+          if (!this.electronService.fs.existsSync(path)) {
+            path = this.electronService.remote.app.getPath('desktop');
           }
-        ],
-        title: 'Saving VIDOSIQUE'
-      });
 
-      if (!filePath) {
-        return;
-      }
+          // todo from callback
+          const filePath = this.electronService.remote.dialog.showSaveDialog({
+            defaultPath: path + '/' + this.currentTrack.fullname,
+            filters: [
+              {
+                name: this.currentTrack.name,
+                extensions: ['webm', 'mp4']
+              }
+            ],
+            title: 'Saving VIDOSIQUE'
+          });
 
-      this.ds.download('https://2ch.hk' + this.currentTrack.path)
-        .pipe(tap(val => console.log('downloaded file', val)))
-        .subscribe((val) => {
-          this.es.fs.writeFileSync(filePath, Buffer.from(val));
+          if (!filePath) {
+            return;
+          }
+
+          // todo flatMap or smth
+          this.downService.download('https://2ch.hk' + this.currentTrack.path)
+            .pipe(tap(val => console.log('downloaded file', val)))
+            .subscribe((val) => {
+              this.electronService.fs.writeFileSync(filePath, Buffer.from(val));
+            });
+
         });
     }
   }
