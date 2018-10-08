@@ -4,7 +4,7 @@ import { ApiService } from './../core/services/Api.service';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, timer } from 'rxjs';
 import { IThread } from '../core/models/models';
-import { flatMap, tap, publish, switchMap } from 'rxjs/operators';
+import { tap, switchMap } from 'rxjs/operators';
 import { faBars, faBolt } from '@fortawesome/free-solid-svg-icons';
 import { ActivatedRoute } from '@angular/router';
 
@@ -33,7 +33,7 @@ export class ZeroComponent implements OnInit {
   ngOnInit() {
     this.threads$ = timer(500, 10000)
       .pipe(
-        switchMap((val) => this.api.getThreads(this.route.snapshot.params['board_id'])),
+        switchMap(() => this.api.getThreads(this.route.snapshot.params['board_id'])),
         tap((val) => console.log('threads updated. amount: ' + val && val.length))
       );
   }

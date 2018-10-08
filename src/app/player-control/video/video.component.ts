@@ -45,25 +45,10 @@ export class VideoComponent implements OnInit {
   }
 
   constructor(
-    private playerService: PlayerService,
+    public playerService: PlayerService,
     private hotkeysService: HotkeysService
   ) {
-    this.createHotkeyHook('shift+right', this.playerService.playNext());
-    this.createHotkeyHook('shift+left', this.playerService.playPrev());
-    this.createHotkeyHook('shift+space', this.playerService.pause());
-    this.createHotkeyHook('f', this.playerService.toggleFullscreen());
-  }
-
-  private createHotkeyHook(hotkeyName: string, callback: void) {
-    let hotkey = new Hotkey(
-      hotkeyName,
-      (event: KeyboardEvent): boolean => {
-        callback;
-        return false;
-      }
-    );
-
-    this.hotkeysService.add(hotkey);
+    this.createHotkeyHooks();
   }
 
   ngOnInit() {
@@ -81,6 +66,35 @@ export class VideoComponent implements OnInit {
     this.toggleFullscreeenSub();
   }
 
+  createHotkeyHooks() {
+    this.hotkeysService.add(
+      new Hotkey('shift+right', () => {
+        this.playerService.playNext();
+        return false;
+      })
+    );
+
+    this.hotkeysService.add(
+      new Hotkey('shift+left', () => {
+        this.playerService.playPrev();
+        return false;
+      })
+    );
+
+    this.hotkeysService.add(
+      new Hotkey('shift+space', () => {
+        this.playerService.pause();
+        return false;
+      })
+    );
+
+    this.hotkeysService.add(
+      new Hotkey(['f', 'а'], () => {
+        this.playerService.toggleFullscreen();
+        return false;
+      })
+    );
+  }
   private changeVideoSub() {
     this.playerService.currentVideo
       .pipe(
@@ -113,7 +127,7 @@ export class VideoComponent implements OnInit {
         })
       )
       .subscribe(val => {
-        if (!this.getHtmlVideo().webkitDisplayingFullscreen) {
+        if (document.fullscreenElement) {
           this.showVideo = val;
         }
         if (!val) {
@@ -130,7 +144,13 @@ export class VideoComponent implements OnInit {
           this.showVideo = true;
         }
 
-        this.getHtmlVideo().webkitRequestFullScreen();
+        var element = this.getHtmlVideo();
+        var requestMethod =
+          element.requestFullscreen || element.webkitRequestFullScreen;
+
+        if (requestMethod) {
+          requestMethod.call(element);
+        }
       });
   }
 

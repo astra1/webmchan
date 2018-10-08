@@ -1,18 +1,21 @@
 import { SidenavStateService } from './../../core/services/sidenav-state.service';
 import { environment } from './../../../environments/environment';
 import { ApiService } from './../../core/services/Api.service';
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-
-import { Subject, Observable, of, timer } from 'rxjs';
+import { Subject, of, timer } from 'rxjs';
 import {
-  pluck, filter, flatMap, catchError,
+  pluck,
+  filter,
+  flatMap,
+  catchError,
   takeUntil,
-  switchMap, map
+  switchMap,
+  map
 } from 'rxjs/operators';
 
-import { IThread, IPost, IFile } from '../../core/models/models';
+import { IPost, IFile } from '../../core/models/models';
 import { faPlay, faVideo, faBars } from '@fortawesome/free-solid-svg-icons';
 import { PlayerService } from '../../core/services/player.service';
 import { tap } from 'rxjs/internal/operators/tap';
@@ -20,7 +23,7 @@ import { tap } from 'rxjs/internal/operators/tap';
 @Component({
   selector: 'app-thread',
   templateUrl: './thread.component.html',
-  styleUrls: ['./thread.component.css'],
+  styleUrls: ['./thread.component.css']
 })
 export class ThreadComponent implements OnInit, OnDestroy {
   thread_num = '';
@@ -45,7 +48,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
     private ps: PlayerService,
     private route: ActivatedRoute,
     private sidenavState: SidenavStateService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.route.params
@@ -59,7 +62,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
           this.thread_num = val;
           return this.api.getPosts(this.route.snapshot.params['board_id'], val);
         }),
-        catchError(err => of([]))
+        catchError(() => of([]))
       )
       .subscribe((posts: IPost[]) => {
         this.updateData(posts);
@@ -67,13 +70,20 @@ export class ThreadComponent implements OnInit, OnDestroy {
 
     // autoupdate
     if (environment.production) {
-      timer(10000, 10000).pipe(
-        takeUntil(this.destroy$),
-        switchMap(() => this.api.getPosts(this.route.snapshot.params['board_id'], this.thread_num)),
-        map(val => this.updateData(val))
-      ).subscribe(() => {
-        console.log('auto_update');
-      });
+      timer(10000, 10000)
+        .pipe(
+          takeUntil(this.destroy$),
+          switchMap(() =>
+            this.api.getPosts(
+              this.route.snapshot.params['board_id'],
+              this.thread_num
+            )
+          ),
+          map(val => this.updateData(val))
+        )
+        .subscribe(() => {
+          console.log('auto_update');
+        });
     }
   }
 
@@ -86,9 +96,11 @@ export class ThreadComponent implements OnInit, OnDestroy {
     this.lastUpdated = new Date();
     this.posts = posts;
 
-    this.videos = posts.reduce((prev, curr) => {
-      return [...prev, ...curr.files];
-    }, []).filter((f: IFile) => f.duration_secs);
+    this.videos = posts
+      .reduce((prev, curr) => {
+        return [...prev, ...curr.files];
+      }, [])
+      .filter((f: IFile) => f.duration_secs);
 
     this.ps.setPlaysist(this.videos);
     this.loading = false;
@@ -98,8 +110,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
     this.location.back();
   }
 
-  renew() {
-  }
+  renew() {}
 
   onPlayClick(file: IFile) {
     this.ps.playFile(file);

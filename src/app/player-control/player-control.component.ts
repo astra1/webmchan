@@ -3,7 +3,7 @@ import { DownloadService } from './../core/services/download.service';
 import { environment } from './../../environments/environment';
 import { PlayerService } from './../core/services/player.service';
 import { IFile } from './../core/models/models';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import {
   faArrowsAlt,
   faEllipsisV,
@@ -16,7 +16,7 @@ import {
   faStepBackward,
   faStepForward
 } from '@fortawesome/free-solid-svg-icons';
-import { filter, tap, flatMap } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { ElectronService } from '../core/services/electron.service';
 import { MatDialog } from '@angular/material';
 import { CopyUrlDialogComponent } from './copy-url-dialog/copy-url-dialog.component';
@@ -27,7 +27,6 @@ import { CopyUrlDialogComponent } from './copy-url-dialog/copy-url-dialog.compon
   styleUrls: ['./player-control.component.css']
 })
 export class PlayerControlComponent implements OnInit {
-
   isNative = false;
 
   faDots = faEllipsisV;
@@ -55,28 +54,24 @@ export class PlayerControlComponent implements OnInit {
     private electronService: ElectronService,
     private playerService: PlayerService,
     private settingsService: SettingsService
-  ) { }
+  ) {}
 
   @HostListener('window:keydown', ['$event'])
-  onKeyDown(event) {
-    this.onVideoKeyPress(event.code);
-  }
+  onKeyDown(event) {}
 
   ngOnInit() {
     this.isNative = this.electronService.isElectron() || false;
 
     this.playerService.currentVideo
-      .pipe(
-        filter(val => !!val.md5)
-      )
+      .pipe(filter(val => !!val.md5))
       .subscribe(val => {
         this.currentTrack = val;
         this.trackLength = val.duration_secs;
       });
 
-    this.playerService.isPlaying.subscribe(val => this.isPlaying = val);
+    this.playerService.isPlaying.subscribe(val => (this.isPlaying = val));
 
-    this.playerService.isShuffleOn.subscribe(val => this.isShuffled = val);
+    this.playerService.isShuffleOn.subscribe(val => (this.isShuffled = val));
   }
 
   getTrackThumb() {
@@ -127,76 +122,42 @@ export class PlayerControlComponent implements OnInit {
     });
   }
 
-  onVideoKeyPress(code: string) {
-    // code: "BracketRight
-    // code: "Space"
-    // code: "keyF"
-
-    // if (this.currentVideo) {
-    //   switch (event.key) {
-    //     case ']':
-    //       this.getNextVideo(this.currentVideo.name);
-    //       console.log('hey');
-    //       break;
-    //     case '[':
-    //       this.getPrevVideo(this.currentVideo.name);
-    //       break;
-    //     case 'Escape':
-    //       this.getHtmlVideo().pause();
-    //       this.getHtmlVideo().src = '';
-    //       this.getHtmlVideo().load();
-    //       this.showVideo = false;
-    //       this.currentVideo = null;
-    //       break;
-    //     case 'f':
-    //       this.getHtmlVideo().webkitRequestFullscreen();
-    //       break;
-    //     case 'Alt':
-    //       this.getHtmlVideo().controls = !this.getHtmlVideo().controls;
-    //       console.log(this.getHtmlVideo().controls);
-    //       break;
-    //     default:
-    //       console.log(event.key);
-    //       console.log('huhey');
-    //       break;
-    //   }
-    // }
-  }
-
   saveVideo() {
     if (this.electronService.isElectron()) {
+      this.settingsService.get().subscribe((settings: ISettings) => {
+        let path: string = settings.savePath;
+        if (!this.electronService.fs.existsSync(path)) {
+          path = this.electronService.remote.app.getPath('desktop');
+        }
 
-      this.settingsService.get()
-        .subscribe((settings: ISettings) => {
-          let path: string = settings.savePath;
-          if (!this.electronService.fs.existsSync(path)) {
-            path = this.electronService.remote.app.getPath('desktop');
-          }
-
-          // todo from callback
-          const filePath = this.electronService.remote.dialog.showSaveDialog({
-            defaultPath: path + '/' + this.currentTrack.fullname,
-            filters: [
-              {
-                name: this.currentTrack.name,
-                extensions: ['webm', 'mp4']
-              }
-            ],
-            title: 'Saving VIDOSIQUE'
-          });
-
-          if (!filePath) {
-            return;
-          }
-
-          // todo flatMap or smth
-          this.downService.download('https://2ch.hk' + this.currentTrack.path)
-            .pipe(tap(val => console.log('downloaded file', val)))
-            .subscribe((val) => {
-              this.electronService.fs.writeFileSync(filePath, Buffer.from(val));
-            });
-
-        });
+        let filePath = this.showSaveDlg(path);
+        if (filePath) {
+          this.downloadAndWriteVideo(filePath);
+        }
+      });
     }
+  }
+
+  private showSaveDlg(path: string) {
+    return this.electronService.remote.dialog.showSaveDialog({
+      defaultPath: path + '/' + this.currentTrack.fullname,
+      filters: [
+        {
+          name: this.currentTrack.name,
+          extensions: ['webm', 'mp4']
+        }
+      ],
+      title: 'Saving VIDOSIQUE'
+    });
+  }
+
+  private downloadAndWriteVideo(filePath) {
+    this.downService
+      .download('https://2ch.hk' + this.currentTrack.path)
+      .subscribe(val => {
+        if (val) {
+          this.electronService.fs.writeFileSync(filePath, Buffer.from(val));
+        }
+      });
   }
 }
