@@ -1,7 +1,13 @@
 import { SettingsService, ISettings } from './settings.service';
 import { ElectronService } from './../core/services/electron.service';
 import { Component, OnInit, OnDestroy, OnChanges } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  Validators,
+  AbstractControl
+} from '@angular/forms';
 
 import { SidenavStateService } from '../core/services/sidenav-state.service';
 
@@ -9,7 +15,15 @@ import { JSONSchema } from '@ngx-pwa/local-storage';
 import { LocalStorage } from '@ngx-pwa/local-storage';
 
 import { faBars, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
-import { filter, takeUntil, map, auditTime, tap, distinctUntilChanged, take } from 'rxjs/operators';
+import {
+  filter,
+  takeUntil,
+  map,
+  auditTime,
+  tap,
+  distinctUntilChanged,
+  take
+} from 'rxjs/operators';
 import { Subject, bindCallback, of } from 'rxjs';
 
 // const schema: JSONSchema = {
@@ -26,7 +40,6 @@ import { Subject, bindCallback, of } from 'rxjs';
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit, OnChanges, OnDestroy {
-
   isNative = false;
 
   // fontawesome
@@ -45,44 +58,15 @@ export class SettingsComponent implements OnInit, OnChanges, OnDestroy {
     private electronService: ElectronService,
     private settingsService: SettingsService,
     private sidenavState: SidenavStateService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.isNative = this.electronService.isElectron();
     this.buildForm();
 
-    // settings init
-    this.settingsService.settings
-      .pipe(
-        takeUntil(this.destroy$),
-        distinctUntilChanged((x, y) => JSON.stringify(x) === JSON.stringify(y)),
-    )
-      .subscribe(set => {
-        this.settings = set;
-        this.ngOnChanges();
-      });
-
-    this.settingsForm.get('path').valueChanges
-      .pipe(
-        filter(val => !!val && this.isNative),
-        tap(v => console.log('tapped: ', v)),
-    ).subscribe(val => {
-
-      this.settingsForm.patchValue({
-        savePath: val === 'custom' ? null : this.electronService.remote.app.getPath(val)
-      }, { emitEvent: false });
-
-    });
-
-    this.settingsForm.statusChanges
-      .pipe(
-        takeUntil(this.destroy$),
-        auditTime(300),
-        tap(v => console.log('state', v)),
-        filter(v => v === 'VALID')
-      ).subscribe(status => {
-        this.settingsService.save(this.settingsForm.value);
-      });
+    this.settingsChangeSub();
+    this.settingsPathSub();
+    this.settingsSaveSub();
   }
 
   ngOnChanges() {
@@ -101,28 +85,67 @@ export class SettingsComponent implements OnInit, OnChanges, OnDestroy {
   private buildForm() {
     this.settingsForm = this.fb.group({
       path: new FormControl('desktop'),
-      savePath: new FormControl(
-        null
-      ),
+      savePath: new FormControl(null),
       nswf: new FormControl(null, [Validators.required])
     });
 
     if (this.isNative) {
-      this.settingsForm.get('savePath').setAsyncValidators(this.isPathExists.bind(this));
+      this.settingsForm
+        .get('savePath')
+        .setAsyncValidators(this.isPathExists.bind(this));
     }
+  }
 
+  private settingsChangeSub() {
+    this.settingsService.settings
+      .pipe(
+        takeUntil(this.destroy$),
+        distinctUntilChanged((x, y) => JSON.stringify(x) === JSON.stringify(y))
+      )
+      .subscribe(set => {
+        this.settings = set;
+        this.ngOnChanges();
+      });
+  }
+
+  private settingsPathSub() {
+    this.settingsForm
+      .get('path')
+      .valueChanges.pipe(filter(val => !!val && this.isNative))
+      .subscribe(val => {
+        this.settingsForm.patchValue(
+          {
+            savePath:
+              val === 'custom'
+                ? null
+                : this.electronService.remote.app.getPath(val)
+          },
+          { emitEvent: false }
+        );
+      });
+  }
+
+  private settingsSaveSub() {
+    this.settingsForm.statusChanges
+      .pipe(
+        takeUntil(this.destroy$),
+        auditTime(300),
+        filter(v => v === 'VALID')
+      )
+      .subscribe(status => {
+        this.settingsService.save(this.settingsForm.value);
+      });
   }
 
   isPathExists(control: AbstractControl) {
     console.log('isPathExists', control.value);
 
     if (control.value) {
-      return bindCallback(this.electronService.fs.exists)(control.value)
-        .pipe(
-          map(isExist => {
-            return isExist ? null : { pathNotExist: true };
-          })
-        );
+      return bindCallback(this.electronService.fs.exists)(control.value).pipe(
+        map(isExist => {
+          return isExist ? null : { pathNotExist: true };
+        })
+      );
     } else {
       return of({ pathNotExist: true });
     }
@@ -130,18 +153,15 @@ export class SettingsComponent implements OnInit, OnChanges, OnDestroy {
 
   ShowSavePathDialog() {
     if (this.isNative) {
-
       const path = this.electronService.remote.dialog.showOpenDialog({
         properties: ['openDirectory']
       });
 
       this.settingsForm.patchValue({
-        savePath: path && path[0] || null
+        savePath: (path && path[0]) || null
       });
-
     }
   }
-
 }
 
 export const pathOptions = [
@@ -151,7 +171,7 @@ export const pathOptions = [
   },
   {
     name: 'Загрузки',
-    value: 'downloads',
+    value: 'downloads'
   },
   {
     name: 'Видео',
