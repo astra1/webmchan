@@ -28,7 +28,8 @@ import { PlayerService } from './../../core/services/player.service';
   styleUrls: ['./video.component.css']
 })
 export class VideoComponent implements OnInit {
-  @ViewChild('videoContainer') videoRef: ElementRef;
+  @ViewChild('videoContainer')
+  videoRef: ElementRef;
 
   video: IFile = null;
   showVideo = false;
@@ -36,67 +37,51 @@ export class VideoComponent implements OnInit {
 
   url = environment.dvachApiUrl;
 
-  @Output() played: EventEmitter<number> = new EventEmitter();
+  @Output()
+  played: EventEmitter<number> = new EventEmitter();
 
   getHtmlVideo(): HTMLVideoElement {
     return this.videoRef && (this.videoRef.nativeElement as HTMLVideoElement);
   }
 
-  // get isPlaying() {
-  //   const video = this.getHtmlVideo();
-  //   return video && video.currentTime > 0 && !video.paused && !video.ended
-  //     && video.readyState > 2;
-  // }
-
   constructor(
     private playerService: PlayerService,
     private hotkeysService: HotkeysService
   ) {
-    this.hotkeysService.add(
-      new Hotkey(
-        'shift+right',
-        (event: KeyboardEvent): boolean => {
-          this.playerService.playNext();
-          return false;
-        }
-      )
+    this.createHotkeyHook('shift+right', this.playerService.playNext());
+    this.createHotkeyHook('shift+left', this.playerService.playPrev());
+    this.createHotkeyHook('shift+space', this.playerService.pause());
+    this.createHotkeyHook('f', this.playerService.toggleFullscreen());
+  }
+
+  private createHotkeyHook(hotkeyName: string, callback: void) {
+    let hotkey = new Hotkey(
+      hotkeyName,
+      (event: KeyboardEvent): boolean => {
+        callback;
+        return false;
+      }
     );
 
-    this.hotkeysService.add(
-      new Hotkey(
-        'shift+left',
-        (event: KeyboardEvent): boolean => {
-          this.playerService.playPrev();
-          return false;
-        }
-      )
-    );
-
-    this.hotkeysService.add(
-      new Hotkey(
-        'shift+space',
-        (event: KeyboardEvent): boolean => {
-          this.playerService.pause();
-          return false;
-        }
-      )
-    );
-
-    this.hotkeysService.add(
-      new Hotkey(
-        'f',
-        (event: KeyboardEvent): boolean => {
-          this.playerService.toggleFullscreen();
-          return false;
-        }
-      )
-    );
+    this.hotkeysService.add(hotkey);
   }
 
   ngOnInit() {
     this.getHtmlVideo().onloadeddata = () => this.setLoading(false);
     this.getHtmlVideo().onloadstart = () => this.setLoading(true);
 
+    this.changeVideoSub();
+
+    this.playerService.timeChanged.subscribe(
+      val => (this.getHtmlVideo().currentTime = val)
+    );
+
+    this.videoPlaySub();
+    this.volumeSub();
+    this.toggleFullscreeenSub();
+  }
+
+  private changeVideoSub() {
     this.playerService.currentVideo
       .pipe(
         distinctUntilChanged(),
@@ -115,17 +100,9 @@ export class VideoComponent implements OnInit {
         this.loading = false;
         this.showVideo = true;
       });
+  }
 
-    // subscribe to volume change
-    this.playerService.volume
-      .pipe(
-        filter(() => !!this.getHtmlVideo()),
-        map(vol => vol / 100) // volume must be in [0, 1] range
-      )
-      .subscribe(vol => {
-        this.getHtmlVideo().volume = vol;
-      });
-
+  private videoPlaySub() {
     this.playerService.isPlaying
       .pipe(
         filter(() => !!this.getHtmlVideo()),
@@ -143,11 +120,9 @@ export class VideoComponent implements OnInit {
           this.getHtmlVideo().pause();
         }
       });
+  }
 
-    this.playerService.timeChanged.subscribe(
-      val => (this.getHtmlVideo().currentTime = val)
-    );
-
+  private toggleFullscreeenSub() {
     this.playerService.isFullscreen
       .pipe(filter(val => val === true))
       .subscribe(val => {
@@ -156,6 +131,17 @@ export class VideoComponent implements OnInit {
         }
 
         this.getHtmlVideo().webkitRequestFullScreen();
+      });
+  }
+
+  private volumeSub() {
+    this.playerService.volume
+      .pipe(
+        filter(() => !!this.getHtmlVideo()),
+        map(vol => vol / 100) // volume must be in [0, 1] range
+      )
+      .subscribe(vol => {
+        this.getHtmlVideo().volume = vol;
       });
   }
 
