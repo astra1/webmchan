@@ -1,4 +1,4 @@
-<mat-toolbar class="board-toolbar"
+<mat-toolbar class="nav-toolbar"
              fxLayout="row"
              fxLayoutAlign="start center"
              fxLayoutGap="15px">
@@ -28,7 +28,7 @@
 
         <img class="thread-thumb"
              [satPopoverAnchorFor]="fullSize"
-             (click)="fullSize.toggle()"
+             [routerLink]="['thread', thread.num ]"
              [src]="getThreadThumbnail(thread)"
              alt="thread img">
         <sat-popover #fullSize

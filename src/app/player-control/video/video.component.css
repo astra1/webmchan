@@ -3,7 +3,7 @@
 
     left: 0;
     right: 0;
-    bottom: 95px;
+    bottom: 5.9375rem;
 
     text-align: center;
 
@@ -24,6 +24,6 @@ video::-webkit-media-controls {
 
 .video-close-btn {
     position: absolute;
-    right: 5px;
-    top: 0px;
+    right: 0.3125rem;
+    top: 0;
 }
