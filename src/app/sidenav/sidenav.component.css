@@ -1,0 +1,16 @@
+.sidenav {
+    max-width: 20rem;
+}
+
+.logo {
+    height: 80%;
+    width: 75%;
+}
+
+fa-icon {
+    margin: 0 1em;
+}
+
+.active-link {
+    color: #ff6f00;
+}

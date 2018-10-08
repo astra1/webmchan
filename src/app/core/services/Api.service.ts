@@ -1,3 +1,4 @@
+import { IBoard, IBoardRoot } from './../models/models';
 import { environment } from './../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -15,10 +16,11 @@ export class ApiService {
 
     constructor(private http: HttpClient) { }
 
-    getThreads(pageNum: number): Observable<IThread[]> {
+    getThreads(boardName: string): Observable<IThread[]> {
         // const page = pageNum <= 0 ? 'index' : pageNum;
+        boardName = boardName && boardName !== '' ? boardName : 'b';
 
-        return this.http.get<IRootObject>(`${this.url}b/catalog.json`)
+        return this.http.get<IRootObject>(`${this.url}${boardName}/catalog.json`)
             .pipe(
                 pluck('threads'),
                 map((threads: IThread[]) => {
@@ -30,10 +32,10 @@ export class ApiService {
             );
     }
 
-    getPosts(thread_num: string): Observable<IPost[]> {
+    getPosts(boardName: string, threadNum: string): Observable<IPost[]> {
         // const url = http(s)://2ch.hk/доска/res/номер_треда.html
 
-        return this.http.get<IRootObject>(`${this.url}b/res/${thread_num}.json`)
+        return this.http.get<IRootObject>(`${this.url}${boardName}/res/${threadNum}.json`)
             .pipe(
                 pluck('threads'),
                 take(1),
@@ -42,6 +44,14 @@ export class ApiService {
                 filter((post: IPost) => post.files.length > 0), // todo to toggle state!
                 toArray()
             );
+    }
+
+    getBoards(): Observable<IBoard[]> {
+        return this.http.get<IBoardRoot>(`${this.url}boards.json`)
+            .pipe(
+                pluck('boards')
+            );
+
     }
 
 }

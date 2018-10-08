@@ -1,15 +1,10 @@
-import { PlayerService } from './services/player.service';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { ApiService } from './services/Api.service';
+import { HotkeyModule } from 'angular2-hotkeys';
 
 @NgModule({
-    imports: [
-        CommonModule
-    ],
-    providers: [
-    ],
-    declarations: []
+  imports: [CommonModule, HotkeyModule.forRoot()],
+  providers: [],
+  declarations: []
 })
-export class CoreModule { }
+export class CoreModule {}
