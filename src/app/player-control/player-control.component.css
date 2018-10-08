@@ -2,10 +2,9 @@
     position: fixed;
     bottom: 0;
     left: 0;
-
-    height: 86px;
-
     padding: 0;
+    height: 5.375rem;
+    overflow: hidden;
 }
 
 .thumbnail-wrapper {
@@ -13,11 +12,9 @@
     float: left;
     border: 0;
     padding: 0;
-    margin: 0 10px 0 0;
-    height: 90px;
-    width: 90px;
-    top: -2px;
-    background-color: #3f51b5;
+    margin: 0 0.625rem 0 0;
+    width: 5.625rem;
+    top: -0.125rem;
 }
 
 .thumbnail-wrapper > img {
@@ -26,39 +23,34 @@
 }
 
 .player-left {
-    /* height: 86px; */
-    margin-top: 4px;
-    min-width: 0px;
+    margin-top: 0.25rem;
 }
 
 .player-middle {
     display: flex;
     align-items: center;
-    height: 86px;
 }
 
 .player-right {
-    height: 86px;
-    margin: 4px 15px 0 0;
-    min-width: 0px;
+    margin: 0.25rem 0.9375rem 0 0;
 }
 
 .track-label {
-    font-size: 16px;
+    font-size: 1em;
 }
 
 .menu-icon {
-    margin-right: 15px;
+    margin-right: 0.9375rem;
 }
 
 .progress-wrapper {
-    position: absolute;
-    top: -24px;
-    left: 92px;
-    right: -18px;
-    z-index: 1;
+    position: fixed;
+    bottom: 3.875rem;
+    left: 5.75rem;
+    right: -1.125rem;
+    z-index: 2;
 }
 
 .time-label {
-    font-size: 12px;
+    font-size: 0.75em;
 }

@@ -1,9 +1,9 @@
 .video-container {
-    position: absolute;
+    position: fixed;
 
     left: 0;
     right: 0;
-    bottom: 95px;
+    bottom: 5.9375rem;
 
     text-align: center;
 
@@ -18,8 +18,12 @@
     bottom: 0;
 }
 
+video::-webkit-media-controls {
+    display:none !important;
+}
+
 .video-close-btn {
     position: absolute;
-    right: 5px;
-    top: 0px;
+    right: 0.3125rem;
+    top: 0;
 }
