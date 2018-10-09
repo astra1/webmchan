@@ -1,10 +1,9 @@
-import { environment } from './../../environments/environment';
 import { SidenavStateService } from './../core/services/sidenav-state.service';
 import { faBars, faBolt, faBook, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { ApiService } from './../core/services/Api.service';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { IBoard } from '../core/models/models';
-import { map, filter } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { SettingsService, ISettings } from '../settings/settings.service';
 import { forkJoin } from 'rxjs';
 

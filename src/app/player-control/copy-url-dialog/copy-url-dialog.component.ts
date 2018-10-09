@@ -1,5 +1,11 @@
 import { ElectronService } from './../../core/services/electron.service';
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  AfterViewInit
+} from '@angular/core';
 import { Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
@@ -9,11 +15,14 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
   styleUrls: ['./copy-url-dialog.component.css']
 })
 export class CopyUrlDialogComponent implements AfterViewInit {
-  @ViewChild('urlInput') urlInput: ElementRef;
+  @ViewChild('urlInput')
+  urlInput: ElementRef;
 
-  constructor(public dialogRef: MatDialogRef<CopyUrlDialogComponent>,
+  constructor(
+    public dialogRef: MatDialogRef<CopyUrlDialogComponent>,
     private es: ElectronService,
-    @Inject(MAT_DIALOG_DATA) public data: any) { }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
 
   ngAfterViewInit() {
     this.urlInput.nativeElement.select();
@@ -22,5 +31,4 @@ export class CopyUrlDialogComponent implements AfterViewInit {
   onCloseClick() {
     this.dialogRef.close();
   }
-
 }

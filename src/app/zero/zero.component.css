@@ -7,6 +7,10 @@
   height: 80vh;
 }
 
+.thread-card > .mat-card-actions {
+  text-align: center;
+}
+
 .grid-container {
   display: grid;
   width: 100%;
@@ -37,6 +41,7 @@
 }
 
 .thread-description {
+  padding-top: 0.9375rem;
   width: 100%;
   text-overflow: ellipsis;
   word-break: break-word;

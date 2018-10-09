@@ -51,21 +51,19 @@ export class PlayerService {
     let video: IFile = null;
     let pos = -1;
 
-    if (playList.length > 0) {
-      pos = playList.findIndex(
-        val => val.path === this.currentVideo$.value.path
-      );
-      return;
-    }
+    if (playList && playList.length > 0) {
+      pos = this.isShuffleOn$.value
+        ? this.getRandPos(playList.length)
+        : playList.findIndex(val => val.path === this.currentVideo$.value.path);
 
-    if (pos === -1) {
-      this.isPlaying$.next(false);
-      return;
-    }
+      if (pos < 0) {
+        this.isPlaying$.next(false);
+        return;
+      }
 
-    video = this.isShuffleOn$.value
-      ? playList[this.getRandPos(playList.length)]
-      : playList[pos === playList.length - 1 ? 0 : ++pos];
+      pos = pos === playList.length - 1 && !this.isShuffleOn$.value ? 0 : ++pos;
+      video = playList[pos];
+    }
 
     if (video) {
       this.currentVideo$.next(video);
@@ -79,14 +77,18 @@ export class PlayerService {
     let pos = -1;
 
     if (playList && playList.length > 1) {
-      pos = playList.findIndex(
-        val => val.path === this.currentVideo$.value.path
-      );
-    }
+      pos = this.isShuffleOn$.value
+        ? this.getRandPos(playList.length)
+        : playList.findIndex(val => val.path === this.currentVideo$.value.path);
 
-    video = this.isShuffleOn$.value
-      ? playList[this.getRandPos(playList.length)]
-      : this.currentPlayList$.value[pos === 0 ? playList.length - 1 : --pos];
+      if (pos < 0) {
+        this.isPlaying$.next(false);
+        return;
+      }
+
+      pos = pos === 0 && !this.isShuffleOn$.value ? playList.length - 1 : --pos;
+      video = playList[pos];
+    }
 
     if (video) {
       this.currentVideo$.next(video);

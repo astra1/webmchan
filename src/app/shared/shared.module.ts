@@ -10,43 +10,38 @@ import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FlexLayoutModule } from '@angular/flex-layout';
-
 import { SatPopoverModule } from '@ncstate/sat-popover';
 
-
 @NgModule({
-    imports: [
-        BrowserAnimationsModule,
-        CommonModule,
-        FontAwesomeModule,
-        FormsModule,
-        FlexLayoutModule,
-        MaterialModule,
-        MomentModule,
-        ReactiveFormsModule,
-        SatPopoverModule,
-        HttpClientModule,
-        RouterModule
-    ],
-    declarations: [
-        FloorPipe,
-        MinuteSecondsPipe
-    ],
-    exports: [
-        BrowserAnimationsModule,
-        CommonModule,
-        FontAwesomeModule,
-        FormsModule,
-        FlexLayoutModule,
-        // pipes
-        FloorPipe,
-        MinuteSecondsPipe,
-        MaterialModule,
-        MomentModule,
-        ReactiveFormsModule,
-        SatPopoverModule,
-        HttpClientModule,
-        RouterModule,
-    ]
+  imports: [
+    BrowserAnimationsModule,
+    CommonModule,
+    FontAwesomeModule,
+    FormsModule,
+    FlexLayoutModule,
+    MaterialModule,
+    MomentModule,
+    ReactiveFormsModule,
+    SatPopoverModule,
+    HttpClientModule,
+    RouterModule
+  ],
+  declarations: [FloorPipe, MinuteSecondsPipe],
+  exports: [
+    BrowserAnimationsModule,
+    CommonModule,
+    FontAwesomeModule,
+    FormsModule,
+    FlexLayoutModule,
+    // pipes
+    FloorPipe,
+    MinuteSecondsPipe,
+    MaterialModule,
+    MomentModule,
+    ReactiveFormsModule,
+    SatPopoverModule,
+    HttpClientModule,
+    RouterModule
+  ]
 })
-export class SharedModule { }
+export class SharedModule {}

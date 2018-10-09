@@ -16,14 +16,11 @@ export class TrackProgressComponent implements OnInit {
   @Output()
   progressChange: EventEmitter<number> = new EventEmitter();
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-
-  }
+  ngOnInit() {}
 
   onProgressChange(event: any) {
     this.progressChange.next(event.value);
   }
-
 }
