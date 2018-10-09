@@ -25,9 +25,14 @@
   overflow-y: auto;
 }
 
-.container {
+.container-fluid {
+  background-color: #eaeaea;
+}
+
+.board-wrapper {
   min-width: 18.25rem;
-  height: calc(100% - 5.375rem);
+  height: 92%;
+  padding-top: 4.1875rem;
 }
 
 .mat-list-icon {
@@ -36,4 +41,9 @@
 
 .mat-list-item {
   text-align: left;
+}
+
+.upper-toolbar {
+  position: fixed;
+  height: 7%;
 }

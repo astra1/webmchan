@@ -1,5 +1,6 @@
 <div class="container-fluid">
-  <mat-toolbar fxLayout="row"
+  <mat-toolbar class="upper-toolbar"
+               fxLayout="row"
                fxLayoutAlign="start center"
                fxLayoutGap="15px">
     <button mat-icon-button
@@ -9,7 +10,7 @@
     <button mat-button
             (click)="renew()">Обновить</button>
   </mat-toolbar>
-  <div class="container">
+  <div class="board-wrapper">
     <div class="board-list-container">
 
       <mat-card *ngFor="let board of boards">
