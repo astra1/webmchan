@@ -6,26 +6,25 @@ import { MatSlider } from '@angular/material';
 @Component({
   selector: 'app-volume-slider',
   templateUrl: './volume-slider.component.html',
-  styleUrls: ['./volume-slider.component.css']
+  styleUrls: ['./volume-slider.component.css'],
 })
 export class VolumeSliderComponent implements OnInit {
-
   faVolumeMax = faVolumeUp;
   faVolumeMin = faVolumeDown;
-  @ViewChild('volumeSlider') volumeSlider: MatSlider;
+  @ViewChild('volumeSlider')
+  volumeSlider: MatSlider;
 
-  constructor(private ps: PlayerService) { }
+  constructor(private ps: PlayerService) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   onVolumeChange(event: any) {
     this.ps.setVolume(event.value);
   }
 
   onVolumeScroll(event: any) {
+    const step = this.volumeSlider.step;
     let newValue = this.volumeSlider.value;
-    const step = this.volumeSlider.step * 10;
 
     if (event.deltaY > 0) {
       newValue += step;
@@ -33,14 +32,13 @@ export class VolumeSliderComponent implements OnInit {
       newValue -= step;
     }
 
-    this.ps.setVolume(newValue);
-
     if (newValue > 100) {
       newValue = 100;
     } else if (newValue < 0) {
       newValue = 0;
     }
 
+    this.ps.setVolume(newValue);
     this.volumeSlider.value = newValue;
   }
 
@@ -53,5 +51,4 @@ export class VolumeSliderComponent implements OnInit {
     this.ps.setVolume(100);
     this.volumeSlider.value = 100;
   }
-
 }
