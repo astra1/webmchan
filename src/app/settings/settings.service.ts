@@ -49,7 +49,7 @@ export class SettingsService {
   get(): Observable<ISettings> {
     // console.log('trying to get: ', key, 'value is: ', this.settings$.value[key]);
     // return this.settings$.value[key];
-    return this.ls.getItem<ISettings>(this.lsKey);
+    return this.ls.getItem(this.lsKey) as Observable<ISettings>;
   }
 
 }

@@ -1,57 +1,63 @@
 .player-control {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    padding: 0;
-    height: 10%;
-    overflow: hidden;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: 0;
+  height: 4.6875rem;
+  overflow: hidden;
 }
 
 .thumbnail-wrapper {
-    position: relative;
-    top: 0;
-    width: 5.375rem;
-    height: 5.375rem;
-    padding: 0;
-    margin: 0 0.625rem 0 0;
-    float: left;
-    border: 0;
+  position: relative;
+  top: 0;
+  width: 5.375rem;
+  height: 5.375rem;
+  padding: 0;
+  margin: 0 0.625rem 0 0;
+  float: left;
+  border: 0;
 }
 
 .thumbnail-wrapper > img {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .player-left {
 }
 
 .player-middle {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .player-right {
-    margin: 0.25rem 0.9375rem 0 0;
+  margin: 0.25rem 0.9375rem 0 0;
 }
 
 .track-label {
-    margin-top: 0.625rem;
-    font-size: 1em;
+  margin-top: 0.625rem;
+  font-size: 1em;
 }
 
 .menu-icon {
-    margin-right: 0.9375rem;
+  margin-right: 0.9375rem;
 }
 
 .progress-wrapper {
-    position: fixed;
-    bottom: calc(10% - 1.5625rem);
-    left: 5.75rem;
-    right: -1.125rem;
-    z-index: 2;
+  position: fixed;
+  bottom: 3.1875rem;
+  left: 5.5rem;
+  right: 0;
+  z-index: 2;
+}
+
+.progress-wrapper .mat-slider-wrapper {
+  left: 0;
+  right: 0;
 }
 
 .time-label {
-    font-size: 0.75em;
+  font-size: 0.75rem;
+  line-height: 0.75rem;
 }

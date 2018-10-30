@@ -25,7 +25,7 @@ export class VolumeSliderComponent implements OnInit {
 
   onVolumeScroll(event: any) {
     let newValue = this.volumeSlider.value;
-    const step = this.volumeSlider.step;
+    const step = this.volumeSlider.step * 10;
 
     if (event.deltaY > 0) {
       newValue += step;

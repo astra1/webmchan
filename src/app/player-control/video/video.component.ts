@@ -4,7 +4,7 @@ import {
   ElementRef,
   OnInit,
   Output,
-  EventEmitter
+  EventEmitter,
 } from '@angular/core';
 
 import { environment } from '../../../environments/environment';
@@ -15,7 +15,7 @@ import {
   map,
   switchMap,
   distinctUntilChanged,
-  flatMap
+  flatMap,
 } from 'rxjs/operators';
 import { from, of } from 'rxjs';
 import { IFile } from './../../core/models/models';
@@ -25,7 +25,7 @@ import { PlayerService } from './../../core/services/player.service';
 @Component({
   selector: 'app-video',
   templateUrl: './video.component.html',
-  styleUrls: ['./video.component.css']
+  styleUrls: ['./video.component.css'],
 })
 export class VideoComponent implements OnInit {
   @ViewChild('videoContainer')
@@ -46,7 +46,7 @@ export class VideoComponent implements OnInit {
 
   constructor(
     public playerService: PlayerService,
-    private hotkeysService: HotkeysService
+    private hotkeysService: HotkeysService,
   ) {
     this.createHotkeyHooks();
   }
@@ -58,7 +58,7 @@ export class VideoComponent implements OnInit {
     this.changeVideoSub();
 
     this.playerService.timeChanged.subscribe(
-      val => (this.getHtmlVideo().currentTime = val)
+      val => (this.getHtmlVideo().currentTime = val),
     );
 
     this.videoPlaySub();
@@ -71,28 +71,28 @@ export class VideoComponent implements OnInit {
       new Hotkey('shift+right', () => {
         this.playerService.playNext();
         return false;
-      })
+      }),
     );
 
     this.hotkeysService.add(
       new Hotkey('shift+left', () => {
         this.playerService.playPrev();
         return false;
-      })
+      }),
     );
 
     this.hotkeysService.add(
       new Hotkey('shift+space', () => {
         this.playerService.pause();
         return false;
-      })
+      }),
     );
 
     this.hotkeysService.add(
       new Hotkey(['f', 'а'], () => {
         this.playerService.toggleFullscreen();
         return false;
-      })
+      }),
     );
   }
   private changeVideoSub() {
@@ -108,7 +108,7 @@ export class VideoComponent implements OnInit {
           this.getHtmlVideo().load();
           this.getHtmlVideo().focus();
           return from(this.playFile(this.video));
-        })
+        }),
       )
       .subscribe(() => {
         this.loading = false;
@@ -124,10 +124,10 @@ export class VideoComponent implements OnInit {
           return isPlaying
             ? from(this.playFile(this.video)).pipe(map(() => true))
             : of(false);
-        })
+        }),
       )
       .subscribe(val => {
-        if (document.fullscreenElement) {
+        if (document.fullscreenEnabled) {
           this.showVideo = val;
         }
         if (!val) {
@@ -145,8 +145,7 @@ export class VideoComponent implements OnInit {
         }
 
         var element = this.getHtmlVideo();
-        var requestMethod =
-          element.requestFullscreen || element.webkitRequestFullScreen;
+        var requestMethod = element.requestFullscreen;
 
         if (requestMethod) {
           requestMethod.call(element);
@@ -158,7 +157,7 @@ export class VideoComponent implements OnInit {
     this.playerService.volume
       .pipe(
         filter(() => !!this.getHtmlVideo()),
-        map(vol => vol / 100) // volume must be in [0, 1] range
+        map(vol => vol / 100), // volume must be in [0, 1] range
       )
       .subscribe(vol => {
         this.getHtmlVideo().volume = vol;

@@ -17,7 +17,7 @@
 
 .container {
   min-width: 18.75rem;
-  height: 80vh;
+  height: calc(83vh + 0.25rem);
 }
 
 .webm-list-container {
