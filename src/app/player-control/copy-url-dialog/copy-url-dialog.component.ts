@@ -15,7 +15,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
   styleUrls: ['./copy-url-dialog.component.css']
 })
 export class CopyUrlDialogComponent implements AfterViewInit {
-  @ViewChild('urlInput')
+  @ViewChild('urlInput', { static: true })
   urlInput: ElementRef;
 
   constructor(

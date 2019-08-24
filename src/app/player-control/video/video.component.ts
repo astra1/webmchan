@@ -28,7 +28,7 @@ import { PlayerService } from './../../core/services/player.service';
   styleUrls: ['./video.component.css'],
 })
 export class VideoComponent implements OnInit {
-  @ViewChild('videoContainer')
+  @ViewChild('videoContainer', { static: true })
   videoRef: ElementRef;
 
   video: IFile = null;

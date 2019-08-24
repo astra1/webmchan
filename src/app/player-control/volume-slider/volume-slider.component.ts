@@ -11,7 +11,7 @@ import { MatSlider } from '@angular/material';
 export class VolumeSliderComponent implements OnInit {
   faVolumeMax = faVolumeUp;
   faVolumeMin = faVolumeDown;
-  @ViewChild('volumeSlider')
+  @ViewChild('volumeSlider', { static: true })
   volumeSlider: MatSlider;
 
   constructor(private ps: PlayerService) {}
