@@ -15,7 +15,7 @@ import { distinctUntilChanged } from 'rxjs/operators';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
-  @ViewChild('sidenav') sidenav: MatSidenav;
+  @ViewChild('sidenav', { static: true }) sidenav: MatSidenav;
   title = 'app';
 
   constructor(

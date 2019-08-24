@@ -27,17 +27,9 @@
         </mat-card-header>
 
         <img class="thread-thumb"
-             [satPopoverAnchorFor]="fullSize"
              [routerLink]="['thread', thread.num ]"
              [src]="getThreadThumbnail(thread)"
              alt="thread img">
-        <sat-popover #fullSize
-                     horizontalAlign="after"
-                     verticalAlign="center">
-          <img class="fullSize"
-               [src]=getThreadImage(thread)>
-        </sat-popover>
-
         <mat-card-content>
           <p class="thread-description"
              [innerHTML]="thread.subject">
