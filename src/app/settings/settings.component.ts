@@ -11,28 +11,15 @@ import {
 
 import { SidenavStateService } from '../core/services/sidenav-state.service';
 
-import { JSONSchema } from '@ngx-pwa/local-storage';
-import { LocalStorage } from '@ngx-pwa/local-storage';
-
 import { faBars, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import {
   filter,
   takeUntil,
   map,
   auditTime,
-  tap,
   distinctUntilChanged,
-  take
 } from 'rxjs/operators';
 import { Subject, bindCallback, of } from 'rxjs';
-
-// const schema: JSONSchema = {
-//   properties: {
-//     path: { type: 'string' },
-//     lastName: { type: 'string' }
-//   },
-//   required: ['firstName', 'lastName']
-// };
 
 @Component({
   selector: 'app-settings',
@@ -100,6 +87,7 @@ export class SettingsComponent implements OnInit, OnChanges, OnDestroy {
     this.settingsService.settings
       .pipe(
         takeUntil(this.destroy$),
+        filter(v => !!v),
         distinctUntilChanged((x, y) => JSON.stringify(x) === JSON.stringify(y))
       )
       .subscribe(set => {
