@@ -138,6 +138,7 @@
     }
   },
   "cli": {
-    "analytics": "f5946522-8b17-4bf6-89e7-796e803b7bf0"
+    "analytics": "f5946522-8b17-4bf6-89e7-796e803b7bf0",
+    "defaultCollection": "@ngxs/schematics"
   }
 }
