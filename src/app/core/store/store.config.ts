@@ -1,10 +1,15 @@
-import { AuthStateModule } from './auth/auth.state';
-import { DashboardStates, DashboardStateModule } from './dashboard';
-import { NgxsConfig } from '@ngxs/store/src/symbols';
-import { NgxsDevtoolsOptions } from '@ngxs/devtools-plugin/src/symbols';
-import { NgxsLoggerPluginOptions } from '@ngxs/logger-plugin/src/symbols';
+import { WebmchanStates, WebmchanStateModule } from "./webmchan";
+import { ImageboardStates, ImageboardStateModule } from "./imageboard";
+import { NgxsConfig } from "@ngxs/store/src/symbols";
+import { NgxsDevtoolsOptions } from "@ngxs/devtools-plugin/src/symbols";
+import { NgxsLoggerPluginOptions } from "@ngxs/logger-plugin/src/symbols";
 
-export const STATES_MODULES = [AuthStateModule, DashboardStateModule, ...DashboardStates];
+export const STATES_MODULES = [
+  WebmchanStateModule,
+  ...WebmchanStates,
+  ImageboardStateModule,
+  ...ImageboardStates,
+];
 
 export const OPTIONS_CONFIG: Partial<NgxsConfig> = {
   /**
@@ -14,7 +19,7 @@ export const OPTIONS_CONFIG: Partial<NgxsConfig> = {
    * import { environment } from '@env';
    * developmentMode: !environment.production
    */
-  developmentMode: true
+  developmentMode: true,
 };
 
 export const DEVTOOLS_REDUX_CONFIG: NgxsDevtoolsOptions = {
@@ -24,7 +29,7 @@ export const DEVTOOLS_REDUX_CONFIG: NgxsDevtoolsOptions = {
    * import { environment } from '@env';
    * disabled: environment.production
    */
-  disabled: false
+  disabled: false,
 };
 
 export const LOGGER_CONFIG: NgxsLoggerPluginOptions = {
@@ -34,5 +39,5 @@ export const LOGGER_CONFIG: NgxsLoggerPluginOptions = {
    * import { environment } from '@env';
    * disabled: environment.production
    */
-  disabled: false
+  disabled: false,
 };
