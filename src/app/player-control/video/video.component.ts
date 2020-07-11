@@ -24,7 +24,7 @@ import { PlayerService } from "./../../core/services/player.service";
 @Component({
   selector: "app-video",
   templateUrl: "./video.component.html",
-  styleUrls: ["./video.component.css"],
+  styleUrls: ["./video.component.scss"],
 })
 export class VideoComponent implements OnInit {
   @ViewChild("videoContainer", { static: true })

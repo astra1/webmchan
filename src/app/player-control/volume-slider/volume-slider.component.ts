@@ -1,17 +1,17 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { faVolumeUp, faVolumeDown } from '@fortawesome/free-solid-svg-icons';
-import { PlayerService } from '../../core/services/player.service';
-import { MatSlider } from '@angular/material/slider';
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { faVolumeUp, faVolumeDown } from "@fortawesome/free-solid-svg-icons";
+import { PlayerService } from "../../core/services/player.service";
+import { MatSlider } from "@angular/material/slider";
 
 @Component({
-  selector: 'app-volume-slider',
-  templateUrl: './volume-slider.component.html',
-  styleUrls: ['./volume-slider.component.css'],
+  selector: "app-volume-slider",
+  templateUrl: "./volume-slider.component.html",
+  styleUrls: ["./volume-slider.component.scss"],
 })
 export class VolumeSliderComponent implements OnInit {
   faVolumeMax = faVolumeUp;
   faVolumeMin = faVolumeDown;
-  @ViewChild('volumeSlider', { static: true })
+  @ViewChild("volumeSlider", { static: true })
   volumeSlider: MatSlider;
 
   constructor(private ps: PlayerService) {}

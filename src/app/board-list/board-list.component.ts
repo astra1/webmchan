@@ -3,14 +3,14 @@ import {
   faBars,
   faBolt,
   faBook,
-  faEnvelope
+  faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
 import { ApiService } from "./../core/services/Api.service";
 import {
   Component,
   OnInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef
+  ChangeDetectorRef,
 } from "@angular/core";
 import { IBoard } from "../core/models/models";
 import { map } from "rxjs/operators";
@@ -20,8 +20,8 @@ import { forkJoin } from "rxjs";
 @Component({
   selector: "app-board-list",
   templateUrl: "./board-list.component.html",
-  styleUrls: ["./board-list.component.css"],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ["./board-list.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BoardListComponent implements OnInit {
   nswf = false;
@@ -48,11 +48,11 @@ export class BoardListComponent implements OnInit {
           return this.nswf
             ? boardList
             : boardList.filter(
-                b => b.category.toLocaleLowerCase().trim() !== "взрослым"
+                (b) => b.category.toLocaleLowerCase().trim() !== "взрослым"
               );
         })
       )
-      .subscribe(boards => {
+      .subscribe((boards) => {
         this.boards = boards;
         this.cd.markForCheck();
       });

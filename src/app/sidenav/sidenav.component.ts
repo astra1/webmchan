@@ -1,26 +1,23 @@
-import { SidenavStateService } from './../core/services/sidenav-state.service';
-import { faBars, faCog, faHome } from '@fortawesome/free-solid-svg-icons';
-import { Component, OnInit } from '@angular/core';
+import { SidenavStateService } from "./../core/services/sidenav-state.service";
+import { faBars, faCog, faHome } from "@fortawesome/free-solid-svg-icons";
+import { Component, OnInit } from "@angular/core";
 
 @Component({
-  selector: 'app-sidenav',
-  templateUrl: './sidenav.component.html',
-  styleUrls: ['./sidenav.component.css']
+  selector: "app-sidenav",
+  templateUrl: "./sidenav.component.html",
+  styleUrls: ["./sidenav.component.scss"],
 })
 export class SidenavComponent implements OnInit {
-
   // fontawesome
   faBars = faBars;
   faCog = faCog;
   faHome = faHome;
 
-  constructor(private sidenavState: SidenavStateService) { }
+  constructor(private sidenavState: SidenavStateService) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   closeSidenav() {
     this.sidenavState.setState(false);
   }
-
 }

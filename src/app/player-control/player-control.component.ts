@@ -1,9 +1,9 @@
-import { SettingsService, ISettings } from './../settings/settings.service';
-import { DownloadService } from './../core/services/download.service';
-import { environment } from './../../environments/environment';
-import { PlayerService } from './../core/services/player.service';
-import { IFile } from './../core/models/models';
-import { Component, OnInit, HostListener } from '@angular/core';
+import { SettingsService, ISettings } from "./../settings/settings.service";
+import { DownloadService } from "./../core/services/download.service";
+import { environment } from "./../../environments/environment";
+import { PlayerService } from "./../core/services/player.service";
+import { IFile } from "./../core/models/models";
+import { Component, OnInit, HostListener } from "@angular/core";
 import {
   faArrowsAlt,
   faEllipsisV,
@@ -14,17 +14,17 @@ import {
   faRedo,
   faSave,
   faStepBackward,
-  faStepForward
-} from '@fortawesome/free-solid-svg-icons';
-import { filter } from 'rxjs/operators';
-import { ElectronService } from '../core/services/electron.service';
-import { MatDialog } from '@angular/material/dialog';
-import { CopyUrlDialogComponent } from './copy-url-dialog/copy-url-dialog.component';
+  faStepForward,
+} from "@fortawesome/free-solid-svg-icons";
+import { filter } from "rxjs/operators";
+import { ElectronService } from "../core/services/electron.service";
+import { MatDialog } from "@angular/material/dialog";
+import { CopyUrlDialogComponent } from "./copy-url-dialog/copy-url-dialog.component";
 
 @Component({
-  selector: 'app-player-control',
-  templateUrl: './player-control.component.html',
-  styleUrls: ['./player-control.component.css']
+  selector: "app-player-control",
+  templateUrl: "./player-control.component.html",
+  styleUrls: ["./player-control.component.scss"],
 })
 export class PlayerControlComponent implements OnInit {
   isNative = false;
@@ -56,28 +56,28 @@ export class PlayerControlComponent implements OnInit {
     private settingsService: SettingsService
   ) {}
 
-  @HostListener('window:keydown', ['$event'])
+  @HostListener("window:keydown", ["$event"])
   onKeyDown(event) {}
 
   ngOnInit() {
     this.isNative = this.electronService.isElectron() || false;
 
     this.playerService.currentVideo
-      .pipe(filter(val => !!val.md5))
-      .subscribe(val => {
+      .pipe(filter((val) => !!val.md5))
+      .subscribe((val) => {
         this.currentTrack = val;
         this.trackLength = val.duration_secs;
       });
 
-    this.playerService.isPlaying.subscribe(val => (this.isPlaying = val));
+    this.playerService.isPlaying.subscribe((val) => (this.isPlaying = val));
 
-    this.playerService.isShuffleOn.subscribe(val => (this.isShuffled = val));
+    this.playerService.isShuffleOn.subscribe((val) => (this.isShuffled = val));
   }
 
   getTrackThumb() {
-    return this.currentTrack && this.currentTrack.thumbnail !== ''
+    return this.currentTrack && this.currentTrack.thumbnail !== ""
       ? environment.dvachApiUrl + this.currentTrack.thumbnail
-      : './assets/icons/webmchan.svg';
+      : "./assets/icons/webmchan.svg";
   }
 
   onTimeSelect(seconds: number) {
@@ -110,15 +110,15 @@ export class PlayerControlComponent implements OnInit {
 
   copyUrlClick() {
     const dialogRef = this.dlg.open(CopyUrlDialogComponent, {
-      width: '21.875rem',
+      width: "21.875rem",
       data: {
         title: this.currentTrack.name,
-        url: 'https://2ch.hk' + this.currentTrack.path
-      }
+        url: "https://2ch.hk" + this.currentTrack.path,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(res => {
-      console.log('dialog was closed', res);
+    dialogRef.afterClosed().subscribe((res) => {
+      console.log("dialog was closed", res);
     });
   }
 
@@ -127,7 +127,7 @@ export class PlayerControlComponent implements OnInit {
       this.settingsService.get().subscribe((settings: ISettings) => {
         let path: string = settings.savePath;
         if (!this.electronService.fs.existsSync(path)) {
-          path = this.electronService.remote.app.getPath('desktop');
+          path = this.electronService.remote.app.getPath("desktop");
         }
 
         let filePath = this.showSaveDlg(path);
@@ -140,21 +140,21 @@ export class PlayerControlComponent implements OnInit {
 
   private showSaveDlg(path: string) {
     return this.electronService.remote.dialog.showSaveDialog({
-      defaultPath: path + '/' + this.currentTrack.fullname,
+      defaultPath: path + "/" + this.currentTrack.fullname,
       filters: [
         {
           name: this.currentTrack.name,
-          extensions: ['webm', 'mp4']
-        }
+          extensions: ["webm", "mp4"],
+        },
       ],
-      title: 'Saving VIDOSIQUE'
+      title: "Saving VIDOSIQUE",
     });
   }
 
   private downloadAndWriteVideo(filePath) {
     this.downService
-      .download('https://2ch.hk' + this.currentTrack.path)
-      .subscribe(val => {
+      .download("https://2ch.hk" + this.currentTrack.path)
+      .subscribe((val) => {
         if (val) {
           this.electronService.fs.writeFileSync(filePath, Buffer.from(val));
         }

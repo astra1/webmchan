@@ -23,7 +23,7 @@ import { PlayerService } from "../../core/services/player.service";
 @Component({
   selector: "app-thread",
   templateUrl: "./thread.component.html",
-  styleUrls: ["./thread.component.css"],
+  styleUrls: ["./thread.component.scss"],
 })
 export class ThreadComponent implements OnInit, OnDestroy {
   thread_num = "";
