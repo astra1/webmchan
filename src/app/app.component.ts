@@ -6,16 +6,10 @@ import { SidenavStateService } from "./core/services/sidenav-state.service";
 
 import { MatSidenav } from "@angular/material/sidenav";
 
-import { distinctUntilChanged, pluck } from "rxjs/operators";
+import { distinctUntilChanged } from "rxjs/operators";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { Store, Actions, ofActionSuccessful } from "@ngxs/store";
-import {
-  GetBoards,
-  SetCurrentBoard,
-} from "./core/store/imageboard/board/board.actions";
-import { ParamMap } from "@angular/router";
-import { SetCurrentThread } from "./core/store/imageboard/thread/thread.actions";
-import { RouterDataResolved } from "@ngxs/router-plugin";
+import { Store } from "@ngxs/store";
+import { GetBoards } from "./core/store/imageboard/board/board.actions";
 import { Location } from "@angular/common";
 
 @Component({
@@ -33,7 +27,6 @@ export class AppComponent implements OnInit {
     es: ElectronService,
     private settingsService: SettingsService,
     private sidenavState: SidenavStateService,
-    private actions: Actions,
     private location: Location,
     private store: Store
   ) {
@@ -50,20 +43,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.store.dispatch(new GetBoards());
-
-    this.actions
-      .pipe(
-        ofActionSuccessful(RouterDataResolved),
-        pluck("routerState", "root", "firstChild", "paramMap")
-      )
-      .subscribe((paramMap: ParamMap) => {
-        if (paramMap.get("board_id")) {
-          this.store.dispatch(new SetCurrentBoard(paramMap.get("board_id")));
-        }
-        if (paramMap.get("thread_id")) {
-          this.store.dispatch(new SetCurrentThread(paramMap.get("thread_id")));
-        }
-      });
 
     this.sidenavState.isOpened.pipe(distinctUntilChanged()).subscribe((val) => {
       val ? this.sidenav.open() : this.sidenav.close();

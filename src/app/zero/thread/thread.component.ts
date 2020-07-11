@@ -1,21 +1,20 @@
 import { SidenavStateService } from "./../../core/services/sidenav-state.service";
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Location } from "@angular/common";
-import { Subject, Observable } from "rxjs";
-import { map, tap } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { map, pluck } from "rxjs/operators";
 
 import { IPost, IFile } from "../../core/models/models";
 import { faPlay, faVideo, faBars } from "@fortawesome/free-solid-svg-icons";
 import { PlayerService } from "../../core/services/player.service";
-import { Select } from "@ngxs/store";
-import { ThreadState } from "../../core/store/imageboard/thread/thread.state";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "app-thread",
   templateUrl: "./thread.component.html",
   styleUrls: ["./thread.component.scss"],
 })
-export class ThreadComponent implements OnInit, OnDestroy {
+export class ThreadComponent implements OnInit {
   thread_num = "";
 
   // fontawesome icons
@@ -25,34 +24,28 @@ export class ThreadComponent implements OnInit, OnDestroy {
 
   lastUpdated: Date = null;
 
-  destroy$: Subject<boolean> = new Subject<boolean>();
-
-  @Select(ThreadState.currentThreadPosts) posts$: Observable<IPost[]>;
-
-  videos$: Observable<IFile[]> = this.posts$.pipe(
-    map((posts) => posts.reduce((prev, curr) => [...prev, ...curr.files], [])),
-    tap((files) => console.warn("he", files))
-  );
-
-  videos: IFile[] = [];
-
+  videos$: Observable<IFile[]>;
   loading = false;
 
   constructor(
+    private route: ActivatedRoute,
     private location: Location,
     private ps: PlayerService,
     private sidenavState: SidenavStateService
   ) {}
 
-  ngOnInit() {}
-
-  ngOnDestroy() {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
+  ngOnInit() {
+    this.videos$ = this.route.data.pipe(
+      pluck("posts"),
+      map<IPost[], IFile[]>((posts) =>
+        posts.reduce((prev, curr) => [...prev, ...curr.files], [])
+      )
+    );
   }
 
   getThreadThumbnail(file: IFile) {
-    return file ? `url(https://2ch.hk${file.thumbnail})` : "";
+    const uri = encodeURI(`https://2ch.hk${file.thumbnail.replace("//", "/")}`);
+    return file ? `url(${uri})` : "";
   }
 
   goBack() {
@@ -66,7 +59,6 @@ export class ThreadComponent implements OnInit, OnDestroy {
   }
 
   onPlayAllClick() {
-    this.ps.setPlaysist(this.videos);
     this.ps.playAll();
   }
 
@@ -74,7 +66,7 @@ export class ThreadComponent implements OnInit, OnDestroy {
     this.sidenavState.toggle();
   }
 
-  trackByFileId(index: number, item: IFile) {
+  trackByFileId(item: IFile) {
     return item.name;
   }
 }

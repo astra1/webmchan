@@ -1,14 +1,5 @@
 import { IThread, IPost } from "../../../models/models";
-import {
-  State,
-  Selector,
-  Action,
-  StateContext,
-  Store,
-  Actions,
-  NgxsOnInit,
-  ofActionCompleted,
-} from "@ngxs/store";
+import { State, Selector, Action, StateContext, Store } from "@ngxs/store";
 import {
   SetCurrentThread,
   SetThreads,
@@ -18,8 +9,7 @@ import {
 import { Injectable } from "@angular/core";
 import { ApiService } from "../../../services/Api.service";
 import { BoardState } from "../board/board.state";
-import { tap, switchMap } from "rxjs/operators";
-import { SetCurrentBoard } from "../board/board.actions";
+import { tap } from "rxjs/operators";
 
 export interface ThreadStateModel {
   currentThread: string | null;
@@ -36,28 +26,8 @@ export interface ThreadStateModel {
   },
 })
 @Injectable()
-export class ThreadState implements NgxsOnInit {
-  constructor(
-    private actions$: Actions,
-    private apiService: ApiService,
-    private store: Store
-  ) {}
-
-  ngxsOnInit(ctx?: StateContext<any>) {
-    this.actions$
-      .pipe(
-        ofActionCompleted(SetCurrentBoard),
-        switchMap(() => ctx.dispatch(new GetThreads()))
-      )
-      .subscribe();
-
-    // this.actions$
-    //   .pipe(
-    //     ofActionCompleted(SetCurrentThread),
-    //     switchMap(() => ctx.dispatch(new GetPosts()))
-    //   )
-    //   .subscribe();
-  }
+export class ThreadState {
+  constructor(private apiService: ApiService, private store: Store) {}
 
   @Selector()
   static currentThread(state: ThreadStateModel) {
@@ -82,7 +52,6 @@ export class ThreadState implements NgxsOnInit {
     ctx.patchState({
       currentThread: payload,
     });
-    ctx.dispatch(new GetPosts());
   }
 
   @Action(SetThreads)

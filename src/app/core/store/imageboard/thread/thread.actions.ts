@@ -16,6 +16,6 @@ export class GetThreads {
 }
 
 export class GetPosts {
-  static readonly type = "[Posts] Set Thread Posts";
+  static readonly type = "[Posts] Get Thread Posts";
   constructor() {}
 }

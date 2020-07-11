@@ -11,6 +11,8 @@ import { IThread } from "../core/models/models";
 import { faBars, faBolt } from "@fortawesome/free-solid-svg-icons";
 import { Select } from "@ngxs/store";
 import { ThreadState } from "../core/store/imageboard/thread/thread.state";
+import { ActivatedRoute } from "@angular/router";
+import { pluck } from "rxjs/operators";
 
 @Component({
   selector: "app-zero",
@@ -26,12 +28,17 @@ export class ZeroComponent implements OnInit, OnDestroy {
   faBars = faBars;
   faBolt = faBolt;
 
-  @Select(ThreadState.threadList) threads$: Observable<IThread[]>;
+  threads$: Observable<IThread[]>;
   destroy$: Subject<void> = new Subject();
 
-  constructor(private sidenavService: SidenavStateService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private sidenavService: SidenavStateService
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.threads$ = this.route.data.pipe(pluck("threads"));
+  }
 
   getThreadThumbnail(thread: IThread) {
     const file = thread.files[0];
