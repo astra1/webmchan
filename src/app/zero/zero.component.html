@@ -9,7 +9,7 @@
 </div>
 <div class="thread-list-container">
   <div class="grid-container">
-    <div *ngFor="let thread of threads$ | async">
+    <div *ngFor="let thread of threads$ | async; trackBy: trackByThreadId">
       <mat-card class="thread-card">
         <mat-card-header>
           <mat-card-title>{{ thread.num }}</mat-card-title>

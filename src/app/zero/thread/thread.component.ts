@@ -73,4 +73,8 @@ export class ThreadComponent implements OnInit, OnDestroy {
   toggleSidenav() {
     this.sidenavState.toggle();
   }
+
+  trackByFileId(index: number, item: IFile) {
+    return item.name;
+  }
 }

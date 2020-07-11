@@ -1,23 +1,14 @@
-import { SidenavStateService } from "./../core/services/sidenav-state.service";
 import {
   faBars,
   faBolt,
   faBook,
   faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
-import { ApiService } from "./../core/services/Api.service";
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-} from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { IBoard } from "../core/models/models";
-import { SettingsService } from "../settings/settings.service";
 import { Observable } from "rxjs";
-import { Store, Select } from "@ngxs/store";
+import { Select } from "@ngxs/store";
 import { BoardState } from "../core/store/imageboard/board/board.state";
-import { GetBoards } from "../core/store/imageboard/board/board.actions";
 
 @Component({
   selector: "app-board-list",
@@ -34,11 +25,15 @@ export class BoardListComponent implements OnInit {
   faBook = faBook;
   faEnvelope = faEnvelope;
 
-  constructor(private store: Store) {}
+  constructor() {}
 
   ngOnInit() {}
 
   renew() {
     console.log("not renew");
+  }
+
+  trackByBoardId(item: IBoard) {
+    return item.id;
   }
 }
