@@ -9,7 +9,7 @@
   </mat-sidenav>
   <mat-sidenav-content>
     <mat-toolbar>
-      <button mat-icon-button routerLink="./..">
+      <button mat-icon-button (click)="goBack()">
         <fa-icon [icon]="faBack" size="lg"></fa-icon>
       </button>
     </mat-toolbar>

@@ -14,7 +14,7 @@ export class NotfoundComponent implements OnInit {
     this.randNumber = this.randomInteger(1, 8);
   }
 
-  private randomInteger(min, max) {
+  private randomInteger(min: number, max: number) {
     let rand = min + Math.random() * (max + 1 - min);
     rand = Math.floor(rand);
     return rand;

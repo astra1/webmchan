@@ -11,13 +11,8 @@
     "importHelpers": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "strict": true,
     "target": "ES2015",
     "typeRoots": ["node_modules/@types"],
-    "lib": ["es2018", "dom"],
-    "angularCompilerOptions": {
-      "strictInjectionParameters": true,
-      "strictTemplates": true
-    }
+    "lib": ["es2018", "dom"]
   }
 }

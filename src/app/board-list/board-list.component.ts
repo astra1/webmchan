@@ -13,9 +13,11 @@ import {
   ChangeDetectorRef,
 } from "@angular/core";
 import { IBoard } from "../core/models/models";
-import { map } from "rxjs/operators";
-import { SettingsService, ISettings } from "../settings/settings.service";
-import { forkJoin } from "rxjs";
+import { SettingsService } from "../settings/settings.service";
+import { Observable } from "rxjs";
+import { Store, Select } from "@ngxs/store";
+import { BoardState } from "../core/store/imageboard/board/board.state";
+import { GetBoards } from "../core/store/imageboard/board/board.actions";
 
 @Component({
   selector: "app-board-list",
@@ -25,42 +27,16 @@ import { forkJoin } from "rxjs";
 })
 export class BoardListComponent implements OnInit {
   nswf = false;
-  boards: IBoard[] = [];
+  @Select(BoardState.boardList) boards$: Observable<IBoard[]>;
 
-  // fontAwesome
   faBars = faBars;
   faBolt = faBolt;
   faBook = faBook;
   faEnvelope = faEnvelope;
 
-  constructor(
-    private api: ApiService,
-    private cd: ChangeDetectorRef,
-    private settingsService: SettingsService,
-    private sidenavState: SidenavStateService
-  ) {}
+  constructor(private store: Store) {}
 
-  ngOnInit() {
-    forkJoin(this.api.getBoards(), this.settingsService.get())
-      .pipe(
-        map(([boardList, settings]) => {
-          this.nswf = settings && settings.nswf;
-          return this.nswf
-            ? boardList
-            : boardList.filter(
-                (b) => b.category.toLocaleLowerCase().trim() !== "взрослым"
-              );
-        })
-      )
-      .subscribe((boards) => {
-        this.boards = boards;
-        this.cd.markForCheck();
-      });
-  }
-
-  toggleSidenav() {
-    this.sidenavState.toggle();
-  }
+  ngOnInit() {}
 
   renew() {
     console.log("not renew");

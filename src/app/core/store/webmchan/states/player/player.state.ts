@@ -10,10 +10,11 @@ import {
   SetFullscreen,
   SetCurrentTrackTime,
 } from "./player.actions";
+import { Injectable } from "@angular/core";
 
 export interface PlayerStateModel {
   queue: IFile[]; // todo: to sub state?
-  currentTrack?: IFile;
+  currentTrack: IFile | null;
 
   volumeLevel: number;
 
@@ -35,6 +36,9 @@ export interface PlayerStateModel {
     isShuffleOn: false,
     queue: [],
   },
+})
+@Injectable({
+  providedIn: "root",
 })
 export class PlayerState {
   @Selector()

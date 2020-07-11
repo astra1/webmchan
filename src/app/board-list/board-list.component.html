@@ -1,5 +1,5 @@
 <div class="board-list-container">
-  <mat-card *ngFor="let board of boards">
+  <mat-card *ngFor="let board of boards$ | async">
     <mat-card-header>
       <mat-card-title>
         <h2 class="mat-h2 primary-color">
