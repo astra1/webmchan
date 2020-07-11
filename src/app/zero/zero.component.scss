@@ -1,10 +1,11 @@
+@import "~variables";
+
 .board-toolbar {
   overflow: hidden;
 }
 
-.container {
-  min-width: 18.75rem;
-  height: 80vh;
+.thread-list-container {
+  height: calc(100vh - (#{$appToolbarHeight} + #{$playerControlsPanelHeight}));
 }
 
 .thread-card > .mat-card-actions {
@@ -24,7 +25,7 @@
 }
 
 .nav-toolbar {
-  height: 5.375rem;
+  height: 4rem;
 }
 
 .mat-card {
@@ -49,8 +50,8 @@
 }
 
 .thread-thumb {
-    width: auto;
-    height: 12.5rem;
+  width: auto;
+  height: 12.5rem;
 }
 
 .thread-thumb:hover {
@@ -58,7 +59,7 @@
 }
 
 @supports (display: grid) {
-    .container > * {
-      margin: 0;
-    }
+  .container > * {
+    margin: 0;
   }
+}

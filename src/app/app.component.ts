@@ -7,6 +7,7 @@ import { SidenavStateService } from "./core/services/sidenav-state.service";
 import { MatSidenav } from "@angular/material/sidenav";
 
 import { distinctUntilChanged } from "rxjs/operators";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: "app-root",
@@ -17,6 +18,7 @@ import { distinctUntilChanged } from "rxjs/operators";
 export class AppComponent implements OnInit {
   @ViewChild("sidenav", { static: true }) sidenav: MatSidenav;
   title = "app";
+  faBack = faArrowLeft;
 
   constructor(
     es: ElectronService,

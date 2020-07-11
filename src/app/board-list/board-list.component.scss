@@ -25,10 +25,6 @@
   overflow-y: auto;
 }
 
-.container-fluid {
-  background-color: #eaeaea;
-}
-
 .board-wrapper {
   min-width: 18.25rem;
   height: 92%;
@@ -45,5 +41,5 @@
 
 .upper-toolbar {
   position: fixed;
-  height: 7%;
+  height: 4rem;
 }

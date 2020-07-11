@@ -1,8 +1,16 @@
 .track-progress {
-    width: 100%;
+  width: 100%;
+  .mat-slider-thumb {
+    color: red !important;
+    opacity: 0 !important;
+  }
+  &:hover {
+    .mat-slider-thumb {
+      opacity: 1 !important;
+    }
+  }
 }
 
 mat-slider {
-    padding-left: 0;
-    padding-right: 0;
+  padding: 0;
 }

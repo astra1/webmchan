@@ -5,7 +5,7 @@ import { PlayerService } from "./../core/services/player.service";
 import { IFile } from "./../core/models/models";
 import { Component, OnInit, HostListener } from "@angular/core";
 import {
-  faArrowsAlt,
+  faCompress,
   faEllipsisV,
   faLink,
   faPause,
@@ -15,6 +15,7 @@ import {
   faSave,
   faStepBackward,
   faStepForward,
+  faStop,
 } from "@fortawesome/free-solid-svg-icons";
 import { filter } from "rxjs/operators";
 import { ElectronService } from "../core/services/electron.service";
@@ -30,7 +31,7 @@ export class PlayerControlComponent implements OnInit {
   isNative = false;
 
   faDots = faEllipsisV;
-  faFullscreen = faArrowsAlt;
+  faFullscreen = faCompress;
   faLink = faLink;
   faPlay = faPlay;
   faPause = faPause;
@@ -39,6 +40,7 @@ export class PlayerControlComponent implements OnInit {
   faSave = faSave;
   faStepBack = faStepBackward;
   faStepForw = faStepForward;
+  faStop = faStop;
 
   currentTime = 0;
   trackLength = 1;
@@ -99,6 +101,8 @@ export class PlayerControlComponent implements OnInit {
   play() {
     this.playerService.pause();
   }
+
+  stop() {}
 
   toggleShuffle() {
     this.playerService.toggleShuffle();
