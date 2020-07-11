@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { faVolumeUp, faVolumeDown } from '@fortawesome/free-solid-svg-icons';
 import { PlayerService } from '../../core/services/player.service';
-import { MatSlider } from '@angular/material';
+import { MatSlider } from '@angular/material/slider';
 
 @Component({
   selector: 'app-volume-slider',

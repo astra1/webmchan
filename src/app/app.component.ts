@@ -4,7 +4,7 @@ import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ElectronService } from './core/services/electron.service';
 import { SidenavStateService } from './core/services/sidenav-state.service';
 
-import { MatSidenav } from '@angular/material';
+import { MatSidenav } from '@angular/material/sidenav';
 
 import { distinctUntilChanged } from 'rxjs/operators';
 

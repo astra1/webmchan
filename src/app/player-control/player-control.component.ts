@@ -18,7 +18,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { filter } from 'rxjs/operators';
 import { ElectronService } from '../core/services/electron.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { CopyUrlDialogComponent } from './copy-url-dialog/copy-url-dialog.component';
 
 @Component({
