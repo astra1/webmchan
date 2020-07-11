@@ -1,10 +1,9 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HotkeyModule } from 'angular2-hotkeys';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
 
 @NgModule({
   imports: [CommonModule, HotkeyModule.forRoot()],
   providers: [],
-  declarations: []
+  declarations: [],
 })
 export class CoreModule {}

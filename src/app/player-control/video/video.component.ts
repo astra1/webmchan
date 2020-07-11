@@ -5,9 +5,9 @@ import {
   OnInit,
   Output,
   EventEmitter,
-} from '@angular/core';
+} from "@angular/core";
 
-import { environment } from '../../../environments/environment';
+import { environment } from "../../../environments/environment";
 
 import {
   filter,
@@ -16,19 +16,18 @@ import {
   switchMap,
   distinctUntilChanged,
   flatMap,
-} from 'rxjs/operators';
-import { from, of } from 'rxjs';
-import { IFile } from './../../core/models/models';
-import { HotkeysService, Hotkey } from 'angular2-hotkeys';
-import { PlayerService } from './../../core/services/player.service';
+} from "rxjs/operators";
+import { from, of } from "rxjs";
+import { IFile } from "./../../core/models/models";
+import { PlayerService } from "./../../core/services/player.service";
 
 @Component({
-  selector: 'app-video',
-  templateUrl: './video.component.html',
-  styleUrls: ['./video.component.css'],
+  selector: "app-video",
+  templateUrl: "./video.component.html",
+  styleUrls: ["./video.component.css"],
 })
 export class VideoComponent implements OnInit {
-  @ViewChild('videoContainer', { static: true })
+  @ViewChild("videoContainer", { static: true })
   videoRef: ElementRef;
 
   video: IFile = null;
@@ -44,10 +43,7 @@ export class VideoComponent implements OnInit {
     return this.videoRef && (this.videoRef.nativeElement as HTMLVideoElement);
   }
 
-  constructor(
-    public playerService: PlayerService,
-    private hotkeysService: HotkeysService,
-  ) {
+  constructor(public playerService: PlayerService) {
     this.createHotkeyHooks();
   }
 
@@ -58,7 +54,7 @@ export class VideoComponent implements OnInit {
     this.changeVideoSub();
 
     this.playerService.timeChanged.subscribe(
-      val => (this.getHtmlVideo().currentTime = val),
+      (val) => (this.getHtmlVideo().currentTime = val)
     );
 
     this.videoPlaySub();
@@ -67,48 +63,45 @@ export class VideoComponent implements OnInit {
   }
 
   createHotkeyHooks() {
-    this.hotkeysService.add(
-      new Hotkey('shift+right', () => {
-        this.playerService.playNext();
-        return false;
-      }),
-    );
-
-    this.hotkeysService.add(
-      new Hotkey('shift+left', () => {
-        this.playerService.playPrev();
-        return false;
-      }),
-    );
-
-    this.hotkeysService.add(
-      new Hotkey('shift+space', () => {
-        this.playerService.pause();
-        return false;
-      }),
-    );
-
-    this.hotkeysService.add(
-      new Hotkey(['f', 'а'], () => {
-        this.playerService.toggleFullscreen();
-        return false;
-      }),
-    );
+    // this.hotkeysService.add(
+    //   new Hotkey('shift+right', () => {
+    //     this.playerService.playNext();
+    //     return false;
+    //   }),
+    // );
+    // this.hotkeysService.add(
+    //   new Hotkey('shift+left', () => {
+    //     this.playerService.playPrev();
+    //     return false;
+    //   }),
+    // );
+    // this.hotkeysService.add(
+    //   new Hotkey('shift+space', () => {
+    //     this.playerService.pause();
+    //     return false;
+    //   }),
+    // );
+    // this.hotkeysService.add(
+    //   new Hotkey(['f', 'а'], () => {
+    //     this.playerService.toggleFullscreen();
+    //     return false;
+    //   }),
+    // );
   }
   private changeVideoSub() {
     this.playerService.currentVideo
       .pipe(
         distinctUntilChanged(),
-        filter(val => val.md5 !== null),
+        filter((val) => val.md5 !== null),
         tap(() => (this.loading = true)),
-        switchMap(val => {
+        switchMap((val) => {
           this.video = val;
-          this.getHtmlVideo().src = 'https://2ch.hk' + this.video.path;
-          this.getHtmlVideo().poster = 'https://2ch.hk' + this.video.thumbnail;
+          this.getHtmlVideo().src = "https://2ch.hk" + this.video.path;
+          this.getHtmlVideo().poster = "https://2ch.hk" + this.video.thumbnail;
           this.getHtmlVideo().load();
           this.getHtmlVideo().focus();
           return from(this.playFile(this.video));
-        }),
+        })
       )
       .subscribe(() => {
         this.loading = false;
@@ -120,13 +113,13 @@ export class VideoComponent implements OnInit {
     this.playerService.isPlaying
       .pipe(
         filter(() => !!this.getHtmlVideo()),
-        flatMap(isPlaying => {
+        flatMap((isPlaying) => {
           return isPlaying
             ? from(this.playFile(this.video)).pipe(map(() => true))
             : of(false);
-        }),
+        })
       )
-      .subscribe(val => {
+      .subscribe((val) => {
         if (document.fullscreenEnabled) {
           this.showVideo = val;
         }
@@ -138,8 +131,8 @@ export class VideoComponent implements OnInit {
 
   private toggleFullscreeenSub() {
     this.playerService.isFullscreen
-      .pipe(filter(val => val === true))
-      .subscribe(val => {
+      .pipe(filter((val) => val === true))
+      .subscribe((val) => {
         if (!this.showVideo) {
           this.showVideo = true;
         }
@@ -157,9 +150,9 @@ export class VideoComponent implements OnInit {
     this.playerService.volume
       .pipe(
         filter(() => !!this.getHtmlVideo()),
-        map(vol => vol / 100), // volume must be in [0, 1] range
+        map((vol) => vol / 100) // volume must be in [0, 1] range
       )
-      .subscribe(vol => {
+      .subscribe((vol) => {
         this.getHtmlVideo().volume = vol;
       });
   }
@@ -167,7 +160,7 @@ export class VideoComponent implements OnInit {
   playFile(file: IFile) {
     return this.getHtmlVideo()
       .play()
-      .catch(err => console.log('catched: ', err));
+      .catch((err) => console.log("catched: ", err));
   }
 
   onEnded() {
