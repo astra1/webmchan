@@ -2,7 +2,7 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 
 @NgModule({
-  imports: [CommonModule, HotkeyModule.forRoot()],
+  imports: [CommonModule],
   providers: [],
   declarations: [],
 })

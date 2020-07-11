@@ -1,10 +1,10 @@
-import { SidenavStateService } from './../../core/services/sidenav-state.service';
-import { environment } from './../../../environments/environment';
-import { ApiService } from './../../core/services/Api.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
-import { Subject, of, timer } from 'rxjs';
+import { SidenavStateService } from "./../../core/services/sidenav-state.service";
+import { environment } from "./../../../environments/environment";
+import { ApiService } from "./../../core/services/Api.service";
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { Location } from "@angular/common";
+import { Subject, of, timer } from "rxjs";
 import {
   pluck,
   filter,
@@ -12,21 +12,21 @@ import {
   catchError,
   takeUntil,
   switchMap,
-  map
-} from 'rxjs/operators';
+  map,
+  tap,
+} from "rxjs/operators";
 
-import { IPost, IFile } from '../../core/models/models';
-import { faPlay, faVideo, faBars } from '@fortawesome/free-solid-svg-icons';
-import { PlayerService } from '../../core/services/player.service';
-import { tap } from 'rxjs/internal/operators/tap';
+import { IPost, IFile } from "../../core/models/models";
+import { faPlay, faVideo, faBars } from "@fortawesome/free-solid-svg-icons";
+import { PlayerService } from "../../core/services/player.service";
 
 @Component({
-  selector: 'app-thread',
-  templateUrl: './thread.component.html',
-  styleUrls: ['./thread.component.css']
+  selector: "app-thread",
+  templateUrl: "./thread.component.html",
+  styleUrls: ["./thread.component.css"],
 })
 export class ThreadComponent implements OnInit, OnDestroy {
-  thread_num = '';
+  thread_num = "";
 
   // fontawesome icons
   faBars = faBars;
@@ -54,13 +54,13 @@ export class ThreadComponent implements OnInit, OnDestroy {
     this.route.params
       .pipe(
         takeUntil(this.destroy$),
-        tap(val => console.log(val)),
-        pluck('thread_id'),
-        filter(val => !!val),
+        tap((val) => console.log(val)),
+        pluck("thread_id"),
+        filter((val) => !!val),
         flatMap((val: string) => {
           this.loading = true;
           this.thread_num = val;
-          return this.api.getPosts(this.route.snapshot.params['board_id'], val);
+          return this.api.getPosts(this.route.snapshot.params["board_id"], val);
         }),
         catchError(() => of([]))
       )
@@ -75,14 +75,14 @@ export class ThreadComponent implements OnInit, OnDestroy {
           takeUntil(this.destroy$),
           switchMap(() =>
             this.api.getPosts(
-              this.route.snapshot.params['board_id'],
+              this.route.snapshot.params["board_id"],
               this.thread_num
             )
           ),
-          map(val => this.updateData(val))
+          map((val) => this.updateData(val))
         )
         .subscribe(() => {
-          console.log('auto_update');
+          console.log("auto_update");
         });
     }
   }
