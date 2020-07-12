@@ -7,6 +7,10 @@
   transform: translate(-50%, -50%);
 }
 
+.video-list {
+  overflow-y: auto;
+}
+
 .nav-toolbar {
   height: 4rem;
 }
@@ -18,6 +22,7 @@
 }
 
 .router-container {
+  padding: 5rem 8rem 0 8rem;
   min-width: 100%;
   height: calc(
     100vh - (#{$appToolbarHeight} + #{$playerControlsPanelHeight})

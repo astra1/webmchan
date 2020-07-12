@@ -9,6 +9,8 @@ import {
   SetShuffle,
   SetFullscreen,
   SetCurrentTrackTime,
+  SetVolumeLevel,
+  SetCurrentTrackTimeLength,
 } from "./player.actions";
 import { Injectable } from "@angular/core";
 
@@ -23,18 +25,20 @@ export interface PlayerStateModel {
   isFullscreenOn: boolean;
 
   currentTrackTime: number;
+  currentTrackTimeLength: number;
 }
 
 @State<PlayerStateModel>({
   name: "player",
   defaults: {
     currentTrack: null,
+    currentTrackTime: 0,
     volumeLevel: 100,
     isPlaying: false,
     isFullscreenOn: false,
-    currentTrackTime: 0,
     isShuffleOn: false,
     queue: [],
+    currentTrackTimeLength: 0,
   },
 })
 @Injectable({
@@ -54,6 +58,16 @@ export class PlayerState {
   @Selector()
   static currentTrackTime(state: PlayerStateModel) {
     return state.currentTrackTime;
+  }
+
+  @Selector()
+  static currentTrackLength(state: PlayerStateModel) {
+    return state.currentTrackTimeLength;
+  }
+
+  @Selector()
+  static volumeLevel(state: PlayerStateModel) {
+    return state.volumeLevel;
   }
 
   @Action(SetIsPlaying)
@@ -96,6 +110,16 @@ export class PlayerState {
     });
   }
 
+  @Action(SetCurrentTrackTimeLength)
+  setCurrentTrackLength(
+    { patchState }: StateContext<PlayerStateModel>,
+    { payload }: SetCurrentTrackTimeLength
+  ) {
+    patchState({
+      currentTrackTimeLength: payload,
+    });
+  }
+
   @Action(SetPlaylist)
   setPlaylist(
     { patchState }: StateContext<PlayerStateModel>,
@@ -103,6 +127,16 @@ export class PlayerState {
   ) {
     patchState({
       queue: payload,
+    });
+  }
+
+  @Action(SetVolumeLevel)
+  setVolumeLevel(
+    { patchState }: StateContext<PlayerStateModel>,
+    { payload }: SetVolumeLevel
+  ) {
+    patchState({
+      volumeLevel: payload,
     });
   }
 

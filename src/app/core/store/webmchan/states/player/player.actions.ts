@@ -16,7 +16,7 @@ export class SetPlaylist {
 }
 
 export class SetCurrentTrack {
-  static readonly type = "[Player] Set track";
+  static readonly type = "[Player] Set Current Track";
   constructor(public payload: IFile) {}
 }
 
@@ -42,5 +42,10 @@ export class SetFullscreen {
 
 export class SetCurrentTrackTime {
   static readonly type = "[Player] Set Current Track Time";
+  constructor(public payload: number) {}
+}
+
+export class SetCurrentTrackTimeLength {
+  static readonly type = "[Player] Set Curren Track Length";
   constructor(public payload: number) {}
 }

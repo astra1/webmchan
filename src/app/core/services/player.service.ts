@@ -1,153 +1,54 @@
-import { IFile } from './../models/models';
-import { Injectable } from '@angular/core';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { IFile } from "./../models/models";
+import { Injectable } from "@angular/core";
+import { Subject, BehaviorSubject, Observable, fromEvent } from "rxjs";
+import { Select, Store, Actions, ofActionSuccessful } from "@ngxs/store";
+import { PlayerState } from "../store/webmchan/states/player/player.state";
+import {
+  SetIsPlaying,
+  SetCurrentTrackTime,
+} from "../store/webmchan/states/player/player.actions";
+import { filter } from "rxjs/operators";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class PlayerService {
-  private volume$ = new BehaviorSubject<number>(100);
-  volume = this.volume$.asObservable();
+  @Select(PlayerState.currentTrack) currentTrack$: Observable<IFile>;
 
-  private currentPlayList$ = new BehaviorSubject<IFile[]>([]);
-  currentPlayList = this.currentPlayList$.asObservable();
-
-  private currentVideo$ = new BehaviorSubject<IFile>({
-    displayname: 'empty',
-    fullname: 'empty',
-    height: 0,
-    width: 0,
-    md5: null,
-    name: 'empty',
-    nsfw: 0,
-    path: '',
-    size: 0,
-    thumbnail: '',
-    tn_height: 0,
-    tn_width: 0,
-    type: 0,
-    duration: '0',
-    duration_secs: 0
-  });
-
-  currentVideo = this.currentVideo$.asObservable();
-
-  private isPlaying$ = new BehaviorSubject(false);
-  isPlaying = this.isPlaying$.asObservable();
-
-  private timeChanged$ = new Subject<number>();
-  timeChanged = this.timeChanged$.asObservable();
-
-  private isShuffleOn$ = new BehaviorSubject(false);
-  isShuffleOn = this.isShuffleOn$.asObservable();
-
-  private isFullscreen$ = new BehaviorSubject(false);
-  isFullscreen = this.isFullscreen$.asObservable();
-
-  constructor() {}
-
-  playNext() {
-    const playList = this.currentPlayList$.value;
-    let video: IFile = null;
-    let pos = -1;
-
-    if (playList && playList.length > 0) {
-      pos = this.isShuffleOn$.value
-        ? this.getRandPos(playList.length)
-        : playList.findIndex(val => val.path === this.currentVideo$.value.path);
-
-      if (pos < 0) {
-        this.isPlaying$.next(false);
-        return;
-      }
-
-      pos = pos === playList.length - 1 && !this.isShuffleOn$.value ? 0 : ++pos;
-      video = playList[pos];
-    }
-
-    if (video) {
-      this.currentVideo$.next(video);
-      this.isPlaying$.next(true);
-    }
+  private videoObj: HTMLVideoElement;
+  constructor(private actions$: Actions, private store: Store) {
+    // this.createVideoObject();
+    // this.currentTrack$.pipe(filter((track) => !!track)).subscribe((track) => {
+    //   console.warn("cur", track);
+    //   this.videoObj.src = `https://2ch.hk${track.path}`;
+    // });
+    // fromEvent(this.videoObj, "ontimeupdate").subscribe(() =>
+    //   this.store.dispatch(new SetCurrentTrackTime(this.videoObj.currentTime))
+    // );
+    // this.actions$
+    //   .pipe(ofActionSuccessful(SetIsPlaying))
+    //   .subscribe((isPlaying) =>
+    //     isPlaying ? this.videoObj.play() : this.videoObj.pause()
+    //   );
   }
 
-  playPrev() {
-    const playList = this.currentPlayList$.value;
-    let video: IFile = null;
-    let pos = -1;
+  private createVideoObject() {
+    const videoObj = document.createElement("video");
+    const defaultVideoWidth = 600;
+    const defaultVideoHeight = 400;
 
-    if (playList && playList.length > 1) {
-      pos = this.isShuffleOn$.value
-        ? this.getRandPos(playList.length)
-        : playList.findIndex(val => val.path === this.currentVideo$.value.path);
+    // videoObj.height = defaultVideoHeight;
+    // videoObj.width = defaultVideoWidth;
+    videoObj.style.position = "fixed";
 
-      if (pos < 0) {
-        this.isPlaying$.next(false);
-        return;
-      }
+    var left = window.innerWidth / 2 - defaultVideoWidth / 2;
+    var top = window.innerHeight / 2 - defaultVideoHeight / 2;
+    videoObj.style.left = left + "px";
+    videoObj.style.top = top + "px";
 
-      pos = pos === 0 && !this.isShuffleOn$.value ? playList.length - 1 : --pos;
-      video = playList[pos];
-    }
-
-    if (video) {
-      this.currentVideo$.next(video);
-      this.isPlaying$.next(true);
-    }
-  }
-
-  playAll() {
-    this.playFile(this.currentPlayList$.value[0]);
-  }
-
-  playFile(videoFile: IFile) {
-    this.currentVideo$.next(videoFile);
-    this.isPlaying$.next(true);
-  }
-
-  pause() {
-    this.isPlaying$.next(!this.isPlaying$.value);
-  }
-
-  stop() {
-    this.isPlaying$.next(false);
-  }
-
-  toggleFullscreen() {
-    this.isFullscreen$.next(true);
-  }
-
-  setVolume(level: number) {
-    if (level < 0) {
-      level = 0;
-    } else if (level > 100) {
-      level = 100;
-    }
-
-    this.volume$.next(level);
-  }
-
-  getRandPos(num: number): number {
-    let res = Math.floor(Math.random() * num);
-    return res < 0 ? 0 : res;
-  }
-
-  toggleShuffle() {
-    this.isShuffleOn$.next(!this.isShuffleOn$.value);
-  }
-
-  setTime(seconds: number) {
-    const currVideo = this.currentVideo$.value;
-    if (currVideo && currVideo.duration_secs >= seconds) {
-      this.timeChanged$.next(seconds);
-    }
-  }
-
-  setPlaysist(playlist: IFile[]) {
-    this.currentPlayList$.next(playlist);
-  }
-
-  clearPlaylist() {
-    this.currentPlayList$.next([]);
+    videoObj.style.zIndex = "99";
+    // videoObj.ontimeupdate(() => this.store.dispatch(new SetCurrentTrackTime(5)))
+    this.videoObj = videoObj;
+    document.body.append(this.videoObj);
   }
 }

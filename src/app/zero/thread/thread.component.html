@@ -1,19 +1,16 @@
 <div class="router-container">
-  <div class="webm-list-container">
-    <div
-      class="webm-preview mat-elevation-z4"
-      [style.background-image]="getThreadThumbnail(file)"
-      *ngFor="let file of videos$ | async; trackBy: trackByFileId"
-    >
-      <button
-        #playButton
-        class="play-button"
-        mat-icon-button
-        (click)="onPlayClick(file)"
-      >
-        <fa-icon [icon]="faPlay" size="lg"></fa-icon>
-      </button>
-      <span class="timeline mat-caption">{{ file.duration }}</span>
-    </div>
+  <div fxFlex="66">
+    <app-video></app-video>
   </div>
+  <mat-list fxFlex="34" class="video-list">
+    <mat-list-item
+      *ngFor="let video of videos$ | async; trackBy: trackByFileId"
+      (click)="onPlayClick(video)"
+    >
+      <img matListAvatar [src]="getThreadThumbnail(video)" />
+      <h3 matLine>
+        {{ video.name }}
+      </h3>
+    </mat-list-item>
+  </mat-list>
 </div>

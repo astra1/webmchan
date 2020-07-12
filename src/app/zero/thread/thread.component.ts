@@ -8,6 +8,11 @@ import { IPost, IFile } from "../../core/models/models";
 import { faPlay, faVideo, faBars } from "@fortawesome/free-solid-svg-icons";
 import { PlayerService } from "../../core/services/player.service";
 import { ActivatedRoute } from "@angular/router";
+import { Store } from "@ngxs/store";
+import {
+  SetIsPlaying,
+  SetCurrentTrack,
+} from "app/core/store/webmchan/states/player/player.actions";
 
 @Component({
   selector: "app-thread",
@@ -31,7 +36,8 @@ export class ThreadComponent implements OnInit {
     private route: ActivatedRoute,
     private location: Location,
     private ps: PlayerService,
-    private sidenavState: SidenavStateService
+    private sidenavState: SidenavStateService,
+    private store: Store
   ) {}
 
   ngOnInit() {
@@ -44,8 +50,7 @@ export class ThreadComponent implements OnInit {
   }
 
   getThreadThumbnail(file: IFile) {
-    const uri = encodeURI(`https://2ch.hk${file.thumbnail.replace("//", "/")}`);
-    return file ? `url(${uri})` : "";
+    return encodeURI(`https://2ch.hk${file.thumbnail}`);
   }
 
   goBack() {
@@ -55,11 +60,12 @@ export class ThreadComponent implements OnInit {
   renew() {}
 
   onPlayClick(file: IFile) {
-    this.ps.playFile(file);
+    this.store.dispatch(new SetCurrentTrack(file));
+    this.store.dispatch(new SetIsPlaying(true));
   }
 
   onPlayAllClick() {
-    this.ps.playAll();
+    // this.ps.playAll();
   }
 
   toggleSidenav() {

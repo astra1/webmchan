@@ -1,31 +1,26 @@
-<div class="volume-wrapper"
-     (mousewheel)="onVolumeScroll($event)"
-     fxLayout="row"
-     fxLayoutAlign="space-around center"
-     fxLayoutGap="10px">
+<div
+  class="volume-wrapper"
+  (mousewheel)="onVolumeScroll($event)"
+  fxLayout="row"
+  fxLayoutAlign="space-around center"
+  fxLayoutGap="10px"
+>
+  <div fxFlex="80" class="volume-slider">
+    <mat-slider
+      min="MIN_VOLUME_LEVEL"
+      [formControl]="volumeControl"
+      color="accent"
+      [matTooltip]="volumeControl.value"
+      max="MAX_VOLUME_LEVEL"
+      step="VOLUME_SLIDER_STEP"
+    ></mat-slider>
+  </div>
 
-    <fa-icon fxFlex="20"
-             (click)="onMute()"
-             matTooltip="MUTE"
-             class="volume-min"
-             [icon]="faVolumeMin"></fa-icon>
-
-    <div fxFlex="60"
-         class="volume-slider">
-        <mat-slider #volumeSlider
-                    min="0"
-                    (change)="onVolumeChange($event)"
-                    color="accent"
-                    [matTooltip]="volumeSlider.value"
-                    max="100"
-                    step="10"
-                    value="100"></mat-slider>
-    </div>
-
-    <fa-icon fxFlex="20"
-             (click)="onMaxVolume()"
-             matTooltip="BASS BOOST"
-             class="volume-high"
-             [icon]="faVolumeMax"></fa-icon>
-
+  <fa-icon
+    fxFlex="20"
+    (click)="toggleMute()"
+    [matTooltip]="volumeControl.value === 0 ? 'MUTED' : 'BASS BOOST'"
+    class="volume-high"
+    [icon]="volumeControl.value > 0 ? faVolumeMax : faVolumeOff"
+  ></fa-icon>
 </div>

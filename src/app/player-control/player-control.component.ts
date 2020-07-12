@@ -21,6 +21,10 @@ import { filter } from "rxjs/operators";
 import { ElectronService } from "../core/services/electron.service";
 import { MatDialog } from "@angular/material/dialog";
 import { CopyUrlDialogComponent } from "./copy-url-dialog/copy-url-dialog.component";
+import { Select, Store } from "@ngxs/store";
+import { PlayerState } from "app/core/store/webmchan/states/player/player.state";
+import { Observable } from "rxjs";
+import { SetIsPlaying } from "app/core/store/webmchan/states/player/player.actions";
 
 @Component({
   selector: "app-player-control",
@@ -50,11 +54,19 @@ export class PlayerControlComponent implements OnInit {
   isPlaying = false;
   isShuffled = false;
 
+  @Select(PlayerState.currentTrack) currentTrack$: Observable<IFile>;
+  @Select(PlayerState.currentTrackTime) currentTime$: Observable<number>;
+  @Select(PlayerState.currentTrackLength) currentTrackLength$: Observable<
+    number
+  >;
+  @Select(PlayerState.isPlaying) isPlaying$: Observable<boolean>;
+
   constructor(
     public dlg: MatDialog,
     private downService: DownloadService,
     private electronService: ElectronService,
     private playerService: PlayerService,
+    private store: Store,
     private settingsService: SettingsService
   ) {}
 
@@ -64,16 +76,16 @@ export class PlayerControlComponent implements OnInit {
   ngOnInit() {
     this.isNative = this.electronService.isElectron() || false;
 
-    this.playerService.currentVideo
-      .pipe(filter((val) => !!val.md5))
-      .subscribe((val) => {
-        this.currentTrack = val;
-        this.trackLength = val.duration_secs;
-      });
+    // this.playerService.currentVideo
+    //   .pipe(filter((val) => !!val.md5))
+    //   .subscribe((val) => {
+    //     this.currentTrack = val;
+    //     this.trackLength = val.duration_secs;
+    //   });
 
-    this.playerService.isPlaying.subscribe((val) => (this.isPlaying = val));
+    // this.playerService.isPlaying.subscribe((val) => (this.isPlaying = val));
 
-    this.playerService.isShuffleOn.subscribe((val) => (this.isShuffled = val));
+    // this.playerService.isShuffleOn.subscribe((val) => (this.isShuffled = val));
   }
 
   getTrackThumb() {
@@ -83,7 +95,7 @@ export class PlayerControlComponent implements OnInit {
   }
 
   onTimeSelect(seconds: number) {
-    this.playerService.setTime(seconds);
+    // this.playerService.setTime(seconds);
   }
 
   updateTime(seconds: number) {
@@ -91,25 +103,26 @@ export class PlayerControlComponent implements OnInit {
   }
 
   playNext() {
-    this.playerService.playNext();
+    // this.playerService.playNext();
   }
 
   playPrev() {
-    this.playerService.playPrev();
+    // this.playerService.playPrev();
   }
 
   play() {
-    this.playerService.pause();
+    const isPlaying = this.store.selectSnapshot(PlayerState.isPlaying);
+    this.store.dispatch(new SetIsPlaying(!isPlaying));
   }
 
   stop() {}
 
   toggleShuffle() {
-    this.playerService.toggleShuffle();
+    // this.playerService.toggleShuffle();
   }
 
   toggleFullscreen() {
-    this.playerService.toggleFullscreen();
+    // this.playerService.toggleFullscreen();
   }
 
   copyUrlClick() {

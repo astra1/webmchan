@@ -1,9 +1,0 @@
-<div class="video-container"
-     [hidden]="!showVideo">
-    <mat-spinner *ngIf="loading"></mat-spinner>
-    <video #videoContainer
-           controlsList="nodownload nofullscreen noremoteplayback"
-           (ended)="onEnded()"
-           (timeupdate)="onTimeUpdated()">
-    </video>
-</div>

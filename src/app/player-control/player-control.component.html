@@ -6,45 +6,64 @@
 >
   <div class="progress-wrapper">
     <app-track-progress
-      [hidden]="!currentTrack"
-      [currentProgress]="currentTime"
+      [hidden]="!(currentTrack$ | async)"
+      [currentProgress]="currentTime$ | async"
       (progressChange)="onTimeSelect($event)"
-      [progressLength]="trackLength"
+      [progressLength]="currentTrackLength$ | async"
     >
     </app-track-progress>
   </div>
-  <app-video (played)="updateTime($event)"></app-video>
 
   <!-- Left Panel -->
   <div fxFlex="20" fxLayoutGap="10px">
     <!-- Play -->
-    <button mat-icon-button [disabled]="!currentTrack" (click)="play()">
-      <fa-icon [icon]="isPlaying ? faPause : faPlay" size="lg"></fa-icon>
+    <button
+      mat-icon-button
+      [disabled]="!(currentTrack$ | async)"
+      (click)="play()"
+      [color]="(currentTrack$ | async) && 'warn'"
+    >
+      <fa-icon
+        [icon]="(isPlaying$ | async) ? faPause : faPlay"
+        size="lg"
+      ></fa-icon>
     </button>
     <!--./Play -->
     <!--./Stop -->
-    <button mat-icon-button [disabled]="!currentTrack" (click)="stop()">
+    <button
+      mat-icon-button
+      [disabled]="!(currentTrack$ | async)"
+      (click)="stop()"
+    >
       <fa-icon [icon]="faStop" size="lg"></fa-icon>
     </button>
     <!--./Stop -->
     <!-- Prev Track -->
-    <button mat-icon-button [disabled]="!currentTrack" (click)="playPrev()">
+    <button
+      mat-icon-button
+      [disabled]="!(currentTrack$ | async)"
+      (click)="playPrev()"
+    >
       <fa-icon [icon]="faStepBack" size="lg"></fa-icon>
     </button>
     <!--./Prev Track -->
     <!-- Next Track -->
-    <button mat-icon-button [disabled]="!currentTrack" (click)="playNext()">
+    <button
+      mat-icon-button
+      [disabled]="!(currentTrack$ | async)"
+      (click)="playNext()"
+    >
       <fa-icon [icon]="faStepForw" size="lg"></fa-icon>
     </button>
     <!--./Next Track -->
     <!-- Time Label -->
-    <div class="time-label" [hidden]="!currentTrack">
+    <div class="time-label" [hidden]="!(currentTrack$ | async)">
       <span class="time-container-current">{{
-        currentTime | minuteSeconds
+        currentTime$ | async | minuteSeconds
       }}</span>
       /
       <span class="time-container-current">{{
-        trackLength | minuteSeconds
+        currentTrackLength$ | async | minuteSeconds
       }}</span>
     </div>
     <!--./Time Label -->
@@ -60,7 +79,9 @@
     fxLayoutGap="10px"
   >
     <img class="video-thumbnail" [src]="getTrackThumb()" />
-    <div fxFlex="25">{{ currentTrack?.displayname }}</div>
+    <div fxFlex="25" [matTooltip]="(currentTrack$ | async)?.fullname">
+      {{ (currentTrack$ | async)?.displayname }}
+    </div>
     <button
       mat-icon-button
       [matMenuTriggerFor]="menu"
@@ -93,7 +114,7 @@
     <!-- Shuffle -->
     <button
       mat-icon-button
-      [disabled]="!currentTrack"
+      [disabled]="!currentTrack$ | async"
       (click)="toggleShuffle()"
     >
       <fa-icon
@@ -107,7 +128,7 @@
     <!-- Fullscreen -->
     <button
       mat-icon-button
-      [disabled]="!currentTrack"
+      [disabled]="!currentTrack$ | async"
       (click)="toggleFullscreen()"
     >
       <fa-icon [icon]="faFullscreen" size="lg"></fa-icon>

@@ -19,7 +19,6 @@ export class ThreadsResolver implements Resolve<IThread[]> {
   constructor(private store: Store) {}
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     const boardId = route.paramMap.get("board_id");
-    console.warn("hop hey", boardId);
     this.store.dispatch(new SetCurrentBoard(boardId));
     return this.store.dispatch(new GetThreads()).pipe(
       withLatestFrom(this.threads$),
