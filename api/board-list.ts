@@ -3,10 +3,9 @@ import {
   APIGatewayProxyResult,
   Context,
 } from "https://deno.land/x/lambda/mod.ts";
-import { config } from "https://deno.land/x/dotenv/mod.ts";
 import { IBoardRoot } from "../src/app/core/models/models.ts";
 
-const { harkach_url } = config({ safe: true });
+const harkach_url = Deno.env.get("harkach_url")!; // ?? "";
 
 export async function handler(
   event: APIGatewayProxyEvent,

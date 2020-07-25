@@ -14,5 +14,6 @@
     "target": "ES2015",
     "typeRoots": ["node_modules/@types"],
     "lib": ["es2018", "dom"]
-  }
+  },
+  "exclude": ["src/api/*"]
 }
