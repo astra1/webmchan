@@ -1,8 +1,10 @@
-<div class="router-container">
-  <div fxFlex="66">
-    <app-video></app-video>
-  </div>
-  <mat-list fxFlex="34" class="video-list">
+<div
+  class="router-container"
+  fxLayout="row"
+  fxLayoutAlign="space-between stretch"
+>
+  <app-video class="video-player" fxFlex="62"></app-video>
+  <mat-list fxFlex="32" class="video-list">
     <mat-list-item
       *ngFor="let video of videos$ | async; trackBy: trackByFileId"
       (click)="onPlayClick(video)"

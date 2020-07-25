@@ -1,9 +1,8 @@
-<div [style]="{ height: '100%', display: 'flex', justifyContent: 'center' }">
-  <video
-    #videoContainer
-    controlsList="nodownload nofullscreen noremoteplayback"
-    (ended)="onEnded()"
-    (timeupdate)="onTimeUpdated()"
-    (loadeddata)="onLoaded()"
-  ></video>
-</div>
+<video
+  class="video-player"
+  #videoContainer
+  controlsList="nodownload nofullscreen noremoteplayback"
+  (ended)="onEnded()"
+  (timeupdate)="onTimeUpdated()"
+  (loadeddata)="onLoaded()"
+></video>
