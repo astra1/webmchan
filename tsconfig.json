@@ -16,5 +16,14 @@
     {
       "path": "./e2e/tsconfig.e2e.json"
     }
-  ]
+  ],
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "typescript-deno-plugin",
+        "enable": true, // default is `true`
+        "importmap": "import_map.json"
+      }
+    ]
+  }
 }
