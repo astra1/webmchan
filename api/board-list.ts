@@ -5,7 +5,7 @@ import {
 } from "https://deno.land/x/lambda/mod.ts";
 import { IBoardRoot } from "../src/app/core/models/models.ts";
 
-const harkach_url = Deno.env.get("harkach_url")!; // ?? "";
+const harkachUrl = Deno.env.get("harkach_url")!;
 
 export async function handler(
   event: APIGatewayProxyEvent,
@@ -19,14 +19,14 @@ export async function handler(
     };
   } catch (error) {
     return {
-      statusCode: 501,
+      statusCode: 409,
       body: error.message,
     };
   }
 }
 
 async function getBoardList() {
-  const res = await fetch(harkach_url);
+  const res = await fetch(`${harkachUrl}/boards.json`);
   const boardCatalog: IBoardRoot = await res.json();
   return boardCatalog.boards;
 }
