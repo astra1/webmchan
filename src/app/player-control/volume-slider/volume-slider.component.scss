@@ -1,25 +1,12 @@
-.volume-wrapper:hover .volume-slider,
-.volume-wrapper:hover .volume-min,
-.volume-min:hover,
-.volume-slider:hover {
-  opacity: 1;
-}
-
 .volume-wrapper {
   display: inline-block;
-  min-width: 15.625rem;
+  min-width: 5vmin;
 }
 
 .volume-min,
 .volume-high {
   text-align: center;
   cursor: pointer;
-}
-
-.volume-min,
-.volume-slider {
-  opacity: 0;
-  transition: opacity 0.25s ease-in;
 }
 
 mat-slider {

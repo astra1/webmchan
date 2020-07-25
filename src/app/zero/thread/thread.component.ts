@@ -34,8 +34,6 @@ export class ThreadComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private location: Location,
-    private ps: PlayerService,
     private sidenavState: SidenavStateService,
     private store: Store
   ) {}
@@ -51,10 +49,6 @@ export class ThreadComponent implements OnInit {
 
   getThreadThumbnail(file: IFile) {
     return encodeURI(`https://2ch.hk${file.thumbnail}`);
-  }
-
-  goBack() {
-    this.location.back();
   }
 
   renew() {}

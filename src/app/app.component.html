@@ -12,6 +12,7 @@
       <button mat-icon-button (click)="goBack()">
         <fa-icon [icon]="faBack" size="lg"></fa-icon>
       </button>
+      <div fxFlex>&nbsp;&nbsp;{{ threadTitle$ | async }}</div>
     </mat-toolbar>
     <router-outlet></router-outlet>
     <app-player-control></app-player-control>

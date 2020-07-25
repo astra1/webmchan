@@ -5,6 +5,13 @@
   fxLayoutAlign="space-around center"
   fxLayoutGap="10px"
 >
+  <fa-icon
+    fxFlex="20"
+    (click)="toggleMute()"
+    [matTooltip]="volumeControl.value === 0 ? 'MUTED' : 'BASS BOOST'"
+    class="volume-high"
+    [icon]="volumeControl.value > 0 ? faVolumeMax : faVolumeOff"
+  ></fa-icon>
   <div fxFlex="80" class="volume-slider">
     <mat-slider
       min="MIN_VOLUME_LEVEL"
@@ -15,12 +22,4 @@
       step="VOLUME_SLIDER_STEP"
     ></mat-slider>
   </div>
-
-  <fa-icon
-    fxFlex="20"
-    (click)="toggleMute()"
-    [matTooltip]="volumeControl.value === 0 ? 'MUTED' : 'BASS BOOST'"
-    class="volume-high"
-    [icon]="volumeControl.value > 0 ? faVolumeMax : faVolumeOff"
-  ></fa-icon>
 </div>

@@ -40,6 +40,15 @@ export class ThreadState {
   }
 
   @Selector()
+  static currentThreadTitle(state: ThreadStateModel) {
+    const threadName =
+      state.currentThread &&
+      state.items.find((i) => i.num === state.currentThread).subject;
+
+    return threadName;
+  }
+
+  @Selector()
   static currentThreadPosts(state: ThreadStateModel) {
     return state.currentThreadPosts;
   }

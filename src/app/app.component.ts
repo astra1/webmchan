@@ -8,9 +8,14 @@ import { MatSidenav } from "@angular/material/sidenav";
 
 import { distinctUntilChanged } from "rxjs/operators";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { Store } from "@ngxs/store";
+import { Select, Store } from "@ngxs/store";
 import { GetBoards } from "./core/store/imageboard/board/board.actions";
 import { Location } from "@angular/common";
+import { ThreadState } from "./core/store/imageboard/thread/thread.state";
+import { Observable } from "rxjs";
+import { BoardState } from "./core/store/imageboard/board/board.state";
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
+import { SetCurrentThread } from "./core/store/imageboard/thread/thread.actions";
 
 @Component({
   selector: "app-root",
@@ -20,6 +25,11 @@ import { Location } from "@angular/common";
 })
 export class AppComponent implements OnInit {
   @ViewChild("sidenav", { static: true }) sidenav: MatSidenav;
+
+  @Select(BoardState.currentBoard) currentBoard$: Observable<string>;
+  @Select(ThreadState.currentThread) currentThread$: Observable<string>;
+  @Select(ThreadState.currentThreadTitle) threadTitle$: Observable<string>;
+
   title = "app";
   faBack = faArrowLeft;
 
@@ -28,7 +38,8 @@ export class AppComponent implements OnInit {
     private settingsService: SettingsService,
     private sidenavState: SidenavStateService,
     private location: Location,
-    private store: Store
+    private store: Store,
+    private route: ActivatedRoute
   ) {
     if (es.isElectron()) {
       console.log("Mode electron");
@@ -54,6 +65,10 @@ export class AppComponent implements OnInit {
   }
 
   goBack() {
+    const params = this.route.snapshot.firstChild?.paramMap;
+    if (params.has("thread_id")) {
+      this.store.dispatch(new SetCurrentThread(null));
+    }
     this.location.back();
   }
 }

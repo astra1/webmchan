@@ -1,7 +1,7 @@
 <mat-toolbar
   class="player-control"
   fxLayout="row"
-  fxLayoutAlign="start center"
+  fxLayoutAlign="space-around center"
   fxLayoutGap="10px"
 >
   <div class="progress-wrapper">
@@ -15,7 +15,7 @@
   </div>
 
   <!-- Left Panel -->
-  <div fxFlex="20" fxLayoutGap="10px">
+  <div fxFlex="18" fxLayoutGap="10px">
     <!-- Play -->
     <button
       mat-icon-button
@@ -73,19 +73,23 @@
   <!-- Middle Panel -->
   <div
     class="middle-panel"
-    fxFlex="60"
+    fxFlex="34"
     fxLayout="row"
     fxLayoutAlign="center center"
     fxLayoutGap="10px"
   >
-    <img class="video-thumbnail" [src]="getTrackThumb()" />
-    <div fxFlex="25" [matTooltip]="(currentTrack$ | async)?.fullname">
+    <img
+      *ngIf="currentTrack$ | async"
+      class="video-thumbnail"
+      [src]="getTrackThumb()"
+    />
+    <div fxFlex [matTooltip]="(currentTrack$ | async)?.fullname">
       {{ (currentTrack$ | async)?.displayname }}
     </div>
     <button
       mat-icon-button
       [matMenuTriggerFor]="menu"
-      [disabled]="!currentTrack"
+      [disabled]="!(currentTrack$ | async)"
     >
       <fa-icon [icon]="faDots"></fa-icon>
     </button>
@@ -110,9 +114,10 @@
   <!--./Middle Panel -->
 
   <!-- Right Panel -->
-  <div fxFlex="20" fxLayoutGap="10px" fxLayoutAlign="flex-end center">
-    <!-- Shuffle -->
+  <div fxFlex="18" fxLayoutGap="10px" fxLayoutAlign="flex-end center">
+    <!-- Shuffle. todo: Disabled. Need rework. -->
     <button
+      *ngIf="false"
       mat-icon-button
       [disabled]="!currentTrack$ | async"
       (click)="toggleShuffle()"
@@ -125,6 +130,12 @@
     </button>
     <!--./Shuffle -->
 
+    <!-- Volume -->
+    <div class="volume-wrapper">
+      <app-volume-slider></app-volume-slider>
+    </div>
+    <!--./Volume -->
+
     <!-- Fullscreen -->
     <button
       mat-icon-button
@@ -134,12 +145,6 @@
       <fa-icon [icon]="faFullscreen" size="lg"></fa-icon>
     </button>
     <!--./Fullscreen -->
-
-    <!-- Volume -->
-    <div class="volume-wrapper">
-      <app-volume-slider></app-volume-slider>
-    </div>
-    <!--./Volume -->
   </div>
   <!--./Right Panel -->
 </mat-toolbar>
