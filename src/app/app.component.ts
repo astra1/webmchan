@@ -16,6 +16,7 @@ import { Observable } from "rxjs";
 import { BoardState } from "./core/store/imageboard/board/board.state";
 import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { SetCurrentThread } from "./core/store/imageboard/thread/thread.actions";
+import { SetCurrentTrack } from "./core/store/webmchan/states/player/player.actions";
 
 @Component({
   selector: "app-root",
@@ -68,6 +69,7 @@ export class AppComponent implements OnInit {
     const params = this.route.snapshot.firstChild?.paramMap;
     if (params.has("thread_id")) {
       this.store.dispatch(new SetCurrentThread(null));
+      this.store.dispatch(new SetCurrentTrack(null));
     }
     this.location.back();
   }

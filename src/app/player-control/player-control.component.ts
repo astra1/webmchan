@@ -17,14 +17,18 @@ import {
   faStepForward,
   faStop,
 } from "@fortawesome/free-solid-svg-icons";
-import { filter } from "rxjs/operators";
 import { ElectronService } from "../core/services/electron.service";
 import { MatDialog } from "@angular/material/dialog";
 import { CopyUrlDialogComponent } from "./copy-url-dialog/copy-url-dialog.component";
 import { Select, Store } from "@ngxs/store";
 import { PlayerState } from "app/core/store/webmchan/states/player/player.state";
 import { Observable } from "rxjs";
-import { SetIsPlaying } from "app/core/store/webmchan/states/player/player.actions";
+import {
+  NextTrack,
+  PrevTrack,
+  SetFullscreen,
+  SetIsPlaying,
+} from "app/core/store/webmchan/states/player/player.actions";
 
 @Component({
   selector: "app-player-control",
@@ -75,17 +79,6 @@ export class PlayerControlComponent implements OnInit {
 
   ngOnInit() {
     this.isNative = this.electronService.isElectron() || false;
-
-    // this.playerService.currentVideo
-    //   .pipe(filter((val) => !!val.md5))
-    //   .subscribe((val) => {
-    //     this.currentTrack = val;
-    //     this.trackLength = val.duration_secs;
-    //   });
-
-    // this.playerService.isPlaying.subscribe((val) => (this.isPlaying = val));
-
-    // this.playerService.isShuffleOn.subscribe((val) => (this.isShuffled = val));
   }
 
   getTrackThumb() {
@@ -103,11 +96,11 @@ export class PlayerControlComponent implements OnInit {
   }
 
   playNext() {
-    // this.playerService.playNext();
+    this.store.dispatch(new NextTrack());
   }
 
   playPrev() {
-    // this.playerService.playPrev();
+    this.store.dispatch(new PrevTrack());
   }
 
   play() {
@@ -122,7 +115,8 @@ export class PlayerControlComponent implements OnInit {
   }
 
   toggleFullscreen() {
-    // this.playerService.toggleFullscreen();
+    // todo: handle un_fullscreen & save to state
+    this.store.dispatch(new SetFullscreen(true));
   }
 
   copyUrlClick() {

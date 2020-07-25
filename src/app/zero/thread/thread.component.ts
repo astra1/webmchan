@@ -1,18 +1,18 @@
 import { SidenavStateService } from "./../../core/services/sidenav-state.service";
 import { Component, OnInit } from "@angular/core";
-import { Location } from "@angular/common";
 import { Observable } from "rxjs";
-import { map, pluck } from "rxjs/operators";
+import { map, pluck, tap } from "rxjs/operators";
 
-import { IPost, IFile } from "../../core/models/models";
+import { IPost, IFile, FileTypeEnum } from "../../core/models/models";
 import { faPlay, faVideo, faBars } from "@fortawesome/free-solid-svg-icons";
-import { PlayerService } from "../../core/services/player.service";
 import { ActivatedRoute } from "@angular/router";
 import { Store } from "@ngxs/store";
 import {
   SetIsPlaying,
   SetCurrentTrack,
+  SetPlaylist,
 } from "app/core/store/webmchan/states/player/player.actions";
+import { PlayerState } from "app/core/store/webmchan/states/player/player.state";
 
 @Component({
   selector: "app-thread",
@@ -43,7 +43,18 @@ export class ThreadComponent implements OnInit {
       pluck("posts"),
       map<IPost[], IFile[]>((posts) =>
         posts.reduce((prev, curr) => [...prev, ...curr.files], [])
-      )
+      ),
+      map((files) =>
+        files.filter(
+          (f) => f.type === FileTypeEnum.MP4 || f.type === FileTypeEnum.WEBM
+        )
+      ),
+      tap((files) => {
+        const playlist = this.store.selectSnapshot(PlayerState.playlist);
+        if (!playlist.length) {
+          this.store.dispatch(new SetPlaylist(files)); // todo: make more appropriate the playlist handling
+        }
+      })
     );
   }
 

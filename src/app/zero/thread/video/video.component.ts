@@ -9,15 +9,17 @@ import {
 
 import { environment } from "../../../../environments/environment";
 
-import { switchMap, tap, filter } from "rxjs/operators";
-import { Observable, scheduled, asapScheduler } from "rxjs";
+import { switchMap, tap, filter, mergeMap, pluck } from "rxjs/operators";
+import { Observable, scheduled, asapScheduler, defer } from "rxjs";
 import { IFile } from "../../../core/models/models";
 import { PlayerService } from "../../../core/services/player.service";
-import { Select, Store } from "@ngxs/store";
+import { Actions, ofActionSuccessful, Select, Store } from "@ngxs/store";
 import { PlayerState } from "app/core/store/webmchan/states/player/player.state";
 import {
+  NextTrack,
   SetCurrentTrackTime,
   SetCurrentTrackTimeLength,
+  SetFullscreen,
 } from "app/core/store/webmchan/states/player/player.actions";
 
 @Component({
@@ -45,7 +47,11 @@ export class VideoComponent implements OnInit {
     return this.videoRef?.nativeElement as HTMLVideoElement;
   }
 
-  constructor(public playerService: PlayerService, private store: Store) {
+  constructor(
+    public playerService: PlayerService,
+    private store: Store,
+    private actions$: Actions
+  ) {
     this.createHotkeyHooks();
   }
 
@@ -55,7 +61,8 @@ export class VideoComponent implements OnInit {
         filter((track) => !!track),
         tap((res) => console.warn("newtrack", res)),
         switchMap((track) => {
-          this.htmlVideo.src = "https://2ch.hk" + track.path;
+          this.htmlVideo.pause();
+          this.htmlVideo.setAttribute("src", "https://2ch.hk" + track.path);
           // this.htmlVideo.poster = "https://2ch.hk" + track.thumbnail;
           this.htmlVideo.load();
           this.htmlVideo.focus();
@@ -70,99 +77,31 @@ export class VideoComponent implements OnInit {
 
     this.isPlaying$
       .pipe(
-        switchMap((isPlaying) =>
-          isPlaying
-            ? this.htmlVideo.play()
-            : scheduled([this.htmlVideo.pause()], asapScheduler)
+        mergeMap((playing) =>
+          defer(() =>
+            playing ? this.htmlVideo.play() : this.htmlVideo.pause()
+          )
         )
+      )
+      .subscribe();
+
+    this.actions$
+      .pipe(
+        ofActionSuccessful(SetFullscreen),
+        pluck("payload"),
+        switchMap(() => this.htmlVideo.requestFullscreen())
       )
       .subscribe();
   }
 
   createHotkeyHooks() {}
 
-  // private changeVideoSub() {
-  //   this.playerService.currentVideo
-  //     .pipe(
-  //       distinctUntilChanged(),
-  //       filter((val) => val.md5 !== null),
-  //       tap(() => (this.loading = true)),
-  //       switchMap((val) => {
-  //         this.video = val;
-  //         this.getHtmlVideo().src = "https://2ch.hk" + this.video.path;
-  //         this.getHtmlVideo().poster = "https://2ch.hk" + this.video.thumbnail;
-  //         this.getHtmlVideo().load();
-  //         this.getHtmlVideo().focus();
-  //         return from(this.playFile(this.video));
-  //       })
-  //     )
-  //     .subscribe(() => {
-  //       this.loading = false;
-  //       this.showVideo = true;
-  //     });
-  // }
-
-  // private videoPlaySub() {
-  //   this.playerService.isPlaying
-  //     .pipe(
-  //       filter(() => !!this.getHtmlVideo()),
-  //       flatMap((isPlaying) => {
-  //         return isPlaying
-  //           ? from(this.playFile(this.video)).pipe(map(() => true))
-  //           : of(false);
-  //       })
-  //     )
-  //     .subscribe((val) => {
-  //       if (document.fullscreenEnabled) {
-  //         this.showVideo = val;
-  //       }
-  //       if (!val) {
-  //         this.getHtmlVideo().pause();
-  //       }
-  //     });
-  // }
-
-  // private toggleFullscreeenSub() {
-  //   this.playerService.isFullscreen
-  //     .pipe(filter((val) => val === true))
-  //     .subscribe((val) => {
-  //       if (!this.showVideo) {
-  //         this.showVideo = true;
-  //       }
-
-  //       var element = this.getHtmlVideo();
-  //       var requestMethod = element.requestFullscreen;
-
-  //       if (requestMethod) {
-  //         requestMethod.call(element);
-  //       }
-  //     });
-  // }
-
-  // private volumeSub() {
-  //   this.playerService.volume
-  //     .pipe(
-  //       filter(() => !!this.getHtmlVideo()),
-  //       map((vol) => vol / 100) // volume must be in [0, 1] range
-  //     )
-  //     .subscribe((vol) => {
-  //       this.getHtmlVideo().volume = vol;
-  //     });
-  // }
-
-  // playFile(file: IFile) {
-  //   return this.getHtmlVideo()
-  //     .play()
-  //     .catch((err) => console.log("catched: ", err));
-  // }
-
   onEnded() {
-    // this.playerService.playNext();
+    this.store.dispatch(new NextTrack());
   }
 
   onTimeUpdated() {
     this.store.dispatch(new SetCurrentTrackTime(this.htmlVideo.currentTime));
-    // this.played.next(this.getHtmlVideo().currentTime);
   }
 
   onLoaded() {

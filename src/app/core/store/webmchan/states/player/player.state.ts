@@ -70,6 +70,11 @@ export class PlayerState {
     return state.volumeLevel;
   }
 
+  @Selector()
+  static playlist(state: PlayerStateModel) {
+    return state.queue;
+  }
+
   @Action(SetIsPlaying)
   setIsPlaying(
     { patchState }: StateContext<PlayerStateModel>,
