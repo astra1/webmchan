@@ -78,9 +78,12 @@
     fxLayout="row"
     fxLayoutAlign="center center"
     fxLayoutGap="10px"
-    *ngIf="currentTrack$ | async as track"
   >
-    <img class="video-thumbnail" [src]="getTrackThumb(track)" />
+    <img
+      *ngIf="currentTrack$ | async as track"
+      class="video-thumbnail"
+      [src]="getTrackThumb(track)"
+    />
     <div fxFlex [matTooltip]="(currentTrack$ | async)?.fullname">
       {{ (currentTrack$ | async)?.displayname }}
     </div>
