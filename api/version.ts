@@ -1,4 +1,4 @@
-import { ServerRequest } from "https://deno.land/std/http/server.ts";
+import { ServerRequest } from "https://deno.land/std@0.61.0/http/server.ts";
 
 export default async (req: ServerRequest) => {
   return req.respond({

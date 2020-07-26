@@ -1,4 +1,4 @@
-import { ServerRequest } from "https://deno.land/std/http/server.ts";
+import { ServerRequest } from "https://deno.land/std@0.61.0/http/server.ts";
 import { IRootObject } from "../src/app/core/models/models.ts";
 import Schema, {
   string,
