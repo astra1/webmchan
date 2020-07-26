@@ -40,6 +40,11 @@ export class SetFullscreen {
   constructor(public payload: boolean) {}
 }
 
+export class SetCustomTrackTime {
+  static readonly type = "[Player] Set Current Custom Track Time";
+  constructor(public payload: number) {}
+}
+
 export class SetCurrentTrackTime {
   static readonly type = "[Player] Set Current Track Time";
   constructor(public payload: number) {}

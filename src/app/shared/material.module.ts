@@ -1,7 +1,10 @@
+import { ObserversModule } from "@angular/cdk/observers";
+import { OverlayModule } from "@angular/cdk/overlay";
+import { PortalModule } from "@angular/cdk/portal";
 import { NgModule } from "@angular/core";
-
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
+import { MatRippleModule } from "@angular/material/core";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatGridListModule } from "@angular/material/grid-list";
@@ -15,10 +18,6 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatSliderModule } from "@angular/material/slider";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatTooltipModule } from "@angular/material/tooltip";
-
-import { OverlayModule } from "@angular/cdk/overlay";
-import { PortalModule } from "@angular/cdk/portal";
-import { MatRippleModule } from "@angular/material/core";
 
 const matModules = [
   MatButtonModule,
@@ -38,6 +37,7 @@ const matModules = [
   MatToolbarModule,
   MatTooltipModule,
   OverlayModule,
+  ObserversModule,
   PortalModule,
 ];
 

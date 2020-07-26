@@ -2,27 +2,26 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  OnDestroy,
   OnInit,
   Output,
   ViewChild,
-  OnDestroy,
 } from "@angular/core";
 import { Actions, ofActionSuccessful, Select, Store } from "@ngxs/store";
 import {
   NextTrack,
   SetCurrentTrackTime,
   SetCurrentTrackTimeLength,
+  SetCustomTrackTime,
   SetFullscreen,
   SetIsPlaying,
 } from "app/core/store/webmchan/states/player/player.actions";
 import { PlayerState } from "app/core/store/webmchan/states/player/player.state";
-import { asapScheduler, defer, Observable, scheduled } from "rxjs";
+import { asapScheduler, Observable, scheduled } from "rxjs";
 import {
   catchError,
-  distinctUntilChanged,
   exhaustMap,
   filter,
-  mergeMap,
   pluck,
   switchMap,
   tap,
@@ -85,7 +84,7 @@ export class VideoComponent implements OnInit, OnDestroy {
             asapScheduler
           );
         }),
-        catchError((err) => {
+        catchError(() => {
           return scheduled([null], asapScheduler);
         })
       )
@@ -108,14 +107,23 @@ export class VideoComponent implements OnInit, OnDestroy {
       .pipe(
         ofActionSuccessful(SetIsPlaying),
         pluck("payload"),
-        filter((playing) => !playing)
+        filter((playing) => !playing),
+        tap(() => this.videoPlayer.pause())
       )
-      .subscribe(() => this.videoPlayer.pause());
+      .subscribe();
 
     this.actions$
       .pipe(
         ofActionSuccessful(SetFullscreen),
         tap(() => this.videoPlayer.requestFullscreen())
+      )
+      .subscribe();
+
+    this.actions$
+      .pipe(
+        ofActionSuccessful(SetCustomTrackTime),
+        pluck("payload"),
+        tap((time) => this.videoPlayer.currentTime(time))
       )
       .subscribe();
   }
@@ -127,11 +135,12 @@ export class VideoComponent implements OnInit, OnDestroy {
   }
 
   onTimeUpdated() {
-    if (!this.videoPlayer.paused()) {
-      this.store.dispatch(
-        new SetCurrentTrackTime(this.videoPlayer.currentTime())
-      );
+    if (this.videoPlayer.paused()) {
+      return;
     }
+    this.store.dispatch(
+      new SetCurrentTrackTime(this.videoPlayer.currentTime())
+    );
   }
 
   onLoaded() {

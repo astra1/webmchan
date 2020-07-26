@@ -12,6 +12,7 @@ import {
   SetPlaylist,
   SetShuffle,
   SetVolumeLevel,
+  SetCustomTrackTime,
 } from "./player.actions";
 
 export interface PlayerStateModel {
@@ -102,6 +103,16 @@ export class PlayerState {
   ) {
     patchState({
       isFullscreenOn: payload,
+    });
+  }
+
+  @Action(SetCustomTrackTime)
+  setCustomTrackTime(
+    { patchState }: StateContext<PlayerStateModel>,
+    { payload }: SetCurrentTrackTime
+  ) {
+    patchState({
+      currentTrackTime: payload,
     });
   }
 

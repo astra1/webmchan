@@ -31,6 +31,7 @@
     <!--./Play -->
     <!--./Stop -->
     <button
+      *ngIf="false"
       mat-icon-button
       [disabled]="!(currentTrack$ | async)"
       (click)="stop()"
@@ -77,12 +78,9 @@
     fxLayout="row"
     fxLayoutAlign="center center"
     fxLayoutGap="10px"
+    *ngIf="currentTrack$ | async as track"
   >
-    <img
-      *ngIf="currentTrack$ | async"
-      class="video-thumbnail"
-      [src]="getTrackThumb()"
-    />
+    <img class="video-thumbnail" [src]="getTrackThumb(track)" />
     <div fxFlex [matTooltip]="(currentTrack$ | async)?.fullname">
       {{ (currentTrack$ | async)?.displayname }}
     </div>
@@ -94,7 +92,7 @@
       <fa-icon [icon]="faDots"></fa-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="copyUrlClick()">
+      <button mat-menu-item (click)="copyUrlClick(track)">
         <fa-icon class="menu-icon" fixedWidth="true" [icon]="faLink"></fa-icon>
         <span>Скопировать ссылку</span>
       </button>
@@ -122,11 +120,7 @@
       [disabled]="!currentTrack$ | async"
       (click)="toggleShuffle()"
     >
-      <fa-icon
-        [ngStyle]="{ color: isShuffled ? '#ff4081' : '' }"
-        [icon]="faRandom"
-        size="lg"
-      ></fa-icon>
+      <fa-icon [icon]="faRandom" size="lg"></fa-icon>
     </button>
     <!--./Shuffle -->
 

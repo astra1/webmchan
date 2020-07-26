@@ -17,16 +17,17 @@ import { Select, Store } from "@ngxs/store";
 import {
   NextTrack,
   PrevTrack,
+  SetCustomTrackTime,
   SetFullscreen,
   SetIsPlaying,
 } from "app/core/store/webmchan/states/player/player.actions";
 import { PlayerState } from "app/core/store/webmchan/states/player/player.state";
 import { Observable } from "rxjs";
+import { filter, map, mergeMap } from "rxjs/operators";
 import { ElectronService } from "../core/services/electron.service";
 import { IFile } from "./../core/models/models";
 import { DownloadService } from "./../core/services/download.service";
-import { PlayerService } from "./../core/services/player.service";
-import { ISettings, SettingsService } from "./../settings/settings.service";
+import { SettingsService } from "./../settings/settings.service";
 import { CopyUrlDialogComponent } from "./copy-url-dialog/copy-url-dialog.component";
 
 @Component({
@@ -49,14 +50,6 @@ export class PlayerControlComponent implements OnInit {
   faStepForw = faStepForward;
   faStop = faStop;
 
-  currentTime = 0;
-  trackLength = 1;
-
-  currentTrack: IFile = null;
-
-  isPlaying = false;
-  isShuffled = false;
-
   @Select(PlayerState.currentTrack)
   currentTrack$: Observable<IFile>;
   @Select(PlayerState.currentTrackTime)
@@ -70,30 +63,23 @@ export class PlayerControlComponent implements OnInit {
     public dlg: MatDialog,
     private downService: DownloadService,
     private electronService: ElectronService,
-    private playerService: PlayerService,
     private store: Store,
     private settingsService: SettingsService
-  ) { }
+  ) {}
 
   @HostListener("window:keydown", ["$event"])
-  onKeyDown(event) { }
+  onKeyDown() {}
 
   ngOnInit() {
     this.isNative = this.electronService.isElectron() || false;
   }
 
-  getTrackThumb() {
-    return this.currentTrack && this.currentTrack.thumbnail
-      ? this.currentTrack.thumbnail
-      : "assets/icons/webmchan.svg";
+  getTrackThumb(track: IFile) {
+    return track.thumbnail ? track.thumbnail : "assets/icons/webmchan.svg";
   }
 
   onTimeSelect(seconds: number) {
-    // this.playerService.setTime(seconds);
-  }
-
-  updateTime(seconds: number) {
-    this.currentTime = seconds;
+    this.store.dispatch(new SetCustomTrackTime(seconds));
   }
 
   playNext() {
@@ -109,7 +95,7 @@ export class PlayerControlComponent implements OnInit {
     this.store.dispatch(new SetIsPlaying(!isPlaying));
   }
 
-  stop() { }
+  stop() {}
 
   toggleShuffle() {
     // this.playerService.toggleShuffle();
@@ -120,12 +106,12 @@ export class PlayerControlComponent implements OnInit {
     this.store.dispatch(new SetFullscreen(true));
   }
 
-  copyUrlClick() {
+  copyUrlClick({ name, path }: IFile) {
     const dialogRef = this.dlg.open(CopyUrlDialogComponent, {
       width: "21.875rem",
       data: {
-        title: this.currentTrack.name,
-        url: this.currentTrack.path,
+        title: name,
+        url: path,
       },
     });
 
@@ -134,40 +120,48 @@ export class PlayerControlComponent implements OnInit {
     });
   }
 
-  saveVideo() {
+  saveVideo(track: IFile) {
     if (this.electronService.isElectron()) {
-      this.settingsService.get().subscribe((settings: ISettings) => {
-        let path: string = settings.savePath;
-        if (!this.electronService.fs.existsSync(path)) {
-          path = this.electronService.remote.app.getPath("desktop");
-        }
-
-        let filePath = this.showSaveDlg(path);
-        if (filePath) {
-          this.downloadAndWriteVideo(filePath);
-        }
-      });
+      this.settingsService
+        .get()
+        .pipe(
+          map((settings) => {
+            let path: string = settings.savePath;
+            if (!this.electronService.fs.existsSync(path)) {
+              path = this.electronService.remote.app.getPath("desktop");
+            }
+            return path;
+          }),
+          mergeMap((path) => this.showSaveDlg(path, track)),
+          map((saveDlgData) => saveDlgData.filePath),
+          filter((filepath) => !!filepath),
+          mergeMap((filepath) =>
+            this.downService.download(track.path).pipe(
+              map((buff) => ({
+                filepath,
+                buff,
+              }))
+            )
+          ),
+          filter((data) => !!data.buff && !!data.filepath),
+          mergeMap((data) =>
+            this.electronService.fs.promises.writeFile(data.filepath, data.buff)
+          )
+        )
+        .subscribe();
     }
   }
 
-  private showSaveDlg(path: string) {
+  private showSaveDlg(path: string, track: IFile) {
     return this.electronService.remote.dialog.showSaveDialog({
-      defaultPath: `${path}/${this.currentTrack.fullname}`,
+      defaultPath: `${path}/${track.fullname}`,
       filters: [
         {
-          name: this.currentTrack.name,
+          name: track.name,
           extensions: ["webm", "mp4"],
         },
       ],
       title: "Saving VIDOSIQUE",
-    });
-  }
-
-  private downloadAndWriteVideo(filePath) {
-    this.downService.download(this.currentTrack.path).subscribe((val) => {
-      if (val) {
-        this.electronService.fs.writeFileSync(filePath, Buffer.from(val));
-      }
     });
   }
 }
