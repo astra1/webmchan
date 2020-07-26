@@ -1,8 +1,9 @@
-import { WebmchanStates, WebmchanStateModule } from "./webmchan";
-import { ImageboardStates, ImageboardStateModule } from "./imageboard";
-import { NgxsConfig } from "@ngxs/store/src/symbols";
 import { NgxsDevtoolsOptions } from "@ngxs/devtools-plugin/src/symbols";
 import { NgxsLoggerPluginOptions } from "@ngxs/logger-plugin/src/symbols";
+import { NgxsConfig } from "@ngxs/store/src/symbols";
+import { environment } from "environments/environment.prod";
+import { ImageboardStateModule, ImageboardStates } from "./imageboard";
+import { WebmchanStateModule, WebmchanStates } from "./webmchan";
 
 export const STATES_MODULES = [
   WebmchanStateModule,
@@ -19,7 +20,7 @@ export const OPTIONS_CONFIG: Partial<NgxsConfig> = {
    * import { environment } from '@env';
    * developmentMode: !environment.production
    */
-  developmentMode: true,
+  developmentMode: !environment.production,
 };
 
 export const DEVTOOLS_REDUX_CONFIG: NgxsDevtoolsOptions = {
@@ -29,7 +30,7 @@ export const DEVTOOLS_REDUX_CONFIG: NgxsDevtoolsOptions = {
    * import { environment } from '@env';
    * disabled: environment.production
    */
-  disabled: false,
+  disabled: environment.production,
 };
 
 export const LOGGER_CONFIG: NgxsLoggerPluginOptions = {
@@ -39,5 +40,5 @@ export const LOGGER_CONFIG: NgxsLoggerPluginOptions = {
    * import { environment } from '@env';
    * disabled: environment.production
    */
-  disabled: false,
+  disabled: environment.production,
 };
