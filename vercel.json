@@ -3,6 +3,11 @@
   "env": {
     "harkach_url": "https://2ch.hk"
   },
+  "build": {
+    "env": {
+      "DENO_TSCONFIG": "src/tsconfig.deno.json"
+    }
+  },
   "functions": {
     "api/**/*.ts": {
       "runtime": "vercel-deno@0.5.0"
