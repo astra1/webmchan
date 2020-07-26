@@ -58,12 +58,16 @@ export class PlayerControlComponent implements OnInit {
   isPlaying = false;
   isShuffled = false;
 
-  @Select(PlayerState.currentTrack) currentTrack$: Observable<IFile>;
-  @Select(PlayerState.currentTrackTime) currentTime$: Observable<number>;
-  @Select(PlayerState.currentTrackLength) currentTrackLength$: Observable<
+  @Select(PlayerState.currentTrack)
+  currentTrack$: Observable<IFile>;
+  @Select(PlayerState.currentTrackTime)
+  currentTime$: Observable<number>;
+  @Select(PlayerState.currentTrackLength)
+  currentTrackLength$: Observable<
     number
   >;
-  @Select(PlayerState.isPlaying) isPlaying$: Observable<boolean>;
+  @Select(PlayerState.isPlaying)
+  isPlaying$: Observable<boolean>;
 
   constructor(
     public dlg: MatDialog,
@@ -71,7 +75,7 @@ export class PlayerControlComponent implements OnInit {
     private electronService: ElectronService,
     private playerService: PlayerService,
     private store: Store,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
   ) {}
 
   @HostListener("window:keydown", ["$event"])
@@ -82,8 +86,8 @@ export class PlayerControlComponent implements OnInit {
   }
 
   getTrackThumb() {
-    return this.currentTrack && this.currentTrack.thumbnail !== ""
-      ? environment.dvachApiUrl + this.currentTrack.thumbnail
+    return this.currentTrack?.thumbnail !== ""
+      ? this.currentTrack.thumbnail
       : "./assets/icons/webmchan.svg";
   }
 

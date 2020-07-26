@@ -33,7 +33,7 @@ export class ZeroComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private sidenavService: SidenavStateService
+    private sidenavService: SidenavStateService,
   ) {}
 
   ngOnInit() {
@@ -42,17 +42,17 @@ export class ZeroComponent implements OnInit, OnDestroy {
 
   getThreadThumbnail(thread: IThread) {
     const file = thread.files[0];
-    return file ? `${environment.dvachApiUrl}${file.thumbnail}` : "";
+    return file ? file.thumbnail : "";
   }
 
   getThreadImage(thread: IThread) {
     const file = thread.files[0];
 
     if ((file && file.type === 10) || file.type === 6) {
-      return `${environment.dvachApiUrl}${file.thumbnail}`;
+      return file.thumbnail;
     }
 
-    return file ? `${environment.dvachApiUrl}${file.path}` : "";
+    return file ? file.path : "";
   }
 
   toggleSidenav() {

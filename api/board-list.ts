@@ -1,27 +1,19 @@
-import {
-  APIGatewayProxyEvent,
-  APIGatewayProxyResult,
-  Context,
-} from "https://deno.land/x/lambda/mod.ts";
+import { ServerRequest } from "https://deno.land/std/http/server.ts";
 import { IBoardRoot } from "../src/app/core/models/models.ts";
 
 const harkachUrl = Deno.env.get("harkach_url")!;
 
-export async function handler(
-  event: APIGatewayProxyEvent,
-  context: Context
-): Promise<APIGatewayProxyResult> {
+export default async function (req: ServerRequest) {
   try {
     const boardList = await getBoardList();
-    return {
-      statusCode: 200,
+    req.respond({
       body: JSON.stringify(boardList),
-    };
+    });
   } catch (error) {
-    return {
-      statusCode: 409,
+    req.respond({
+      status: 409,
       body: error.message,
-    };
+    });
   }
 }
 

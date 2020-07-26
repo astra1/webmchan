@@ -31,14 +31,15 @@ export class VideoComponent implements OnInit {
   @ViewChild("videoContainer", { static: true })
   videoRef: ElementRef;
 
-  @Select(PlayerState.currentTrack) currentTrack$: Observable<IFile>;
-  @Select(PlayerState.volumeLevel) volumeLevel$: Observable<number>;
-  @Select(PlayerState.isPlaying) isPlaying$: Observable<boolean>;
+  @Select(PlayerState.currentTrack)
+  currentTrack$: Observable<IFile>;
+  @Select(PlayerState.volumeLevel)
+  volumeLevel$: Observable<number>;
+  @Select(PlayerState.isPlaying)
+  isPlaying$: Observable<boolean>;
 
   showVideo = false;
   loading = false;
-
-  url = environment.dvachApiUrl;
 
   @Output()
   played: EventEmitter<number> = new EventEmitter();
@@ -50,7 +51,7 @@ export class VideoComponent implements OnInit {
   constructor(
     public playerService: PlayerService,
     private store: Store,
-    private actions$: Actions
+    private actions$: Actions,
   ) {
     this.createHotkeyHooks();
   }
@@ -67,7 +68,7 @@ export class VideoComponent implements OnInit {
           this.htmlVideo.load();
           this.htmlVideo.focus();
           return scheduled([this.htmlVideo.play()], asapScheduler);
-        })
+        }),
       )
       .subscribe();
 
@@ -78,10 +79,8 @@ export class VideoComponent implements OnInit {
     this.isPlaying$
       .pipe(
         mergeMap((playing) =>
-          defer(() =>
-            playing ? this.htmlVideo.play() : this.htmlVideo.pause()
-          )
-        )
+          defer(() => playing ? this.htmlVideo.play() : this.htmlVideo.pause())
+        ),
       )
       .subscribe();
 
@@ -89,7 +88,7 @@ export class VideoComponent implements OnInit {
       .pipe(
         ofActionSuccessful(SetFullscreen),
         pluck("payload"),
-        switchMap(() => this.htmlVideo.requestFullscreen())
+        switchMap(() => this.htmlVideo.requestFullscreen()),
       )
       .subscribe();
   }
