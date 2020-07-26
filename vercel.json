@@ -20,6 +20,10 @@
         {
           "key": "Content-Type",
           "value": "application/json; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "cache-control: s-maxage=1, stale-while-revalidate"
         }
       ]
     }
