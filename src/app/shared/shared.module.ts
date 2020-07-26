@@ -33,7 +33,6 @@ import { FlexLayoutModule } from "@angular/flex-layout";
     FloorPipe,
     MinuteSecondsPipe,
     MaterialModule,
-    MomentModule,
     ReactiveFormsModule,
     HttpClientModule,
     RouterModule,
