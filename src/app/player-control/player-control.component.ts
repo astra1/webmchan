@@ -1,9 +1,5 @@
-import { SettingsService, ISettings } from "./../settings/settings.service";
-import { DownloadService } from "./../core/services/download.service";
-import { environment } from "./../../environments/environment";
-import { PlayerService } from "./../core/services/player.service";
-import { IFile } from "./../core/models/models";
-import { Component, OnInit, HostListener } from "@angular/core";
+import { Component, HostListener, OnInit } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
 import {
   faCompress,
   faEllipsisV,
@@ -17,18 +13,21 @@ import {
   faStepForward,
   faStop,
 } from "@fortawesome/free-solid-svg-icons";
-import { ElectronService } from "../core/services/electron.service";
-import { MatDialog } from "@angular/material/dialog";
-import { CopyUrlDialogComponent } from "./copy-url-dialog/copy-url-dialog.component";
 import { Select, Store } from "@ngxs/store";
-import { PlayerState } from "app/core/store/webmchan/states/player/player.state";
-import { Observable } from "rxjs";
 import {
   NextTrack,
   PrevTrack,
   SetFullscreen,
   SetIsPlaying,
 } from "app/core/store/webmchan/states/player/player.actions";
+import { PlayerState } from "app/core/store/webmchan/states/player/player.state";
+import { Observable } from "rxjs";
+import { ElectronService } from "../core/services/electron.service";
+import { IFile } from "./../core/models/models";
+import { DownloadService } from "./../core/services/download.service";
+import { PlayerService } from "./../core/services/player.service";
+import { ISettings, SettingsService } from "./../settings/settings.service";
+import { CopyUrlDialogComponent } from "./copy-url-dialog/copy-url-dialog.component";
 
 @Component({
   selector: "app-player-control",
@@ -63,9 +62,7 @@ export class PlayerControlComponent implements OnInit {
   @Select(PlayerState.currentTrackTime)
   currentTime$: Observable<number>;
   @Select(PlayerState.currentTrackLength)
-  currentTrackLength$: Observable<
-    number
-  >;
+  currentTrackLength$: Observable<number>;
   @Select(PlayerState.isPlaying)
   isPlaying$: Observable<boolean>;
 
@@ -75,20 +72,20 @@ export class PlayerControlComponent implements OnInit {
     private electronService: ElectronService,
     private playerService: PlayerService,
     private store: Store,
-    private settingsService: SettingsService,
-  ) {}
+    private settingsService: SettingsService
+  ) { }
 
   @HostListener("window:keydown", ["$event"])
-  onKeyDown(event) {}
+  onKeyDown(event) { }
 
   ngOnInit() {
     this.isNative = this.electronService.isElectron() || false;
   }
 
   getTrackThumb() {
-    return this.currentTrack?.thumbnail !== ""
+    return this.currentTrack && this.currentTrack.thumbnail
       ? this.currentTrack.thumbnail
-      : "./assets/icons/webmchan.svg";
+      : "assets/icons/webmchan.svg";
   }
 
   onTimeSelect(seconds: number) {
@@ -112,7 +109,7 @@ export class PlayerControlComponent implements OnInit {
     this.store.dispatch(new SetIsPlaying(!isPlaying));
   }
 
-  stop() {}
+  stop() { }
 
   toggleShuffle() {
     // this.playerService.toggleShuffle();
@@ -128,7 +125,7 @@ export class PlayerControlComponent implements OnInit {
       width: "21.875rem",
       data: {
         title: this.currentTrack.name,
-        url: "https://2ch.hk" + this.currentTrack.path,
+        url: this.currentTrack.path,
       },
     });
 
@@ -155,7 +152,7 @@ export class PlayerControlComponent implements OnInit {
 
   private showSaveDlg(path: string) {
     return this.electronService.remote.dialog.showSaveDialog({
-      defaultPath: path + "/" + this.currentTrack.fullname,
+      defaultPath: `${path}/${this.currentTrack.fullname}`,
       filters: [
         {
           name: this.currentTrack.name,
@@ -167,12 +164,10 @@ export class PlayerControlComponent implements OnInit {
   }
 
   private downloadAndWriteVideo(filePath) {
-    this.downService
-      .download("https://2ch.hk" + this.currentTrack.path)
-      .subscribe((val) => {
-        if (val) {
-          this.electronService.fs.writeFileSync(filePath, Buffer.from(val));
-        }
-      });
+    this.downService.download(this.currentTrack.path).subscribe((val) => {
+      if (val) {
+        this.electronService.fs.writeFileSync(filePath, Buffer.from(val));
+      }
+    });
   }
 }

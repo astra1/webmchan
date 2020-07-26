@@ -1,15 +1,13 @@
-import { IThread, IPost } from "../../../models/models";
-import { State, Selector, Action, StateContext, Store } from "@ngxs/store";
-import {
-  SetCurrentThread,
-  SetThreads,
-  GetThreads,
-  GetPosts,
-} from "./thread.actions";
 import { Injectable } from "@angular/core";
+import { Action, Selector, State, StateContext, Store } from "@ngxs/store";
+import { tap } from "rxjs/operators";
+import { IPost, IThread } from "../../../models/models";
 import { ApiService } from "../../../services/Api.service";
 import { BoardState } from "../board/board.state";
-import { tap } from "rxjs/operators";
+import {
+  GetPosts, GetThreads, SetCurrentThread,
+  SetThreads
+} from "./thread.actions";
 
 export interface ThreadStateModel {
   currentThread: string | null;
@@ -17,7 +15,7 @@ export interface ThreadStateModel {
   currentThreadPosts: IPost[];
 }
 
-@State<ThreadStateModel>({
+@State({
   name: "thread",
   defaults: {
     currentThread: null,
@@ -27,7 +25,7 @@ export interface ThreadStateModel {
 })
 @Injectable()
 export class ThreadState {
-  constructor(private apiService: ApiService, private store: Store) {}
+  constructor(private apiService: ApiService, private store: Store) { }
 
   @Selector()
   static currentThread(state: ThreadStateModel) {
@@ -41,9 +39,8 @@ export class ThreadState {
 
   @Selector()
   static currentThreadTitle(state: ThreadStateModel) {
-    const threadName =
-      state.currentThread &&
-      state.items.find((i) => i.num === state.currentThread).subject;
+    const threadName = state.currentThread &&
+      state.items.find((i) => i.num === state.currentThread)?.subject;
 
     return threadName;
   }
@@ -56,7 +53,7 @@ export class ThreadState {
   @Action(SetCurrentThread)
   setThread(
     ctx: StateContext<ThreadStateModel>,
-    { payload }: SetCurrentThread
+    { payload }: SetCurrentThread,
   ) {
     ctx.patchState({
       currentThread: payload,
@@ -80,7 +77,7 @@ export class ThreadState {
           ctx.patchState({
             currentThreadPosts: posts,
           })
-        )
+        ),
       );
   }
 

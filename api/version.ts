@@ -1,18 +1,8 @@
-import {
-  APIGatewayProxyEvent,
-  APIGatewayProxyResult,
-  Context,
-} from "https://deno.land/x/lambda/mod.ts";
+import { ServerRequest } from "https://deno.land/std/http/server.ts";
 
-export async function handler(
-  event: APIGatewayProxyEvent,
-  context: Context
-): Promise<APIGatewayProxyResult> {
-  return {
-    statusCode: 200,
+export default async (req: ServerRequest) => {
+  return req.respond({
+    status: 200,
     body: `🦕 ${Deno.version.deno}`,
-    headers: {
-      "Content-Type": "text/html; charset=utf-8",
-    },
-  };
-}
+  });
+};

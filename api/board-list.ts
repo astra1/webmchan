@@ -3,7 +3,7 @@ import { IBoardRoot } from "../src/app/core/models/models.ts";
 
 const harkachUrl = Deno.env.get("harkach_url")!;
 
-export default async function (req: ServerRequest) {
+export default async (req: ServerRequest) => {
   try {
     const boardList = await getBoardList();
     req.respond({
@@ -11,11 +11,11 @@ export default async function (req: ServerRequest) {
     });
   } catch (error) {
     req.respond({
-      status: 409,
+      status: 404,
       body: error.message,
     });
   }
-}
+};
 
 async function getBoardList() {
   const res = await fetch(`${harkachUrl}/boards.json`);

@@ -1,10 +1,12 @@
 import { ServerRequest } from "https://deno.land/std/http/server.ts";
-import { IBoardRoot, IRootObject } from "../src/app/core/models/models.ts";
+import {
+  FileTypeEnum,
+  IFile,
+  IRootObject,
+} from "../src/app/core/models/models.ts";
 import Schema, {
-  Type,
   string,
   number,
-  array,
 } from "https://denoporter.sirjosh.workers.dev/v1/deno.land/x/computed_types/src/index.ts";
 
 const harkachUrl = Deno.env.get("harkach_url")!;
@@ -14,7 +16,7 @@ const RequestParamsSchema = Schema({
   thread_num: number,
 });
 
-export default async function (req: ServerRequest) {
+export default async (req: ServerRequest) => {
   try {
     const queryParams = new URLSearchParams(req.url.split("?")[1]);
     const boardName = queryParams.get("board_name");
@@ -34,10 +36,10 @@ export default async function (req: ServerRequest) {
     });
 
     if (error || !validatedParams) {
-      return {
-        statusCode: 400,
+      return req.respond({
+        status: 400,
         body: error ? error.message : "Cannot validate query params",
-      };
+      });
     }
 
     const postList = await getPostList(
@@ -45,33 +47,43 @@ export default async function (req: ServerRequest) {
       validatedParams.thread_num
     );
 
-    return {
-      statusCode: 200,
+    return req.respond({
+      status: 200,
       body: JSON.stringify(postList),
-    };
+    });
   } catch (error) {
-    return {
-      statusCode: 409,
+    return req.respond({
+      status: 403,
       body: error.message,
-    };
+    });
   }
-}
+};
 
 async function getPostList(boardName: string, threadNum: number) {
   const res = await fetch(`${harkachUrl}/${boardName}/res/${threadNum}.json`);
   const boardCatalog: IRootObject = await res.json();
-  const threadPosts = boardCatalog.threads[0].posts
-    .filter((p) => p.files_count > 0)
+  const threadPosts = [...boardCatalog.threads[0].posts]
+    .filter((p) => p.files.length > 0)
     .map((p) => {
-      const postFiles = p.files.map((f) => {
-        return {
-          ...f,
-          thumbnail: `${harkachUrl}/${f.thumbnail}`,
-          path: `${harkachUrl}/${f.path}`,
-        };
-      });
-      p.files = postFiles;
-      return p;
-    });
+      const postFiles: IFile[] = [...p.files]
+        .filter(
+          (f) => f.type === FileTypeEnum.MP4 || f.type === FileTypeEnum.WEBM
+        )
+        .map((f) => {
+          return {
+            ...f,
+            thumbnail: `${harkachUrl}/${f.thumbnail}`,
+            path: `${harkachUrl}/${f.path}`,
+          };
+        });
+
+      return {
+        ...p,
+        files: postFiles,
+        files_count: postFiles.length,
+      };
+    })
+    .filter((p) => p.files.length > 0);
+
   return threadPosts;
 }

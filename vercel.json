@@ -1,12 +1,22 @@
 {
-  "version": "0.0.2a",
+  "version": 2,
   "env": {
     "harkach_url": "https://2ch.hk"
   },
   "functions": {
     "api/**/*.ts": {
-      "runtime": "vercel-deno@0.5.0",
-      "memory": 128
+      "runtime": "vercel-deno@0.5.0"
     }
-  }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    }
+  ]
 }

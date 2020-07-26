@@ -1,18 +1,15 @@
-import { SidenavStateService } from "./../core/services/sidenav-state.service";
-import { environment } from "./../../environments/environment";
 import {
-  Component,
-  OnInit,
   ChangeDetectionStrategy,
+  Component,
   OnDestroy,
+  OnInit,
 } from "@angular/core";
-import { Observable, Subject } from "rxjs";
-import { IThread } from "../core/models/models";
-import { faBars, faBolt } from "@fortawesome/free-solid-svg-icons";
-import { Select } from "@ngxs/store";
-import { ThreadState } from "../core/store/imageboard/thread/thread.state";
 import { ActivatedRoute } from "@angular/router";
+import { faBars, faBolt } from "@fortawesome/free-solid-svg-icons";
+import { Observable, Subject } from "rxjs";
 import { pluck } from "rxjs/operators";
+import { IThread } from "../core/models/models";
+import { SidenavStateService } from "./../core/services/sidenav-state.service";
 
 @Component({
   selector: "app-zero",
@@ -33,8 +30,8 @@ export class ZeroComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private sidenavService: SidenavStateService,
-  ) {}
+    private sidenavService: SidenavStateService
+  ) { }
 
   ngOnInit() {
     this.threads$ = this.route.data.pipe(pluck("threads"));
@@ -43,6 +40,10 @@ export class ZeroComponent implements OnInit, OnDestroy {
   getThreadThumbnail(thread: IThread) {
     const file = thread.files[0];
     return file ? file.thumbnail : "";
+  }
+
+  onNotFoundThumbnail(imgEl: HTMLImageElement) {
+    console.warn(imgEl);
   }
 
   getThreadImage(thread: IThread) {

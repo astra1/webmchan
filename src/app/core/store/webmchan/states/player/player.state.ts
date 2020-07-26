@@ -1,18 +1,18 @@
+import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { IFile } from "../../../../models/models";
 import {
-  SetIsPlaying,
-  SetPlaylist,
-  SetCurrentTrack,
   NextTrack,
   PrevTrack,
-  SetShuffle,
-  SetFullscreen,
+  SetCurrentTrack,
   SetCurrentTrackTime,
-  SetVolumeLevel,
   SetCurrentTrackTimeLength,
+  SetFullscreen,
+  SetIsPlaying,
+  SetPlaylist,
+  SetShuffle,
+  SetVolumeLevel,
 } from "./player.actions";
-import { Injectable } from "@angular/core";
 
 export interface PlayerStateModel {
   queue: IFile[]; // todo: to sub state?
@@ -28,7 +28,7 @@ export interface PlayerStateModel {
   currentTrackTimeLength: number;
 }
 
-@State<PlayerStateModel>({
+@State({
   name: "player",
   defaults: {
     currentTrack: null,
@@ -147,9 +147,13 @@ export class PlayerState {
 
   @Action(SetCurrentTrack)
   setCurrentTrack(
-    { patchState }: StateContext<PlayerStateModel>,
+    { dispatch, patchState }: StateContext<PlayerStateModel>,
     { payload }: SetCurrentTrack
   ) {
+    if (!payload) {
+      dispatch(new SetIsPlaying(false));
+    }
+
     patchState({
       currentTrack: payload,
     });

@@ -1,18 +1,17 @@
-import { SidenavStateService } from "./../../core/services/sidenav-state.service";
 import { Component, OnInit } from "@angular/core";
-import { Observable } from "rxjs";
-import { map, pluck, tap } from "rxjs/operators";
-
-import { IPost, IFile, FileTypeEnum } from "../../core/models/models";
-import { faPlay, faVideo, faBars } from "@fortawesome/free-solid-svg-icons";
 import { ActivatedRoute } from "@angular/router";
+import { faBars, faPlay, faVideo } from "@fortawesome/free-solid-svg-icons";
 import { Store } from "@ngxs/store";
 import {
-  SetIsPlaying,
   SetCurrentTrack,
+  SetIsPlaying,
   SetPlaylist,
 } from "app/core/store/webmchan/states/player/player.actions";
 import { PlayerState } from "app/core/store/webmchan/states/player/player.state";
+import { Observable } from "rxjs";
+import { map, pluck, tap } from "rxjs/operators";
+import { FileTypeEnum, IFile, IPost } from "../../core/models/models";
+import { SidenavStateService } from "./../../core/services/sidenav-state.service";
 
 @Component({
   selector: "app-thread",
@@ -59,7 +58,7 @@ export class ThreadComponent implements OnInit {
   }
 
   getThreadThumbnail(file: IFile) {
-    return encodeURI(`https://2ch.hk${file.thumbnail}`);
+    return encodeURI(file.thumbnail);
   }
 
   renew() {}

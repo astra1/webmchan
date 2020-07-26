@@ -1,10 +1,5 @@
-<div
-  *ngIf="!(threads$ | async)"
-  style="min-height: 75vh;"
-  fxLayout="column"
-  fxLayoutAlign="center center"
-  fxLayoutGap="5px"
->
+<div *ngIf="!(threads$ | async)" style="min-height: 75vh;" fxLayout="column" fxLayoutAlign="center center"
+  fxLayoutGap="5px">
   <mat-spinner> </mat-spinner>
 </div>
 <div class="thread-list-container">
@@ -13,17 +8,11 @@
       <mat-card class="thread-card">
         <mat-card-header>
           <mat-card-title>{{ thread.num }}</mat-card-title>
-          <mat-card-subtitle
-            >Файлов: ({{ thread.files_count }})</mat-card-subtitle
-          >
+          <mat-card-subtitle>Файлов: ({{ thread.files_count }})</mat-card-subtitle>
         </mat-card-header>
 
-        <img
-          class="thread-thumb"
-          [routerLink]="thread.num"
-          [src]="getThreadThumbnail(thread)"
-          alt="thread img"
-        />
+        <img #threadImg class="thread-thumb" [routerLink]="thread.num" [src]="getThreadThumbnail(thread)"
+          (onerror)="onNotFoundThumbnail(threadImg)" alt="thread img" />
         <mat-card-content>
           <p class="thread-description" [innerHTML]="thread.subject"></p>
         </mat-card-content>
