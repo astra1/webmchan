@@ -1,15 +1,14 @@
-import { FloorPipe } from './../core/pipes/floor.pipe';
-import { MinuteSecondsPipe } from './../core/pipes/minute-seconds.pipe';
-import { MomentModule } from 'ngx-moment';
-import { MaterialModule } from './material.module';
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { FlexLayoutModule } from '@angular/flex-layout';
+import { FloorPipe } from "./../core/pipes/floor.pipe";
+import { MinuteSecondsPipe } from "./../core/pipes/minute-seconds.pipe";
+import { MaterialModule } from "./material.module";
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { HttpClientModule } from "@angular/common/http";
+import { RouterModule } from "@angular/router";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { FlexLayoutModule } from "@angular/flex-layout";
 
 @NgModule({
   imports: [
@@ -19,10 +18,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     FormsModule,
     FlexLayoutModule,
     MaterialModule,
-    MomentModule,
     ReactiveFormsModule,
     HttpClientModule,
-    RouterModule
+    RouterModule,
   ],
   declarations: [FloorPipe, MinuteSecondsPipe],
   exports: [
@@ -35,10 +33,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     FloorPipe,
     MinuteSecondsPipe,
     MaterialModule,
-    MomentModule,
     ReactiveFormsModule,
     HttpClientModule,
-    RouterModule
-  ]
+    RouterModule,
+  ],
 })
 export class SharedModule {}

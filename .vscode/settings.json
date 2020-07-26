@@ -1,0 +1,6 @@
+{
+  "deno.enable": false,
+  "importCost.typescriptExtensions": ["\\.component.ts$"],
+  "importCost.timeout": 60000,
+  "importCost.debug": true
+}

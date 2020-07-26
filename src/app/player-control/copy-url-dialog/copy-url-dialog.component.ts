@@ -1,21 +1,21 @@
-import { ElectronService } from './../../core/services/electron.service';
+import { ElectronService } from "./../../core/services/electron.service";
 import {
   Component,
   OnInit,
   ViewChild,
   ElementRef,
-  AfterViewInit
-} from '@angular/core';
-import { Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+  AfterViewInit,
+} from "@angular/core";
+import { Inject } from "@angular/core";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 @Component({
-  selector: 'app-copy-url-dialog',
-  templateUrl: './copy-url-dialog.component.html',
-  styleUrls: ['./copy-url-dialog.component.css']
+  selector: "app-copy-url-dialog",
+  templateUrl: "./copy-url-dialog.component.html",
+  styleUrls: ["./copy-url-dialog.component.scss"],
 })
 export class CopyUrlDialogComponent implements AfterViewInit {
-  @ViewChild('urlInput', { static: true })
+  @ViewChild("urlInput", { static: true })
   urlInput: ElementRef;
 
   constructor(

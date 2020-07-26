@@ -1,12 +1,20 @@
 <mat-sidenav-container>
-    <mat-sidenav #sidenav
-                 (closedStart)="onSidenavClosed()"
-                 [fixedInViewport]="true"
-                 mode="over">
-        <app-sidenav></app-sidenav>
-    </mat-sidenav>
-    <mat-sidenav-content>
-        <router-outlet></router-outlet>
-        <app-player-control></app-player-control>
-    </mat-sidenav-content>
+  <mat-sidenav
+    #sidenav
+    (closedStart)="onSidenavClosed()"
+    [fixedInViewport]="true"
+    mode="over"
+  >
+    <app-sidenav></app-sidenav>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar>
+      <button mat-icon-button (click)="goBack()">
+        <fa-icon [icon]="faBack" size="lg"></fa-icon>
+      </button>
+      <div fxFlex>&nbsp;&nbsp;{{ threadTitle$ | async }}</div>
+    </mat-toolbar>
+    <router-outlet></router-outlet>
+    <app-player-control></app-player-control>
+  </mat-sidenav-content>
 </mat-sidenav-container>

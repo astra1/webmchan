@@ -1,10 +1,10 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { Input } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from "@angular/core";
+import { Input } from "@angular/core";
 
 @Component({
-  selector: 'app-track-progress',
-  templateUrl: './track-progress.component.html',
-  styleUrls: ['./track-progress.component.css']
+  selector: "app-track-progress",
+  templateUrl: "./track-progress.component.html",
+  styleUrls: ["./track-progress.component.scss"],
 })
 export class TrackProgressComponent implements OnInit {
   @Input()

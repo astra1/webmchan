@@ -1,0 +1,14 @@
+.volume-wrapper {
+  display: inline-block;
+  min-width: 5vmin;
+}
+
+.volume-min,
+.volume-high {
+  text-align: center;
+  cursor: pointer;
+}
+
+mat-slider {
+  width: 100%;
+}

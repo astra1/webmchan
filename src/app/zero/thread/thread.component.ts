@@ -1,32 +1,25 @@
-import { SidenavStateService } from './../../core/services/sidenav-state.service';
-import { environment } from './../../../environments/environment';
-import { ApiService } from './../../core/services/Api.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
-import { Subject, of, timer } from 'rxjs';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { faBars, faPlay, faVideo } from "@fortawesome/free-solid-svg-icons";
+import { Store } from "@ngxs/store";
 import {
-  pluck,
-  filter,
-  flatMap,
-  catchError,
-  takeUntil,
-  switchMap,
-  map
-} from 'rxjs/operators';
-
-import { IPost, IFile } from '../../core/models/models';
-import { faPlay, faVideo, faBars } from '@fortawesome/free-solid-svg-icons';
-import { PlayerService } from '../../core/services/player.service';
-import { tap } from 'rxjs/internal/operators/tap';
+  SetCurrentTrack,
+  SetIsPlaying,
+  SetPlaylist,
+} from "app/core/store/webmchan/states/player/player.actions";
+import { PlayerState } from "app/core/store/webmchan/states/player/player.state";
+import { Observable } from "rxjs";
+import { map, pluck, tap } from "rxjs/operators";
+import { FileTypeEnum, IFile, IPost } from "../../core/models/models";
+import { SidenavStateService } from "./../../core/services/sidenav-state.service";
 
 @Component({
-  selector: 'app-thread',
-  templateUrl: './thread.component.html',
-  styleUrls: ['./thread.component.css']
+  selector: "app-thread",
+  templateUrl: "./thread.component.html",
+  styleUrls: ["./thread.component.scss"],
 })
-export class ThreadComponent implements OnInit, OnDestroy {
-  thread_num = '';
+export class ThreadComponent implements OnInit {
+  thread_num = "";
 
   // fontawesome icons
   faBars = faBars;
@@ -35,93 +28,55 @@ export class ThreadComponent implements OnInit, OnDestroy {
 
   lastUpdated: Date = null;
 
-  destroy$: Subject<boolean> = new Subject<boolean>();
-
-  posts: IPost[] = null;
-  videos: IFile[] = [];
-
+  videos$: Observable<IFile[]>;
   loading = false;
 
   constructor(
-    private api: ApiService,
-    private location: Location,
-    private ps: PlayerService,
     private route: ActivatedRoute,
-    private sidenavState: SidenavStateService
+    private sidenavState: SidenavStateService,
+    private store: Store
   ) {}
 
   ngOnInit() {
-    this.route.params
-      .pipe(
-        takeUntil(this.destroy$),
-        tap(val => console.log(val)),
-        pluck('thread_id'),
-        filter(val => !!val),
-        flatMap((val: string) => {
-          this.loading = true;
-          this.thread_num = val;
-          return this.api.getPosts(this.route.snapshot.params['board_id'], val);
-        }),
-        catchError(() => of([]))
-      )
-      .subscribe((posts: IPost[]) => {
-        this.updateData(posts);
-      });
-
-    // autoupdate
-    if (environment.production) {
-      timer(10000, 10000)
-        .pipe(
-          takeUntil(this.destroy$),
-          switchMap(() =>
-            this.api.getPosts(
-              this.route.snapshot.params['board_id'],
-              this.thread_num
-            )
-          ),
-          map(val => this.updateData(val))
+    this.videos$ = this.route.data.pipe(
+      pluck("posts"),
+      map<IPost[], IFile[]>((posts) =>
+        posts.reduce((prev, curr) => [...prev, ...curr.files], [])
+      ),
+      map((files) =>
+        files.filter(
+          (f) => f.type === FileTypeEnum.MP4 || f.type === FileTypeEnum.WEBM
         )
-        .subscribe(() => {
-          console.log('auto_update');
-        });
-    }
+      ),
+      tap((files) => {
+        const playlist = this.store.selectSnapshot(PlayerState.playlist);
+        if (!playlist.length) {
+          this.store.dispatch(new SetPlaylist(files)); // todo: make more appropriate the playlist handling
+        }
+      })
+    );
   }
 
-  ngOnDestroy() {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
-  }
-
-  private updateData(posts: IPost[]) {
-    this.lastUpdated = new Date();
-    this.posts = posts;
-
-    this.videos = posts
-      .reduce((prev, curr) => {
-        return [...prev, ...curr.files];
-      }, [])
-      .filter((f: IFile) => f.duration_secs);
-
-    this.ps.setPlaysist(this.videos);
-    this.loading = false;
-  }
-
-  goBack() {
-    this.location.back();
+  getThreadThumbnail(file: IFile) {
+    return encodeURI(file.thumbnail);
   }
 
   renew() {}
 
   onPlayClick(file: IFile) {
-    this.ps.playFile(file);
+    this.store.dispatch(new SetCurrentTrack(file));
+    this.store.dispatch(new SetIsPlaying(true));
   }
 
   onPlayAllClick() {
-    this.ps.setPlaysist(this.videos);
-    this.ps.playAll();
+    // this.ps.playAll();
   }
 
   toggleSidenav() {
     this.sidenavState.toggle();
+  }
+
+  trackByFileId(item: IFile) {
+    return item.name;
   }
 }

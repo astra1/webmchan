@@ -5,6 +5,4 @@
 
 export const environment = {
   production: false,
-
-  dvachApiUrl: 'https://2ch.hk/'
 };

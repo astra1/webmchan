@@ -1,20 +1,20 @@
-import { PlayerControlModule } from './player-control/player-control.module';
-import { PlayerControlComponent } from './player-control/player-control.component';
-import { TestBed, async } from '@angular/core/testing';
-import { AppComponent } from './app.component';
-import { VideoComponent } from './player-control/video/video.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { PlayerService } from './core/services/player.service';
+import { PlayerControlModule } from "./player-control/player-control.module";
+import { PlayerControlComponent } from "./player-control/player-control.component";
+import { TestBed, async } from "@angular/core/testing";
+import { AppComponent } from "./app.component";
+import { VideoComponent } from "./zero/thread/video/video.component";
+import { RouterTestingModule } from "@angular/router/testing";
+import { PlayerService } from "./core/services/player.service";
 
-describe('AppComponent', () => {
+describe("AppComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [PlayerControlModule, RouterTestingModule],
       declarations: [AppComponent],
-      providers: [PlayerService]
+      providers: [PlayerService],
     }).compileComponents();
   }));
-  it('should create the app', async(() => {
+  it("should create the app", async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
@@ -22,7 +22,7 @@ describe('AppComponent', () => {
   it(`should have as title 'app'`, async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('app');
+    expect(app.title).toEqual("app");
   }));
   // it('should render title in a h1 tag', async(() => {
   //   const fixture = TestBed.createComponent(AppComponent);

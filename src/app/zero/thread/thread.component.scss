@@ -1,12 +1,15 @@
-#video {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+@import "~variables";
+
+.video-player {
+  padding-bottom: 4rem;
+}
+
+.video-list {
+  overflow-y: auto;
 }
 
 .nav-toolbar {
-  height: 5.375rem;
+  height: 4rem;
 }
 
 .mat-list-icon {
@@ -15,9 +18,12 @@
   border-radius: 0 !important;
 }
 
-.container {
-  min-width: 18.75rem;
-  height: calc(83vh + 0.25rem);
+.router-container {
+  padding: 5rem 8rem 0 8rem;
+  min-width: 100%;
+  height: calc(
+    100vh - (#{$appToolbarHeight} + #{$playerControlsPanelHeight})
+  ); // todo: to styles.scss
 }
 
 .webm-list-container {
@@ -25,17 +31,16 @@
   width: 100%;
   height: 100%;
 
-  grid-gap: 1.25rem;
-  grid-template-columns: repeat(auto-fit, minmax(13.75rem, 1fr));
+  grid-gap: 1.875rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-auto-rows: 114px;
+  grid-auto-flow: row dense;
 
-  align-items: center;
+  align-items: stretch;
+  justify-items: center;
   text-align: center;
 
   overflow-y: auto;
-}
-
-.webm-list-container div {
-  max-width: 100%;
 }
 
 .webm-container {
@@ -44,7 +49,8 @@
 }
 
 .webm-preview {
-  height: 16vh;
+  height: 100%;
+  width: 100%;
   background-position: center;
   position: relative;
 }
@@ -63,7 +69,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #fff;
+  border: 3px solid white;
+  line-height: 36px;
 }
 
 .play-button:hover {
