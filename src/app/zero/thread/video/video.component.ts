@@ -5,6 +5,7 @@ import {
   OnInit,
   Output,
   ViewChild,
+  OnDestroy,
 } from "@angular/core";
 import { Actions, ofActionSuccessful, Select, Store } from "@ngxs/store";
 import {
@@ -12,6 +13,7 @@ import {
   SetCurrentTrackTime,
   SetCurrentTrackTimeLength,
   SetFullscreen,
+  SetIsPlaying,
 } from "app/core/store/webmchan/states/player/player.actions";
 import { PlayerState } from "app/core/store/webmchan/states/player/player.state";
 import { asapScheduler, defer, Observable, scheduled } from "rxjs";
@@ -25,6 +27,7 @@ import {
   switchMap,
   tap,
 } from "rxjs/operators";
+import videojs, { VideoJsPlayer, VideoJsPlayerOptions } from "video.js";
 import { IFile } from "../../../core/models/models";
 import { PlayerService } from "../../../core/services/player.service";
 
@@ -33,9 +36,10 @@ import { PlayerService } from "../../../core/services/player.service";
   templateUrl: "./video.component.html",
   styleUrls: ["./video.component.scss"],
 })
-export class VideoComponent implements OnInit {
+export class VideoComponent implements OnInit, OnDestroy {
   @ViewChild("videoContainer", { static: true })
   videoRef: ElementRef;
+  videoPlayer: VideoJsPlayer;
 
   @Select(PlayerState.currentTrack) currentTrack$: Observable<IFile>;
   @Select(PlayerState.volumeLevel) volumeLevel$: Observable<number>;
@@ -47,34 +51,36 @@ export class VideoComponent implements OnInit {
   @Output()
   played: EventEmitter<number> = new EventEmitter();
 
-  get htmlVideo(): HTMLVideoElement {
-    return this.videoRef?.nativeElement as HTMLVideoElement;
-  }
+  readonly videoPlayerOpts: VideoJsPlayerOptions = {
+    controls: false,
+    liveui: false,
+    controlBar: false,
+    fluid: false,
+  };
 
   constructor(
     public playerService: PlayerService,
     private store: Store,
     private actions$: Actions
   ) {
-    this.createHotkeyHooks();
+    // this.createHotkeyHooks();
   }
 
   ngOnInit() {
+    this.videoPlayer = videojs(
+      this.videoRef.nativeElement,
+      this.videoPlayerOpts
+    );
+
     this.currentTrack$
       .pipe(
         filter((track) => !!track),
-        tap(() => this.htmlVideo.load()),
-        catchError(() => {
-          return scheduled([null], asapScheduler);
-        }),
         exhaustMap((track) => {
-          // this.htmlVideo.pause();
-          // this.htmlVideo.setAttribute("src", track.path);
-          // this.htmlVideo.poster = "https://2ch.hk" + track.thumbnail;
-          // this.htmlVideo.focus();
+          this.videoPlayer.src(track.path);
+          this.videoPlayer.load();
           return scheduled(
             [
-              this.htmlVideo.play(), // ignore: load/play annoying error
+              this.videoPlayer.play(), // ignore: load/play annoying error
             ],
             asapScheduler
           );
@@ -87,26 +93,29 @@ export class VideoComponent implements OnInit {
 
     this.volumeLevel$
       .pipe(filter((lvl) => lvl >= 0 && lvl <= 100))
-      .subscribe((level) => (this.htmlVideo.volume = level / 100));
+      .subscribe((level) => this.videoPlayer.volume(level / 100));
 
-    this.isPlaying$
+    this.actions$
       .pipe(
-        distinctUntilChanged(),
-        mergeMap((playing) =>
-          defer(() =>
-            playing
-              ? scheduled([this.htmlVideo.play()], asapScheduler)
-              : this.htmlVideo.pause()
-          )
-        )
+        ofActionSuccessful(SetIsPlaying),
+        pluck("payload"),
+        filter((playing) => playing),
+        switchMap(() => this.videoPlayer.play())
       )
       .subscribe();
 
     this.actions$
       .pipe(
-        ofActionSuccessful(SetFullscreen),
+        ofActionSuccessful(SetIsPlaying),
         pluck("payload"),
-        switchMap(() => this.htmlVideo.requestFullscreen())
+        filter((playing) => !playing)
+      )
+      .subscribe(() => this.videoPlayer.pause());
+
+    this.actions$
+      .pipe(
+        ofActionSuccessful(SetFullscreen),
+        tap(() => this.videoPlayer.requestFullscreen())
       )
       .subscribe();
   }
@@ -118,14 +127,20 @@ export class VideoComponent implements OnInit {
   }
 
   onTimeUpdated() {
-    this.store.dispatch(new SetCurrentTrackTime(this.htmlVideo.currentTime));
+    if (!this.videoPlayer.paused()) {
+      this.store.dispatch(
+        new SetCurrentTrackTime(this.videoPlayer.currentTime())
+      );
+    }
   }
 
   onLoaded() {
-    this.store.dispatch(new SetCurrentTrackTimeLength(this.htmlVideo.duration));
+    this.store.dispatch(
+      new SetCurrentTrackTimeLength(this.videoPlayer.duration())
+    );
   }
 
-  // setLoading(state: boolean) {
-  //   this.loading = state;
-  // }
+  ngOnDestroy() {
+    this.videoPlayer.dispose();
+  }
 }

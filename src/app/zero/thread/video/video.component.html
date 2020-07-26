@@ -1,7 +1,7 @@
-<video class="video-player" #videoContainer controlsList="nodownload nofullscreen noremoteplayback" (ended)="onEnded()"
-  (timeupdate)="onTimeUpdated()" (loadeddata)="onLoaded()">
-  <source [src]="(currentTrack$ | async)?.path">
-</video>
-<div>
-  {{htmlVideo.src}}
-</div>
+<video
+  class="video-player"
+  #videoContainer
+  (ended)="onEnded()"
+  (timeupdate)="onTimeUpdated()"
+  (loadeddata)="onLoaded()"
+></video>
