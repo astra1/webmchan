@@ -2,6 +2,7 @@ import { ObserversModule } from "@angular/cdk/observers";
 import { OverlayModule } from "@angular/cdk/overlay";
 import { PortalModule } from "@angular/cdk/portal";
 import { NgModule } from "@angular/core";
+import { MatBottomSheetModule } from "@angular/material/bottom-sheet";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatRippleModule } from "@angular/material/core";
@@ -20,6 +21,7 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatTooltipModule } from "@angular/material/tooltip";
 
 const matModules = [
+  MatBottomSheetModule,
   MatButtonModule,
   MatCardModule,
   MatDialogModule,
