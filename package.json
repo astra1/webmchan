@@ -37,7 +37,6 @@
     "@ngxs/store": "^3.3.2",
     "@sentry/browser": "^5.20.1",
     "@types/video.js": "^7.3.10",
-    "core-js": "^3.6.5",
     "electron": "^9.1.1",
     "rxjs": "^6.6.0",
     "tslib": "^2.0.0",
