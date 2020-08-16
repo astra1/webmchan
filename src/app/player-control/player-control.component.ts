@@ -145,7 +145,7 @@ export class PlayerControlComponent implements OnInit {
           ),
           filter((data) => !!data.buff && !!data.filepath),
           mergeMap((data) =>
-            this.electronService.fs.promises.writeFile(data.filepath, data.buff)
+            this.electronService.fs.promises.writeFile(data.filepath, new Uint8Array(data.buff))
           )
         )
         .subscribe();

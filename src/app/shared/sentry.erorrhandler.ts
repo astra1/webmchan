@@ -1,7 +1,7 @@
 import { Injectable, ErrorHandler } from "@angular/core";
 import * as Sentry from "@sentry/browser";
 import { HttpErrorResponse } from "@angular/common/http";
-import { environment } from "../../environments/environment.prod";
+import { environment } from "../../environments/environment";
 
 Sentry.init({
   dsn: environment.dsn,
@@ -25,10 +25,9 @@ export class SentryErrorHandler implements ErrorHandler {
     // When in development mode, log the error to console for immediate feedback.
     if (!environment.production) {
       console.error(extractedError);
+    } else {
+      Sentry.showReportDialog({ eventId });
     }
-
-    // Optionally show user dialog to provide details on what happened.
-    Sentry.showReportDialog({ eventId });
   }
 
   private extractError(error: any) {

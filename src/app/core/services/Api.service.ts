@@ -8,10 +8,22 @@ import { IThread, IPost } from "../models/models";
   providedIn: "root",
 })
 export class ApiService {
-  constructor(private http: HttpClient) {}
+  private hostUrl: string;
+  private pathUrl: string;
+
+  private get apiUrl() {
+    return encodeURI(`https://${this.hostUrl}${this.pathUrl}`);
+  }
+
+  constructor(private http: HttpClient) {
+    this.hostUrl = location.host.startsWith("localhost")
+      ? "webmchan.vercel.app/"
+      : location.host;
+    this.pathUrl = "api/";
+  }
 
   getThreads(boardName: string) {
-    return this.http.get<IThread[]>("api/thread-list/", {
+    return this.http.get<IThread[]>(`${this.apiUrl}thread-list/`, {
       params: {
         board_name: boardName,
       },
@@ -19,7 +31,7 @@ export class ApiService {
   }
 
   getPosts(boardName: string, threadNum: string) {
-    return this.http.get<IPost[]>("api/post-list", {
+    return this.http.get<IPost[]>(`${this.apiUrl}post-list`, {
       params: {
         board_name: boardName,
         thread_num: threadNum,
@@ -28,6 +40,6 @@ export class ApiService {
   }
 
   getBoards() {
-    return this.http.get<IBoard[]>("api/board-list");
+    return this.http.get<IBoard[]>(`${this.apiUrl}board-list`);
   }
 }
