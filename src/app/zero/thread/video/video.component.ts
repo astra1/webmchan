@@ -2,10 +2,12 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  isDevMode,
   OnDestroy,
   OnInit,
   Output,
   ViewChild,
+  ViewContainerRef,
 } from "@angular/core";
 import { Actions, ofActionSuccessful, Select, Store } from "@ngxs/store";
 import {
@@ -17,16 +19,17 @@ import {
   SetIsPlaying,
 } from "app/core/store/webmchan/states/player/player.actions";
 import { PlayerState } from "app/core/store/webmchan/states/player/player.state";
-import { asapScheduler, Observable, scheduled } from "rxjs";
+import * as Plyr from "plyr";
+import { asapScheduler, Observable, scheduled, Subject } from "rxjs";
 import {
   catchError,
   exhaustMap,
   filter,
+  map,
   pluck,
-  switchMap,
+  takeUntil,
   tap,
 } from "rxjs/operators";
-import videojs, { VideoJsPlayer, VideoJsPlayerOptions } from "video.js";
 import { IFile } from "../../../core/models/models";
 import { PlayerService } from "../../../core/services/player.service";
 
@@ -36,9 +39,9 @@ import { PlayerService } from "../../../core/services/player.service";
   styleUrls: ["./video.component.scss"],
 })
 export class VideoComponent implements OnInit, OnDestroy {
-  @ViewChild("videoContainer", { static: true })
+  @ViewChild("video", { static: true, read: ViewContainerRef })
   videoRef: ElementRef;
-  videoPlayer: VideoJsPlayer;
+  plyr: Plyr;
 
   @Select(PlayerState.currentTrack) currentTrack$: Observable<IFile>;
   @Select(PlayerState.volumeLevel) volumeLevel$: Observable<number>;
@@ -50,12 +53,7 @@ export class VideoComponent implements OnInit, OnDestroy {
   @Output()
   played: EventEmitter<number> = new EventEmitter();
 
-  readonly videoPlayerOpts: VideoJsPlayerOptions = {
-    controls: false,
-    liveui: false,
-    controlBar: false,
-    fluid: false,
-  };
+  private destroy$ = new Subject<void>();
 
   constructor(
     public playerService: PlayerService,
@@ -66,56 +64,26 @@ export class VideoComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.videoPlayer = videojs(
-      this.videoRef.nativeElement,
-      this.videoPlayerOpts
-    );
+    this.setupPlayer();
 
-    this.currentTrack$
-      .pipe(
-        filter((track) => !!track),
-        exhaustMap((track) => {
-          this.videoPlayer.src(track.path);
-          this.videoPlayer.load();
-          return scheduled(
-            [
-              this.videoPlayer.play(), // ignore: load/play annoying error
-            ],
-            asapScheduler
-          );
-        }),
-        catchError(() => {
-          return scheduled([null], asapScheduler);
-        })
-      )
-      .subscribe();
+    this.setupCurrentTrack();
 
-    this.volumeLevel$
-      .pipe(filter((lvl) => lvl >= 0 && lvl <= 100))
-      .subscribe((level) => this.videoPlayer.volume(level / 100));
+    this.setupCurrentVolume();
 
     this.actions$
       .pipe(
         ofActionSuccessful(SetIsPlaying),
         pluck("payload"),
-        filter((playing) => playing),
-        switchMap(() => this.videoPlayer.play())
-      )
-      .subscribe();
-
-    this.actions$
-      .pipe(
-        ofActionSuccessful(SetIsPlaying),
-        pluck("payload"),
-        filter((playing) => !playing),
-        tap(() => this.videoPlayer.pause())
+        tap((isPlaying) => this.plyr.togglePlay(isPlaying)),
+        takeUntil(this.destroy$)
       )
       .subscribe();
 
     this.actions$
       .pipe(
         ofActionSuccessful(SetFullscreen),
-        tap(() => this.videoPlayer.requestFullscreen())
+        tap(() => this.plyr.fullscreen.enter()),
+        takeUntil(this.destroy$)
       )
       .subscribe();
 
@@ -123,33 +91,83 @@ export class VideoComponent implements OnInit, OnDestroy {
       .pipe(
         ofActionSuccessful(SetCustomTrackTime),
         pluck("payload"),
-        tap((time) => this.videoPlayer.currentTime(time))
+        tap((time) => (this.plyr.currentTime = time)),
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }
 
   createHotkeyHooks() {}
 
-  onEnded() {
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.plyr.destroy();
+  }
+
+  private setupPlayer() {
+    this.plyr = new Plyr("#plyrID", {
+      debug: isDevMode(),
+    });
+
+    this.plyr.on("timeupdate", () => this.onTimeUpdated());
+    this.plyr.on("loadedmetadata", () => this.onLoaded());
+    this.plyr.on("ended", () => this.onEnded());
+  }
+
+  private onEnded() {
     this.store.dispatch(new NextTrack());
   }
 
-  onTimeUpdated() {
-    if (this.videoPlayer.paused()) {
+  private onTimeUpdated() {
+    if (this.plyr.paused) {
       return;
     }
-    this.store.dispatch(
-      new SetCurrentTrackTime(this.videoPlayer.currentTime())
-    );
+    this.store.dispatch(new SetCurrentTrackTime(this.plyr.currentTime));
   }
 
-  onLoaded() {
-    this.store.dispatch(
-      new SetCurrentTrackTimeLength(this.videoPlayer.duration())
-    );
+  private onLoaded() {
+    this.store.dispatch(new SetCurrentTrackTimeLength(this.plyr.duration));
   }
 
-  ngOnDestroy() {
-    this.videoPlayer.dispose();
+  private setupCurrentVolume() {
+    this.volumeLevel$
+      .pipe(
+        filter((lvl) => lvl >= 0 && lvl <= 100),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((level) => (this.plyr.volume = level / 100));
+  }
+
+  private setupCurrentTrack() {
+    this.currentTrack$
+      .pipe(
+        filter((track) => !!track),
+        map(
+          (track) =>
+            ({
+              type: "video",
+              title: track.name,
+              sources: [
+                {
+                  src: track.path,
+                  type: `video/${
+                    track.path.toLowerCase().endsWith(".webm") ? "webm" : "mp4"
+                  }`,
+                  size: track.size,
+                },
+              ],
+            } as Plyr.SourceInfo)
+        ),
+        exhaustMap((track) => {
+          this.plyr.source = track;
+          return scheduled([this.plyr.play()], asapScheduler);
+        }),
+        catchError(() => {
+          return scheduled([null], asapScheduler);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
   }
 }
