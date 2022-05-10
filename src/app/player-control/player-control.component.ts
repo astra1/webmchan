@@ -128,7 +128,7 @@ export class PlayerControlComponent implements OnInit {
           map((settings) => {
             let path: string = settings.savePath;
             if (!this.electronService.fs.existsSync(path)) {
-              path = this.electronService.remote.app.getPath("desktop");
+              path = this.electronService.app.getPath("desktop");
             }
             return path;
           }),
@@ -153,7 +153,7 @@ export class PlayerControlComponent implements OnInit {
   }
 
   private showSaveDlg(path: string, track: IFile) {
-    return this.electronService.remote.dialog.showSaveDialog({
+    return this.electronService.dialog.showSaveDialog({
       defaultPath: `${path}/${track.fullname}`,
       filters: [
         {
