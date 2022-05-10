@@ -8,16 +8,14 @@ import { TrackQueueComponent } from "./track-queue/track-queue.component";
 import { CopyUrlDialogComponent } from "./copy-url-dialog/copy-url-dialog.component";
 
 @NgModule({
-  imports: [CommonModule, SharedModule],
-  declarations: [
-    PlayerControlComponent,
-    VolumeSliderComponent,
-    TrackProgressComponent,
-    TrackQueueComponent,
-    CopyUrlDialogComponent,
-  ],
-  entryComponents: [CopyUrlDialogComponent],
-
-  exports: [PlayerControlComponent, CopyUrlDialogComponent],
+    imports: [CommonModule, SharedModule],
+    declarations: [
+        PlayerControlComponent,
+        VolumeSliderComponent,
+        TrackProgressComponent,
+        TrackQueueComponent,
+        CopyUrlDialogComponent,
+    ],
+    exports: [PlayerControlComponent, CopyUrlDialogComponent]
 })
 export class PlayerControlModule {}
