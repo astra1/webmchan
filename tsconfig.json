@@ -9,7 +9,6 @@
     "forceConsistentCasingInFileNames": true,
     "downlevelIteration": true,
     "importHelpers": true,
-    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "ES2015",
     "typeRoots": ["node_modules/@types"],
