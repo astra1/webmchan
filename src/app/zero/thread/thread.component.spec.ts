@@ -1,6 +1,6 @@
 import { PlayerService } from './../../core/services/player.service';
 /* tslint:disable:no-unused-variable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
@@ -15,7 +15,7 @@ describe('ThreadComponent', () => {
   let component: ThreadComponent;
   let fixture: ComponentFixture<ThreadComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [FontAwesomeModule, MaterialModule, RouterTestingModule, HttpClientModule],
       declarations: [ThreadComponent],

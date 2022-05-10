@@ -1,7 +1,7 @@
 import { PlayerService } from './../../core/services/player.service';
 import { MaterialModule } from './../../shared/material.module';
 /* tslint:disable:no-unused-variable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
@@ -12,7 +12,7 @@ describe('VolumeSliderComponent', () => {
   let component: VolumeSliderComponent;
   let fixture: ComponentFixture<VolumeSliderComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [FontAwesomeModule, MaterialModule],
       declarations: [VolumeSliderComponent],

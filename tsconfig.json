@@ -1,29 +1,19 @@
-/*
-  This is a "Solution Style" tsconfig.json file, and is used by editors and TypeScript’s language server to improve development experience.
-  It is not intended to be used to perform a compilation.
-
-  To learn more about this file see: https://angular.io/config/solution-tsconfig.
-*/
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./src/tsconfig.app.json"
-    },
-    {
-      "path": "./src/tsconfig.spec.json"
-    },
-    {
-      "path": "./e2e/tsconfig.e2e.json"
-    }
-  ],
+  "compileOnSave": false,
   "compilerOptions": {
-    "plugins": [
-      {
-        "name": "typescript-deno-plugin",
-        "enable": true, // default is `true`
-        "importmap": "import_map.json"
-      }
-    ]
-  }
+    "module": "ESNext",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "downlevelIteration": true,
+    "importHelpers": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "ES2015",
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2018", "dom"]
+  },
+  "exclude": ["./api/*"]
 }
