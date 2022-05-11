@@ -3,7 +3,7 @@ import { SharedModule } from "./../shared/shared.module";
 import { TrackProgressComponent } from "./track-progress/track-progress.component";
 import { VideoComponent } from "../zero/thread/video/video.component";
 /* tslint:disable:no-unused-variable */
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { DebugElement } from "@angular/core";
 
@@ -16,7 +16,7 @@ describe("PlayerControlComponent", () => {
   let component: PlayerControlComponent;
   let fixture: ComponentFixture<PlayerControlComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [FontAwesomeModule, SharedModule, MaterialModule],
       declarations: [

@@ -1,5 +1,5 @@
 import { SharedModule } from './../shared/shared.module';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ZeroComponent } from './zero.component';
 import { MaterialModule } from '../shared/material.module';
@@ -9,7 +9,7 @@ describe('ZeroComponent', () => {
   let component: ZeroComponent;
   let fixture: ComponentFixture<ZeroComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [MaterialModule, SharedModule],
       declarations: [ZeroComponent],

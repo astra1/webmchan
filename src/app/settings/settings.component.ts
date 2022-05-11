@@ -106,7 +106,7 @@ export class SettingsComponent implements OnInit, OnChanges, OnDestroy {
             savePath:
               val === "custom"
                 ? null
-                : this.electronService.remote.app.getPath(val),
+                : this.electronService.app.getPath(val),
           },
           { emitEvent: false }
         );
@@ -141,7 +141,7 @@ export class SettingsComponent implements OnInit, OnChanges, OnDestroy {
 
   ShowSavePathDialog() {
     if (this.isNative) {
-      const path = this.electronService.remote.dialog.showOpenDialog({
+      const path = this.electronService.dialog.showOpenDialog({
         properties: ["openDirectory"],
       });
 
