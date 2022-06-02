@@ -1,8 +1,9 @@
-import { IBoard } from "./../models/models";
+import { IBoard } from "../models/models";
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
 import { IThread, IPost } from "../models/models";
+import { environment } from "../../../environments/environment.prod";
 
 @Injectable({
   providedIn: "root",
@@ -12,13 +13,14 @@ export class ApiService {
   private pathUrl: string;
 
   private get apiUrl() {
-    return encodeURI(`https://${this.hostUrl}${this.pathUrl}`);
+    return encodeURI(`https://${this.hostUrl}/${this.pathUrl}`);
   }
 
   constructor(private http: HttpClient) {
-    this.hostUrl = location.host.startsWith("localhost")
-      ? "webmchan.vercel.app/"
-      : location.host;
+    // this.hostUrl = location.host.startsWith("localhost")
+    //   ? "webmchan.vercel.app/"
+    //   : location.host;
+    this.hostUrl = environment.apiUrl;
     this.pathUrl = "api/";
   }
 

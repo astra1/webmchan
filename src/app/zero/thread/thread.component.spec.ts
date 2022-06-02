@@ -8,7 +8,7 @@ import { ThreadComponent } from './thread.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MaterialModule } from '../../shared/material.module';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ApiService } from '../../core/services/Api.service';
+import { ApiService } from '../../core/services/api.service';
 import { HttpClientModule } from '@angular/common/http';
 
 describe('ThreadComponent', () => {

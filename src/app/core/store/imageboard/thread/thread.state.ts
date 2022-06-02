@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext, Store } from "@ngxs/store";
 import { tap } from "rxjs/operators";
 import { IPost, IThread } from "../../../models/models";
-import { ApiService } from "../../../services/Api.service";
+import { ApiService } from "../../../services/api.service";
 import { BoardState } from "../board/board.state";
 import {
   GetPosts, GetThreads, SetCurrentThread,

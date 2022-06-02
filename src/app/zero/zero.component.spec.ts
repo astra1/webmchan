@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ZeroComponent } from './zero.component';
 import { MaterialModule } from '../shared/material.module';
-import { ApiService } from '../core/services/Api.service';
+import { ApiService } from '../core/services/api.service';
 
 describe('ZeroComponent', () => {
   let component: ZeroComponent;

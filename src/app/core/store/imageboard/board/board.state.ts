@@ -1,7 +1,7 @@
 import { IBoard } from "../../../models/models";
 import { State, Selector, Action, StateContext } from "@ngxs/store";
 import { SetBoards, SetCurrentBoard, GetBoards } from "./board.actions";
-import { ApiService } from "../../../services/Api.service";
+import { ApiService } from "../../../services/api.service";
 import { tap } from "rxjs/operators";
 import { Injectable } from "@angular/core";
 
